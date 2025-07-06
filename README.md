@@ -51,13 +51,7 @@ Perintah ini akan membuat semua tabel yang dibutuhkan oleh aplikasi di dalam dat
 
 php artisan migrate
 
-7. (Opsional) Jalankan Database Seeder
-
-Jika proyek ini memiliki data awal (dummy data), jalankan seeder.
-
-php artisan db:seed
-
-8. Jalankan Server Pengembangan
+7. Jalankan Server Pengembangan
 
 Terakhir, jalankan server pengembangan Laragon (atau gunakan perintah di bawah) dan aplikasi siap diakses!
 
