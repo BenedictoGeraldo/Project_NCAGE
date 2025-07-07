@@ -1,13 +1,14 @@
 📝 Project NCAGE
 
-Project NCAGE merupakan project website berbasis Laravel yang dibuat sebagai bahan pemenuhan tanggung jawab saat magang di Pusat Kodifikasi Badan Sarana Pertahanan (Baranahan) Kementerian Pertahanan (Kemhan).
+Project NCAGE merupakan project website berbasis Laravel yang dibuat sebagai bahan pemenuhan tanggung jawab saat magang di Pusat Kodifikasi Badan Sarana Pertahanan (Baranahan) Kementerian Pertahanan (Kemhan). Output yang diharapkan dari website ini adalah otomatisasi dalam pemberian kode NCAGE sekaligus sertifikat NCAGE kepada perusahaan-perusahaan di Indonesia. NCAGE sendiri berfungsi untuk standarisasi dan efisiensi dalam proses logistik dan pengadaan, terutama di lingkungan pertahanan dan antar-negara.
 
 🛠️ Teknologi yang Digunakan
 Berikut adalah tumpukan teknologi (tech stack) yang digunakan dalam proyek ini:
  - Laravel Framework 10.48.29
  - PHP 8.2.29
  - MySQL v8.0.41
- - Bootstrap v5.3 / Taillwind v4.1
+ - Bootstrap v5.3
+ - filament v3
 
 🚀 Cara Instalasi & Setup
 Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal Anda.
