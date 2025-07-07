@@ -1,0 +1,131 @@
+/* General Styling */
+body {
+    font-family: 'Poppins', sans-serif; /* Anda bisa mengganti font jika diperlukan */
+}
+
+.status-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 900px;
+    margin: auto;
+}
+
+.main-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.sub-title {
+    font-weight: 500;
+    color: #555;
+    font-size: 1.25rem;
+}
+
+/* Detail Permohonan Box */
+.detail-box {
+    background-color: #fffbf0;
+    border: 1px solid #f0e6d2;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.detail-box .row {
+    margin-bottom: 0.5rem;
+}
+
+.detail-box .key {
+    font-weight: 600;
+    color: #444;
+}
+
+.detail-box .value {
+    color: #666;
+}
+
+/* Timeline Styling */
+.timeline-container {
+    position: relative;
+    padding-left: 40px; /* Space for the icons and line */
+}
+
+/* The vertical line */
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 19px; /* Aligned with the center of the icon */
+    top: 10px;
+    bottom: 10px;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.timeline-step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.timeline-step:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: -20px; /* Half of icon width to center it on the line */
+    background: #fff;
+    border: 2px solid #e9ecef;
+    z-index: 10;
+    font-size: 1.2rem;
+}
+
+.timeline-content {
+    margin-left: 35px;
+    width: 100%;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+}
+
+/* State-specific styles */
+
+/* Completed State */
+.timeline-step.completed .timeline-icon {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+.timeline-step.completed .timeline-content {
+    background-color: #f1fef4;
+    border-color: #d4edda;
+}
+
+/* In-Progress State */
+.timeline-step.in-progress .timeline-icon {
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    color: #004085;
+}
+.timeline-step.in-progress .timeline-content {
+    background-color: #eaf4ff;
+    border-color: #cce5ff;
+}
+
+/* Pending State */
+.timeline-step.pending .timeline-icon {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+.timeline-step.pending .timeline-content {
+    background-color: #f8f9fa;
+    opacity: 0.7;
+}
