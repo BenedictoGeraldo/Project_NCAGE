@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FormNCAGEController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::get('/', function () {
 Route::get('/pantau-status', function () {
     return view('tracking.index');
 });
+
+Route::get('/pendaftaran-ncage', [FormNCAGEController::class, 'index']);

@@ -15,6 +15,7 @@
         <!-- Styles -->
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/global.css') }}">
         @yield('styles')
     </head>
     <body class="antialiased">
