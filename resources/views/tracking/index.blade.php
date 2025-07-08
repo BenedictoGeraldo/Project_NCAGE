@@ -6,99 +6,133 @@
     <title>Pantau Status Permohonan</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
     <link rel="stylesheet" href="{{ asset('css/tracking.css') }}">
-
 </head>
 <body class="bg-light">
 
-    <main class="container my-5">
-        <div class="status-card">
-            <h1 class="main-title text-center mb-4">Pantau Status</h1>
-            <h2 class="sub-title text-center mb-5">Detail Permohonan #2025-001</h2>
+@php
+    // Definisikan ID status untuk kemudahan pembacaan kode
+    $status_ids = [
+        'dikirim' => 1,
+        'verifikasi' => 2,
+        'perbaikan' => 3,
+        'validasi' => 4,
+        'terbit' => 5,
+    ];
+    $current_status_id = $application->status_id;
+@endphp
 
-            <div class="detail-box p-4 mb-5">
-                <div class="row">
-                    <div class="col-md-3 key">ID Permohonan</div>
-                    <div class="col-md-9 value">: #2025-001</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Tanggal Pengajuan</div>
-                    <div class="col-md-9 value">: 6 Juli 2025</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Jenis Permohonan</div>
-                    <div class="col-md-9 value">: Perusahaan</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Jenis Permohonan NCAGE</div>
-                    <div class="col-md-9 value">: Permohonan Baru</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Tujuan Penerbitan NCAGE</div>
-                    <div class="col-md-9 value">: Pengadaan</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Tipe Entitas</div>
-                    <div class="col-md-9 value">: E</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 key">Status Saat Ini</div>
-                    <div class="col-md-9 value">: Verifikasi Berkas & Data</div>
-                </div>
+<main class="container my-5">
+    <div class="status-card">
+        <h1 class="main-title text-center mb-4">Pantau Status</h1>
+        <h2 class="sub-title text-center mb-5">Detail Permohonan #{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</h2>
+
+        {{-- Data di sini akan diisi secara dinamis --}}
+        <div class="detail-box p-4 mb-5">
+            <div class="row">
+                <div class="col-md-3 key">ID Permohonan</div>
+                <div class="col-md-9 value">: #{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</div>
             </div>
+            <div class="row">
+                <div class="col-md-3 key">Tanggal Pengajuan</div>
+                <div class="col-md-9 value">: {{ $application->created_at->format('j F Y') }}</div>
+            </div>
+            {{-- Anda bisa menambahkan data lain dari tabel formulir di sini --}}
+            <div class="row">
+                <div class="col-md-3 key">Status Saat Ini</div>
+                <div class="col-md-9 value fw-bold">: {{ $application->status->name }}</div>
+            </div>
+        </div>
 
-            <h2 class="sub-title text-center mb-4">Detail Status</h2>
+        <h2 class="sub-title text-center mb-4">Detail Status</h2>
 
-            <div class="timeline-container">
-                <div class="timeline-step completed">
-                    <div class="timeline-icon">
-                        <i class="bi bi-check-lg"></i>
-                    </div>
-                    <div class="timeline-content">
+        <div class="timeline-container">
+            <div class="timeline-step completed">
+                <div class="timeline-icon"><i class="bi bi-check-lg"></i></div>
+                <div class="timeline-content">
+                    <div class="timeline-content-text">
                         <h5 class="fw-bold">Permohonan Dikirim</h5>
-                        <p class="text-muted small mb-1">6 Juli 2025, 15:58</p>
+                        <p class="text-muted small mb-1">{{ $application->created_at->format('j F Y, H:i') }}</p>
                         <p class="mb-0">Berkas permohonan telah diterima oleh sistem.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="timeline-step in-progress">
-                    <div class="timeline-icon">
-                        <i class="bi bi-arrow-repeat"></i>
-                    </div>
-                    <div class="timeline-content">
-                        <h5 class="fw-bold">Verifikasi Berkas & Data</h5>
-                        <p class="text-primary small mb-1">Sedang Berlangsung...</p>
-                        <p class="mb-0">Tim Puskod sedang melakukan verifikasi terhadap kelengkapan dan kesesuaian data yang Anda kirimkan.</p>
-                    </div>
+            @php
+                $verifikasiClass = 'pending';
+                if ($current_status_id == $status_ids['verifikasi']) $verifikasiClass = 'in-progress';
+                if ($current_status_id == $status_ids['perbaikan']) $verifikasiClass = 'revision-needed';
+                if ($current_status_id > $status_ids['perbaikan']) $verifikasiClass = 'completed';
+            @endphp
+            <div class="timeline-step {{ $verifikasiClass }}">
+                <div class="timeline-icon">
+                    @if($verifikasiClass == 'completed') <i class="bi bi-check-lg"></i>
+                    @elseif($verifikasiClass == 'revision-needed') <i class="bi bi-exclamation-circle-fill"></i>
+                    @else <i class="bi bi-arrow-repeat"></i> @endif
                 </div>
-
-                <div class="timeline-step pending">
-                    <div class="timeline-icon">
-                        <i class="bi bi-hourglass-split"></i>
+                <div class="timeline-content">
+                    <div class="timeline-content-text">
+                        <h5 class="fw-bold">Verifikasi Berkas & Data</h5>
+                        @if($verifikasiClass == 'in-progress')
+                            <p class="text-primary small mb-1">Sedang Berlangsung...</p>
+                            <p class="mb-0">Tim Puskod sedang melakukan verifikasi terhadap kelengkapan dan kesesuaian data yang Anda kirimkan.</p>
+                        @elseif($verifikasiClass == 'revision-needed')
+                            <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan...</p>
+                            <p class="mb-0">{{ $application->revision_notes }}</p>
+                        @else
+                            <p class="mb-0">Proses verifikasi berkas dan data.</p>
+                        @endif
                     </div>
-                    <div class="timeline-content">
+                    @if($verifikasiClass == 'revision-needed')
+                        <a href="#" class="btn btn-custom-dark mt-2 mt-md-0"><i class="bi bi-cloud-upload-fill me-2"></i>Unggah Berkas Ulang</a>
+                    @endif
+                </div>
+            </div>
+
+            @php
+                $validasiClass = 'pending';
+                if ($current_status_id == $status_ids['validasi']) $validasiClass = 'in-progress';
+                if ($current_status_id > $status_ids['validasi']) $validasiClass = 'completed';
+            @endphp
+            <div class="timeline-step {{ $validasiClass }}">
+                <div class="timeline-icon">
+                    @if($validasiClass == 'completed') <i class="bi bi-check-lg"></i> @else <i class="bi bi-hourglass-split"></i> @endif
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-content-text">
                         <h5 class="fw-bold">Proses Validasi</h5>
-                        <p class="text-muted small mb-1">Menunggu</p>
                         <p class="mb-0">Setelah verifikasi selesai, data akan diproses lebih lanjut untuk penetapan kode entitas.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="timeline-step pending">
-                    <div class="timeline-icon">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </div>
-                    <div class="timeline-content">
+            @php
+                $terbitClass = 'pending';
+                if ($current_status_id == $status_ids['terbit']) $terbitClass = 'completed';
+            @endphp
+            <div class="timeline-step {{ $terbitClass }}">
+                 <div class="timeline-icon">
+                    @if($terbitClass == 'completed') <i class="bi bi-check-lg"></i> @else <i class="bi bi-file-earmark-text"></i> @endif
+                </div>
+                <div class="timeline-content">
+                    <div class="timeline-content-text">
                         <h5 class="fw-bold">Sertifikat Diterbitkan</h5>
-                        <p class="text-muted small mb-1">Menunggu</p>
-                        <p class="mb-0">Sertifikat NCAGE akan diterbitkan setelah semua proses internal selesai.</p>
+                         @if($terbitClass == 'completed')
+                            <p class="text-muted small mb-1">{{ $application->updated_at->format('j F Y, H:i') }}</p>
+                            <p class="mb-0">Sertifikat NCAGE telah diterbitkan, silahkan unduh sertifikat tertera.</p>
+                        @else
+                            <p class="mb-0">Sertifikat NCAGE akan diterbitkan setelah semua proses validasi selesai.</p>
+                        @endif
                     </div>
+                     @if($terbitClass == 'completed' && $application->domestic_certificate_path)
+                        <a href="{{ asset($application->domestic_certificate_path) }}" class="btn btn-custom-dark mt-2 mt-md-0" download><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
+                    @endif
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</main>
 
 </body>
 </html>

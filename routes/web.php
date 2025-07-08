@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormNCAGEController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,4 @@ Route::get('/', function () {
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/pantau-status', function () {
-    return view('tracking.index');
-});
+Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');

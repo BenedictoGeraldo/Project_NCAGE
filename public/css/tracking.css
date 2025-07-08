@@ -1,6 +1,5 @@
-/* General Styling */
 body {
-    font-family: 'Poppins', sans-serif; /* Anda bisa mengganti font jika diperlukan */
+    font-family: 'Poppins', sans-serif;
 }
 
 .status-card {
@@ -47,14 +46,13 @@ body {
 /* Timeline Styling */
 .timeline-container {
     position: relative;
-    padding-left: 40px; /* Space for the icons and line */
+    padding-left: 40px;
 }
 
-/* The vertical line */
 .timeline-container::before {
     content: '';
     position: absolute;
-    left: 19px; /* Aligned with the center of the icon */
+    left: 19px;
     top: 10px;
     bottom: 10px;
     width: 2px;
@@ -80,7 +78,7 @@ body {
     align-items: center;
     justify-content: center;
     position: absolute;
-    left: -20px; /* Half of icon width to center it on the line */
+    left: -20px;
     background: #fff;
     border: 2px solid #e9ecef;
     z-index: 10;
@@ -90,13 +88,22 @@ body {
 .timeline-content {
     margin-left: 35px;
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     border-radius: 8px;
     background-color: #f8f9fa;
     border: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-/* State-specific styles */
+.timeline-content-text {
+    flex-grow: 1;
+}
+
+
+/* === State-specific styles === */
 
 /* Completed State */
 .timeline-step.completed .timeline-icon {
@@ -120,6 +127,17 @@ body {
     border-color: #cce5ff;
 }
 
+/* Revision Needed State (NEW) */
+.timeline-step.revision-needed .timeline-icon {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+.timeline-step.revision-needed .timeline-content {
+    background-color: #fdeeee;
+    border-color: #f5c6cb;
+}
+
 /* Pending State */
 .timeline-step.pending .timeline-icon {
     background-color: #e9ecef;
@@ -128,4 +146,21 @@ body {
 .timeline-step.pending .timeline-content {
     background-color: #f8f9fa;
     opacity: 0.7;
+}
+
+/* Custom Button Styling */
+.btn-custom-dark {
+    background-color: #772128;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-custom-dark:hover {
+    background-color: #5a191f;
+    color: white;
 }

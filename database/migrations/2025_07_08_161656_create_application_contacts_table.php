@@ -11,15 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('application_contacts', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('ncage_application_id');
+            $table->foreign('ncage_application_id')->references('id')->on('ncage_applications')->onDelete('cascade');
+
             $table->string('name');
-            $table->string('company_name');
+            $table->string('identity_number', 50);
+            $table->text('address');
             $table->string('phone_number', 20);
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('email');
+            $table->string('position', 100);
+
             $table->timestamps();
         });
     }
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('application_contacts');
     }
 };
