@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormNCAGEController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 Route::get('/pantau-status', function () {
     return view('tracking.index');
 });
-
-Route::get('/pendaftaran-ncage', [FormNCAGEController::class, 'index']);
