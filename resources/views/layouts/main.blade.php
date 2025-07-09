@@ -16,7 +16,11 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     @yield('styles')
 </head>
 
@@ -24,6 +28,9 @@
     <div>
         @include('partials.navbar')
         @yield('content')
+    </div>
+    <div>
+        {{-- @include('partials.footer') --}}
     </div>
 </body>
 
