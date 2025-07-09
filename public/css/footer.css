@@ -1,0 +1,132 @@
+.footer {
+    background-color: #212529; 
+    color: #FFFFFF; 
+    padding: 24px; 
+}
+
+.footer-left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 22px; 
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+}
+
+
+.footer-title, .footer-subtitle {
+    margin-bottom: 0;
+    color: #EBB074;
+    font-size: 24px;
+    font-weight: 600; 
+    line-height: 1.2;
+}
+
+.footer-subtitle {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; 
+}
+
+.footer-address {
+    font-size: 16px;
+    font-weight: 500; 
+    line-height: 24px;
+    color: #FFFFFF;
+    margin-bottom: 0;
+    max-width: 399px;
+}
+
+.footer-divider {
+    border-color: #FFFFFF40; 
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.footer-copyright {
+    font-size: 14px;
+    color: #FFFFFFB3; 
+}
+
+/* Tambahkan ini di public/css/footer.css */
+
+/* Style umum untuk kolom tengah dan kanan */
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 22px; /* Jarak antara judul dan konten */
+}
+
+.footer-heading {
+    color: #EBB074;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+/* Style untuk list Tautan */
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Jarak antar link */
+}
+
+.footer-links a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #EBB074;
+}
+
+/* Style untuk list Kontak */
+.footer-contact {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px; /* Jarak antar item kontak */
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* Jarak antara ikon dan teks */
+}
+
+.footer-contact i {
+    font-size: 24px;
+    color: #FFFFFF;
+}
+
+.footer-contact span {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.footer-contact p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+}
+
+.footer-right-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 36px;
+}

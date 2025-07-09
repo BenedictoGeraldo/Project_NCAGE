@@ -23,7 +23,7 @@
 
     <div class="hero-visual-container">
         <div class="hero-ellipse"></div>
-        <img src="{{ asset('images/gedung-antasari.jpg') }}" alt="Gedung Puskod Baranahan Kemhan" class="hero-building-image">
+        <img src="{{ asset('images/gedung-antasari.png') }}" alt="Gedung Puskod Baranahan Kemhan" class="hero-building-image">
     </div>
 </section>
 @endsection

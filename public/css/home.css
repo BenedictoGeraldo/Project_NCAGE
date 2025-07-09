@@ -1,19 +1,18 @@
 .hero-section {
     position: relative;
-    height: 95vh;
+    min-height: 90vh; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
     text-align: center;
     overflow: hidden;
     background: linear-gradient(to bottom, #F5F5F5 0%, #FDF8E4 100%);
+    padding-top: 2rem;
 }
 
 .hero-content {
-    position: absolute;
-    bottom: 486px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
+    position: relative;
     z-index: 3;
 }
 
@@ -50,18 +49,18 @@
 
 .hero-button:hover {
     background-color: #4C0217;
+    color: white;
 }
 
 .hero-visual-container {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 844px;
+    position: relative; 
+    width: 100%;
+    max-width: 844px; 
     height: 422px;
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    margin-top: 2rem;
 }
 
 .hero-ellipse {
