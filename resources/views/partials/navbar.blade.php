@@ -12,10 +12,25 @@
         <ul class="d-flex list-unstyled gap-4 mb-0">
             <li><a class="btn fw-bold fs-7 {{ Request::is('/') ? 'text-white bg-active' : '' }}" href="#">Beranda</a></li>
             <li><a class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage') ? 'text-white bg-active' : '' }}" href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
-            <li><a class="btn fw-bold fs-7" href="#">Pantau Status</a></li>
+            @auth
+                @php
+                    $latestApplication = Auth::user()->ncageApplication;
+                @endphp
+                <li>
+                    <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}"
+                    @if ($application)
+                        href="{{ route('tracking.show', $application) }}"
+                    @else
+                        href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}"
+                    @endif
+                    >
+                        Pantau Status
+                    </a>
+                </li>
+            @endauth
         </ul>
     </div>
-    @guest    
+    @guest
     <div class="ms-auto text-white position-relative z-1">
         <div class="btn d-flex gap-1">
             <a class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2" href="{{ route('login') }}">Masuk</a>
@@ -30,12 +45,12 @@
             <div class="profile-image">
                 <i class="fa-solid fa-circle-user"></i>
             </div>
-            
+
             {{-- Tombol Logout harus menggunakan form dengan method POST untuk keamanan --}}
             <div class="dropdown-menu">
                 <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <a class="dropdown-item" href="{{ route('logout') }}" 
+                <a class="dropdown-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); this.closest('form').submit();">
                     Logout
                 </a>

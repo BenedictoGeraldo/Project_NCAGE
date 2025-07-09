@@ -47,11 +47,11 @@ class User extends Authenticatable
     ];
 
     /**
-     * Mendefinisikan relasi "hasMany" ke model NcageApplication.
-     * Satu user bisa memiliki banyak permohonan.
+     * Mendefinisikan relasi "hasOne" ke model NcageApplication.
+     * Satu user hanya bisa memiliki satu permohonan.
      */
-    public function ncageApplications(): HasMany
+    public function ncageApplication(): HasOne
     {
-        return $this->hasMany(NcageApplication::class);
+        return $this->hasOne(NcageApplication::class);
     }
 }
