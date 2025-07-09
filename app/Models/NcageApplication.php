@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class NcageApplication extends Model
 {
@@ -26,5 +27,13 @@ class NcageApplication extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Mendefinisikan relasi "hasOne" ke data identitas (Bagian A).
+     */
+    public function identity(): HasOne
+    {
+        return $this->hasOne(ApplicationIdentity::class);
     }
 }

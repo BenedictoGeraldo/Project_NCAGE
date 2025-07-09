@@ -15,7 +15,7 @@ class TrackingController extends Controller
      */
     public function show(NcageApplication $application)
     {
-        $application->load('status');
+        $application->load(['status', 'identity']);
 
         // Kirim data permohonan ke view 'tracking.index'
         return view('tracking.index', [

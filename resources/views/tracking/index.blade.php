@@ -26,27 +26,40 @@
 <main class="container my-5">
     <div class="status-card">
         <h1 class="main-title text-center mb-4">Pantau Status</h1>
-        <h2 class="sub-title text-center mb-5">Detail Permohonan #{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</h2>
 
-        {{-- Data di sini akan diisi secara dinamis --}}
+        <h2 class="sub-title text-center mb-5">Detail Permohonan #{{ $application->created_at->format('Y') }}-{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</h2>
         <div class="detail-box p-4 mb-5">
             <div class="row">
-                <div class="col-md-3 key">ID Permohonan</div>
-                <div class="col-md-9 value">: #{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</div>
+                <div class="col-md-4 key">ID Permohonan</div>
+                <div class="col-md-8 value">: #{{ $application->created_at->format('Y') }}-{{ str_pad($application->id, 3, '0', STR_PAD_LEFT) }}</div>
             </div>
             <div class="row">
-                <div class="col-md-3 key">Tanggal Pengajuan</div>
-                <div class="col-md-9 value">: {{ $application->created_at->format('j F Y') }}</div>
+                <div class="col-md-4 key">Tanggal Pengajuan</div>
+                <div class="col-md-8 value">: {{ $application->created_at->format('j F Y') }}</div>
             </div>
-            {{-- Anda bisa menambahkan data lain dari tabel formulir di sini --}}
             <div class="row">
-                <div class="col-md-3 key">Status Saat Ini</div>
-                <div class="col-md-9 value fw-bold">: {{ $application->status->name }}</div>
+                <div class="col-md-4 key">Jenis Permohonan</div>
+                <div class="col-md-8 value">: {{ $application->identity->application_type ?? '-' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 key">Jenis Permohonan NCAGE</div>
+                <div class="col-md-8 value">: {{ $application->identity->ncage_request_type ?? '-' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 key">Tujuan Penerbitan NCAGE</div>
+                <div class="col-md-8 value">: {{ $application->identity->purpose ?? '-' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 key">Tipe Entitas</div>
+                <div class="col-md-8 value">: {{ $application->identity->entity_type ?? '-' }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 key">Status Saat Ini</div>
+                <div class="col-md-8 value fw-bold">: {{ $application->status->name ?? 'Tidak diketahui' }}</div>
             </div>
         </div>
 
         <h2 class="sub-title text-center mb-4">Detail Status</h2>
-
         <div class="timeline-container">
             <div class="timeline-step completed">
                 <div class="timeline-icon"><i class="bi bi-check-lg"></i></div>
@@ -125,8 +138,22 @@
                             <p class="mb-0">Sertifikat NCAGE akan diterbitkan setelah semua proses validasi selesai.</p>
                         @endif
                     </div>
-                     @if($terbitClass == 'completed' && $application->domestic_certificate_path)
-                        <a href="{{ asset($application->domestic_certificate_path) }}" class="btn btn-custom-dark mt-2 mt-md-0" download><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
+                     @if($terbitClass == 'completed')
+                        <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
+                            <a href="{{ $application->domestic_certificate_path ? asset('upload/' . $application->domestic_certificate_path) : '#' }}"
+                            class="btn btn-custom-dark {{ !$application->domestic_certificate_path ? 'disabled' : '' }}"
+                            @if(!$application->domestic_certificate_path) aria-disabled="true" @endif
+                            download>
+                                <i class="bi bi-download me-2"></i>Unduh Sertifikat (ID)
+                            </a>
+
+                            <a href="{{ $application->international_certificate_path ? asset('upload/' . $application->international_certificate_path) : '#' }}"
+                            class="btn btn-custom-dark {{ !$application->international_certificate_path ? 'disabled' : '' }}"
+                            @if(!$application->international_certificate_path) aria-disabled="true" @endif
+                            download>
+                                <i class="bi bi-globe me-2"></i>Unduh Sertifikat (INTL)
+                            </a>
+                        </div>
                     @endif
                 </div>
             </div>
