@@ -11,8 +11,21 @@
     </div>
     <div class="ms-auto text-white position-relative z-1">
         <div class="btn d-flex gap-3">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
+            <a href="{{ route('login') }}">Login</a>
+            <a href="{{ route('register') }}">Register</a>
         </div>
     </div>
+
+    @auth
+            {{-- TAMPILKAN INI HANYA JIKA PENGGUNA SUDAH LOGIN --}}
+            
+            {{-- Tombol Logout harus menggunakan form dengan method POST untuk keamanan --}}
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <a href="{{ route('logout') }}" 
+                   onclick="event.preventDefault(); this.closest('form').submit();">
+                    Logout
+                </a>
+            </form>
+        @endauth
 </nav>
