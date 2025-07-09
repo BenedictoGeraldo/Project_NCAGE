@@ -15,6 +15,10 @@ class TrackingController extends Controller
      */
     public function show(NcageApplication $application)
     {
+        if ($application->user_id !== auth()->id()) {
+            abort(404);
+        }
+        
         $application->load(['status', 'identity']);
 
         // Kirim data permohonan ke view 'tracking.index'
