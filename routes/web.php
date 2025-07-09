@@ -5,13 +5,13 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrackingController;
+use App\Http\Controllers\FormNCAGEController;
 
 
 // =========================================================================
 // RUTE PUBLIK (Bisa diakses siapa saja)
 // =========================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
-
 
 // =========================================================================
 // RUTE KHUSUS TAMU (Hanya untuk yang BELUM login)
@@ -42,5 +42,6 @@ Route::middleware('auth')->group(function () {
     // Tempatkan rute lain yang membutuhkan login di sini
     // Contoh:
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
-    // Route::get('/buat-daftar-ncage', [FormNCAGEController::class, 'create'])->name('ncage.create');
+    Route::get('/pendaftaran-ncage/{step}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
+    Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
 });
