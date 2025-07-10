@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class AuthenticatedSessionController extends Controller{
 
         if (Auth::attempt($credentials)){
             $request->session()->regenerate();
-            return redirect()->intended('/'); //masih menunggu nama file setelah masuk login apa
+            return redirect()->intended(route('beranda'));
         }
 
         //bila gagal, di direct ke login dengan pesan error
