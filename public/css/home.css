@@ -45,11 +45,27 @@
     text-decoration: none;
     border-radius: 8px;
     transition: background-color 0.3s ease;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    background-color: #6A040F; 
+    color: white;
+    margin: 5px 12px;
 }
 
 .hero-button:hover {
     background-color: #4C0217;
     color: white;
+}
+
+.hero-button-outline {
+    background-color: transparent;
+    border-color: #6A040F; 
+    color: #6A040F;
+}
+
+.hero-button-outline:hover {
+    background-color: #6A040F;
+    color:white;
 }
 
 .hero-visual-container {
