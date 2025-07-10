@@ -11,6 +11,12 @@ class NcageApplication extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'status_id',
+        'documents',
+    ];
+
     /**
      * Mendefinisikan relasi "belongsTo" ke model Status.
      * Satu permohonan dimiliki oleh satu status.

@@ -17,121 +17,123 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <div class="notes mb-3">
-                <p class="mb-0">Catatan:</p>
-                <ul class="px-3">
-                    <li class="fst-italic">(<span class="text-danger">*</span>) Wajib untuk diisi</li>
-                    <li class="fst-italic">Pastikan semua dokumen yang diunggah adalah hasil scan yang jelas dan dapat dibaca.</li>
-                    <li class="fst-italic">Semua file harus dalam format PDF.</li>
-                    <li class="fst-italic">Ukuran maksimal per file adalah 5 MB.</li>
-                    <li class="fst-italic">Khusus untuk persyaratan SAM.GOV. (Jumlah Karakter Alamat sebanyak 54)</li>
-                    <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui tautan ini dan Surat Pernyataan Kebenaran Data dapat diunduh melalui tautan ini.</li>
-                </ul>
+            @if($step == 1)                
+                <div class="notes mb-3">
+                    <p class="mb-0">Catatan:</p>
+                    <ul class="px-3">
+                        <li class="fst-italic">(<span class="text-danger">*</span>) Wajib untuk diisi</li>
+                        <li class="fst-italic">Pastikan semua dokumen yang diunggah adalah hasil scan yang jelas dan dapat dibaca.</li>
+                        <li class="fst-italic">Semua file harus dalam format PDF.</li>
+                        <li class="fst-italic">Ukuran maksimal per file adalah 5 MB.</li>
+                        <li class="fst-italic">Khusus untuk persyaratan SAM.GOV. (Jumlah Karakter Alamat sebanyak 54)</li>
+                        <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui tautan ini dan Surat Pernyataan Kebenaran Data dapat diunduh melalui tautan ini.</li>
+                    </ul>
+                </div>
+            @elseif($step == 2)
+            <div class="mb-5 text-center">
+                <h4 class="fw-bold">
+                        @if($substep == 1)
+                        A. Identifikasi Entitas
+                        @elseif($substep == 2)
+                        B. Contact Person (Narahubung)
+                        @elseif($substep == 3)
+                        C. Detail Badan Usaha
+                        @elseif($substep == 4)
+                        D. Informasi Lainnya
+                        @endif
+                    </h4>
+                </div>
+            @elseif($step == 3)
+            <div class="mb-5 text-center">
+                <h4 class="fw-bold">Ringkasan Dokumen</h4>
             </div>
+            @endif
 
             <form id="form-ncage" method="POST" action="{{ route('pendaftaran-ncage.handle-step') }}" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="step" value="{{ $step }}">
 
                 @if($step == 1)
-                    @php
-                        $fields = [
-                            'surat_permohonan' => 'Surat Permohonan NCAGE',
-                            'surat_kebenaran' => 'Surat Pernyataan Kebenaran Data',
-                            'foto_kantor' => 'Foto Kantor',
-                            'sk_domisili' => 'SK Domisili',
-                            'akta_notaris' => 'Akta Notaris',
-                            'sk_kemenkumham' => 'SK Kemenkumham',
-                            'siup_nib' => 'SIUP/NIB (Nomor Induk Berusaha)',
-                            'company_profile' => 'Company Profile Perusahaan',
-                            'NPWP' => 'NPWP Perusahaan',
-                            'surat_kuasa' => 'Surat Kuasa',
-                            'sam_gov' => 'Daftar Isian SAM.GOV',
-                        ];
-                    @endphp
-
-                    @foreach($fields as $field => $label)
-                        <div class="mb-3">
-                            <label for="{{ $field }}">{{ $label }}</label>
-                            <div class="up-file">
-                                <label class="custom-file-upload w-100">
-                                    <div class="icon" id="icon-{{ $field }}">
-                                        @if(!empty($data['documents'][$field]))
-                                            <i class="fa-solid fa-file-pdf text-danger"></i>
-                                        @else
-                                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                                        @endif
-                                    </div>
-
-                                    <div class="desc" id="desc-{{ $field }}">
-                                        @if(!empty($data['documents'][$field]))
-                                            {{ basename($data['documents'][$field]) }}
-                                        @else
-                                            Unggah Berkas
-                                        @endif
-                                    </div>
-
-                                    <div class="note" id="note-{{ $field }}">
-                                        @if(empty($data['documents'][$field]))
-                                            Maksimal file kapasitas 5 mb
-                                        @endif
-                                    </div>
-
-                                    <span class="btn-upload" id="unggah-{{ $field }}"
-                                        style="{{ !empty($data['documents'][$field]) ? 'display: none;' : '' }}">
-                                        Unggah Berkas
-                                    </span>
-
-                                    <input type="file" name="{{ $field }}" id="input-{{ $field }}" hidden>
-
-                                    <!-- Tombol Aksi jika file sudah ada -->
-                                    @if(!empty($data['documents'][$field]))
-                                        <div class="mt-2 d-flex gap-2 justify-content-center" id="actions-{{ $field }}">
-                                            <!-- Button Hapus -->
-                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2 fw-bold action-button" onclick="removeFile('{{ $field }}', event)">
-                                                Hapus
-                                            </button>
-                                            <!-- Button Ganti -->
-                                            {{-- <button type="button" class="btn btn-sm btn-warning" onclick="document.getElementById('input-{{ $field }}').click();">
-                                                Ganti File
-                                            </button> --}}
-                                        </div>
-                                    @endif
-                                </label>
-                            </div>
-                            @error($field) <small class="text-danger"></small> @enderror
-                        </div>
-                    @endforeach
-
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="submit" name="cancel" value="1" class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2">
-                            <i class="fa-solid fa-arrow-left"></i> Kembali
-                        </button>
-                        <button type="submit" class="btn bg-active text-white rounded-pill px-4 py-2">
-                            Lanjutkan <i class="fa-solid fa-arrow-right"></i>
-                        </button>
-                    </div>
-
+                    @include('form_ncage.partials.pendaftaran_step1', ['disabled' => false])
                 @elseif($step == 2)
-                    <div class="mb-3">
-                        <label>Email:</label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email', $data['email'] ?? '') }}">
-                        @error('email') <small class="text-danger"></small> @enderror
+                    <input type="hidden" name="substep" value="{{ $substep }}">
+
+                    {{-- Start Step 2.1 --}}
+                    @if($substep == 1)
+                        @include('form_ncage.partials.pendaftaran_step2_1')
+                    {{-- End Step 2.1 --}}
+
+                    {{-- Start Step 2.2 --}}
+                    @elseif($substep == 2)
+                        @include('form_ncage.partials.pendaftaran_step2_2')
+                    {{-- End Step 2.2 --}}
+
+                    {{-- Start Step 2.3 --}}
+                    @elseif($substep == 3)
+                        @include('form_ncage.partials.pendaftaran_step2_3')
+                    {{-- End Step 2.3 --}}
+                    
+                    {{-- Start Step 2.4 --}}
+                    @elseif($substep == 4)
+                        @include('form_ncage.partials.pendaftaran_step2_4')
+                    {{-- End Step 2.4 --}}
+
+                    @endif
+
+                @elseif($step == 3)
+                    @include('form_ncage.partials.pendaftaran_step1', ['disabled' => true])
+                    <div class="mt-5 mb-5 text-center">
+                        <h4 class="fw-bold">Ringkasan Data</h4>
                     </div>
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
-                        <button type="submit" class="btn bg-active text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
+                    
+                    <div class="mb-5 text-center">
+                        <h4 class="fw-bold">A. Identifikasi Entitas</h4>
                     </div>
 
-                {{-- @elseif($step == 3)
-                    <h4>Konfirmasi Data</h4>
-                    <p><strong>Nama:</strong> {{ $data['nama'] ?? '' }}</p>
-                    <p><strong>Email:</strong> {{ $data['email'] ?? '' }}</p>
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('form.show', ['step' => 2]) }}" class="btn btn-secondary">Previous</a>
-                        <button type="submit" class="btn btn-success">Submit</button>
-                    </div> --}}
+                    @include('form_ncage.partials.pendaftaran_step2_1', ['disabled' => true])
+
+                    <div class="mt-5 mb-5 text-center">
+                        <h4 class="fw-bold">B. Contact Person (Narahubung)</h4>
+                    </div>
+                    
+                    @include('form_ncage.partials.pendaftaran_step2_2', ['disabled' => true])
+
+                    <div class="mt-5 mb-5 text-center">
+                        <h4 class="fw-bold">C. Detail Badan Usaha (Badan Usaha)</h4>
+                    </div>
+
+                    @include('form_ncage.partials.pendaftaran_step2_3', ['disabled' => true])
+
+                    <div class="mt-5 mb-5 text-center">
+                        <h4 class="fw-bold">D. Informasi Lainnya</h4>
+                    </div>
+
+                    @include('form_ncage.partials.pendaftaran_step2_4', ['disabled' => true])
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                        <button id="btnOpenModal" type="button" class="btn bg-active text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
                 @endif
+
+                <!-- Modal Konfirmasi Submit -->
+                <div class="modal fade" id="konfirmasiSubmitModal" tabindex="-1" aria-labelledby="konfirmasiSubmitModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+                            <div class="modal-header">
+                                <h5 class="modal-title fw-bold" id="konfirmasiSubmitModalLabel">Konfirmasi Pengiriman Data</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                                Apakah Anda yakin ingin mengirimkan seluruh data ini? Setelah dikirim, data tidak dapat diubah.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary rounded-pill px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-primary rounded-pill px-4 py-2" id="btnSubmitFinal">Ya, Kirim Data</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -228,6 +230,24 @@
         console.log('Input hapus_file[] ditambahkan untuk field:', field);
         console.log('Form sekarang:', document.querySelector('form').innerHTML);
     }
+
+    // script pop up
+    document.addEventListener("DOMContentLoaded", function() {
+        const btnOpenModal = document.getElementById('btnOpenModal');
+        const btnSubmitFinal = document.getElementById('btnSubmitFinal');
+        const form = document.getElementById('form-ncage');
+
+        if (btnOpenModal && btnSubmitFinal) {
+            btnOpenModal.addEventListener('click', function() {
+                const modal = new bootstrap.Modal(document.getElementById('konfirmasiSubmitModal'));
+                modal.show();
+            });
+
+            btnSubmitFinal.addEventListener('click', function() {
+                form.submit();
+            });
+        }
+    });
 </script>
 
 @endsection

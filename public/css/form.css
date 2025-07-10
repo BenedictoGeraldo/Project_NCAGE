@@ -50,3 +50,11 @@
 .action-button {
     border-width: 0.2rem;
 }
+
+.text-gray {
+    color: #667085;
+}
+
+.custom-margin-1 {
+    margin-bottom: 32px;
+}

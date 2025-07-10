@@ -64,7 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Tempatkan rute lain yang butuh verifikasi di sini...
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
-    Route::get('/pendaftaran-ncage/{step}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
+    Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
     Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
     Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
 });
