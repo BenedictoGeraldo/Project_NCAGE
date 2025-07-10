@@ -1,0 +1,52 @@
+.line {
+    height: 4px;
+    background-color: #6a040f;
+}
+
+.custom-file-upload {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    color: #b07d2c; /* warna icon dan teks */
+    position: relative;
+}
+
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+
+.fa-cloud-arrow-up {
+    color: #c79854;
+}
+
+.custom-file-upload .icon {
+    font-size: 40px;
+}
+
+.custom-file-upload .desc {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.custom-file-upload .note {
+    font-size: 0.9rem;
+    color: #c9a875;
+    margin-bottom: 15px;
+}
+
+.custom-file-upload .btn-upload {
+    padding: 6px 20px;
+    border: 2px solid #b07d2c;
+    border-radius: 20px;
+    background: none;
+    color: #b07d2c;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.action-button {
+    border-width: 0.2rem;
+}
