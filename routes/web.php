@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\FormNCAGEController;
+use App\Http\Controllers\EntityCheckController;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -50,8 +51,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('beranda');
 
     // Tempatkan rute lain yang butuh verifikasi di sini...
-        Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
+    Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
     Route::get('/pendaftaran-ncage/{step}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
     Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
+    Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
 });
-

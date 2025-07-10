@@ -8,11 +8,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ asset('css/tracking.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/navbar.css') }}">
+
 </head>
 <body class="bg-light">
 
+@include('partials.navbar')
+
 @php
-    // Definisikan ID status untuk kemudahan pembacaan kode
     $status_ids = [
         'dikirim' => 1,
         'verifikasi' => 2,
