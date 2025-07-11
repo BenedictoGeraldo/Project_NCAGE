@@ -10,6 +10,7 @@ use App\Models\ApplicationIdentity;
 use App\Models\ApplicationContact;
 use App\Models\CompanyDetail;
 use App\Models\OtherInformation;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FormNCAGEController extends Controller
 {
@@ -210,15 +211,6 @@ class FormNCAGEController extends Controller
                 'updated_at' => now()
             ]);
 
-
-            // Simpan ke database (contoh):
-            // YourModel::create([
-            //     'user_id' => $userId,
-            //     'nama' => $data['nama'],
-            //     'email' => $data['email'],
-            //     'documents' => json_encode($data['documents'])
-            // ]);
-
             Session::forget('form_ncage');
             return redirect()->route('pendaftaran-ncage.show', ['step' => 1])->with('success', 'Data berhasil disimpan!');
         }
@@ -235,5 +227,25 @@ class FormNCAGEController extends Controller
         } else {
             return redirect()->route('pendaftaran-ncage.show', ['step' => $request->step + 1]);
         }
+    }
+
+    public function showSuratPermohonan()
+    {
+        return view('form_ncage.template_docs.surat_permohonan');
+    }
+
+    public function downloadSuratPermohonan()
+    {
+        $pdf = PDF::loadView('form_ncage.template_docs.surat_permohonan');
+        return $pdf->download('surat_permohonan.pdf');
+    }
+
+    public function showSuratPernyataan() {
+        return view('form_ncage.template_docs.surat_pernyataan');
+    }
+
+    public function downloadSuratPernyataan() {
+        $pdf = PDF::loadView('form_ncage.template_docs.surat_pernyataan');
+        return $pdf->download('surat_pernyataan.pdf');
     }
 }

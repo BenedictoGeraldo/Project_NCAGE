@@ -26,7 +26,7 @@
                         <li class="fst-italic">Semua file harus dalam format PDF.</li>
                         <li class="fst-italic">Ukuran maksimal per file adalah 5 MB.</li>
                         <li class="fst-italic">Khusus untuk persyaratan SAM.GOV. (Jumlah Karakter Alamat sebanyak 54)</li>
-                        <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui tautan ini dan Surat Pernyataan Kebenaran Data dapat diunduh melalui tautan ini.</li>
+                        <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui <a href="{{ route('surat-permohonan.show')}}">tautan ini</a> dan Surat Pernyataan Kebenaran Data dapat diunduh melalui <a href="{{ route('surat-pernyataan.show')}}">tautan ini</a>.</li>
                     </ul>
                 </div>
             @elseif($step == 2)
