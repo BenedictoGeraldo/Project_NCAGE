@@ -10,8 +10,8 @@
     </div>
     <div class="position-absolute top-50 start-50 translate-middle">
         <ul class="d-flex list-unstyled gap-4 mb-0">
-            <li><a class="btn fw-bold fs-7 {{ Request::is('/') ? 'text-white bg-active' : '' }}" href="#">Beranda</a></li>
-            <li><a class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage') ? 'text-white bg-active' : '' }}" href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
+            <li><a class="btn fw-bold fs-7 {{ Request::is('/') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
+            <li><a class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}" href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
             @auth
                 @php
                     $userApplication = Auth::user()->ncageApplication;

@@ -19,7 +19,7 @@
             Daftarkan Perusahaan Anda Sekarang
         </a>
         @auth
-        <button type="button" class="hero-button" id="checkEntityBtn">
+        <button type="button" class="hero-button hero-button-outline" id="checkEntityBtn">
             Cek Status NCAGE Perusahaan
         </button>
         @endauth
