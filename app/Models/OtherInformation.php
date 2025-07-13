@@ -17,6 +17,12 @@ class OtherInformation extends Model
         'production_capacity',
         'number_of_employees',
         'branch_office_name',
-        'branch_office_address',
+        'branch_office_street',
+        'branch_office_city',
+        'branch_office_postal_code',
+        'affiliate_company',
+        'affiliate_company_street',
+        'affiliate_company_city',
+        'affiliate_company_postal_code',
     ];
 }
