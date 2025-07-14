@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthenticatedSessionController; // Perbaiki path 'auth' menjadi 'Auth' sesuai standar
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\OtpVerificationController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -17,10 +17,9 @@ use App\Http\Controllers\CertificateController;
 // =========================================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// Rute untuk verifikasi OTP
 Route::get('/verify-otp', [OtpVerificationController::class, 'show'])->name('verification.notice');
 Route::post('/verify-otp', [OtpVerificationController::class, 'verify'])->name('otp.verify');
-
-
 
 // =========================================================================
 // RUTE KHUSUS TAMU (Hanya untuk yang BELUM login)
@@ -32,14 +31,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    //tampil halaman lupa password
+    // Rute Lupa Password
     Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    //proses pengiriman reset password
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-
-    //tampil halaman form reset password
     Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    //proses pembaruan password
     Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
@@ -47,8 +42,6 @@ Route::middleware('guest')->group(function () {
 // RUTE OTENTIKASI (Sudah login, tapi belum tentu terverifikasi)
 // =========================================================================
 Route::middleware('auth')->group(function () {
-    // Rute untuk menampilkan & memproses OTP
-
     // Rute untuk proses Logout
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
@@ -61,15 +54,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rute Beranda setelah login
     Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
-    // Tempatkan rute lain yang butuh verifikasi di sini...
+    // Rute Pantau Status
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
+    
+    // Rute Pendaftaran NCAGE (DIPINDAHKAN KE SINI)
+    Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
+    Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
+    Route::get('/surat-permohonan', [FormNCAGEController::class, 'showSuratPermohonan'])->name('surat-permohonan.show');
+    Route::get('/download-surat-permohonan', [FormNCAGEController::class, 'downloadSuratPermohonan'])->name('surat-permohonan.download');
+    Route::get('/surat-pernyataan', [FormNCAGEController::class, 'showSuratPernyataan'])->name('surat-pernyataan.show');
+    Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
+
+    // Rute lainnya yang butuh login & verifikasi
     Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])->name('certificate.download.record');
 });
-
-Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
-Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
-Route::get('/surat-permohonan', [FormNCAGEController::class, 'showSuratPermohonan'])->name('surat-permohonan.show');
-Route::get('/download-surat-permohonan', [FormNCAGEController::class, 'downloadSuratPermohonan'])->name('surat-permohonan.download');
-Route::get('/surat-pernyataan', [FormNCAGEController::class, 'showSuratPernyataan'])->name('surat-pernyataan.show');
-Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
