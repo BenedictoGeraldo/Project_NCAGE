@@ -47,6 +47,10 @@ return new class extends Migration
             $table->string('pcs')->nullable()->comment('Post Code, Postal Address (PCS)');
             $table->string('rp1_5')->nullable()->comment('Replaced By (RP1-5)');
             $table->integer('nmcrl_ref_count')->nullable()->comment('NMCRL Reference count');
+            $table->foreignId('ncage_application_id')
+              ->nullable() // Dibuat nullable untuk menampung data lama
+              ->constrained('ncage_applications') // Terhubung ke tabel ncage_applications
+              ->onDelete('set null'); // Jika pendaftaran NCAGE dihapus, kolom ini jadi null
         });
     }
 

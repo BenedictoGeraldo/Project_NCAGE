@@ -42,4 +42,9 @@ class NcageApplication extends Model
     {
         return $this->hasOne(ApplicationIdentity::class);
     }
+
+    public function ncageRecord(): HasOne
+    {
+        return $this->hasOne(NcageRecord::class);
+    }
 }

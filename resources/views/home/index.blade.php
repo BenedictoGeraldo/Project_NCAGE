@@ -64,15 +64,21 @@
 
             fetch('/check-entity', {
                 method: 'GET',
-                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
             })
             .then(response => response.json())
             .then(data => {
                 let html = '';
                 if (data.status === 'found') {
                     let statusBadge = '';
+                    let downloadButton = '';
+                    // Logika untuk tombol unduh sekarang hanya bergantung pada status 'A'
                     if (data.data.ncagesd === 'A') {
                         statusBadge = '<span class="badge bg-success">Aktif</span>';
+                        let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
+                        downloadButton = `<div class="d-grid mt-3">
+                                            <a href="${downloadUrl}" class="btn btn-primary" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
+                                        </div>`;
                     } else if (data.data.ncagesd === 'H') {
                         statusBadge = '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
                     } else {
@@ -86,8 +92,10 @@
                             <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${data.data.ncage_code}</span></li>
                             <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
                         </ul>
+                        ${downloadButton}
                     `;
                 } else {
+                    const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
                     html = `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perusahaan Anda dengan nama "${companyName}" belum terdaftar dalam sistem NCAGE.</div>`;
                 }
                 modalBody.innerHTML = html;

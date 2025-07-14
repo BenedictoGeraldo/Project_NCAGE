@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class NcageRecord extends Model
 {
@@ -18,6 +19,7 @@ class NcageRecord extends Model
      * Kolom yang boleh diisi secara massal.
      */
     protected $fillable = [
+        'ncage_application_id',
         'ncage_code',
         'ncagesd',
         'toec',
@@ -53,4 +55,12 @@ class NcageRecord extends Model
         'rp1_5',
         'nmcrl_ref_count',
     ];
+    /**
+     * Mendefinisikan relasi "belongsTo" ke model NcageApplication.
+     * Satu NCAGE dimiliki oleh satu permohonan.
+     */
+    public function ncageApplication(): BelongsTo
+    {
+        return $this->belongsTo(NcageApplication::class);
+    }
 }

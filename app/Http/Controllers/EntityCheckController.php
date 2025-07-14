@@ -15,6 +15,7 @@ class EntityCheckController extends Controller
         $companyName = strtoupper(trim($user->company_name));
 
         $record = NcageRecord::select(
+                'id',
                 'entity_name',
                 'ncage_code',
                 DB::raw('TRIM(ncagesd) as ncagesd')

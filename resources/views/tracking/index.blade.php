@@ -143,17 +143,16 @@
                     </div>
                      @if($terbitClass == 'completed')
                         <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                            <a href="{{ $application->domestic_certificate_path ? asset('upload/' . $application->domestic_certificate_path) : '#' }}"
-                            class="btn btn-custom-dark {{ !$application->domestic_certificate_path ? 'disabled' : '' }}"
-                            @if(!$application->domestic_certificate_path) aria-disabled="true" @endif
-                            download>
+                            <a href="{{ route('certificate.download', $application) }}"
+                                class="btn btn-custom-dark {{ ($application->status_id == 5 && $application->ncageRecord) ? '' : 'disabled' }}"
+                                @if(!($application->status_id == 5 && $application->ncageRecord)) aria-disabled="true" @endif>
                                 <i class="bi bi-download me-2"></i>Unduh Sertifikat (ID)
                             </a>
 
-                            <a href="{{ $application->international_certificate_path ? asset('upload/' . $application->international_certificate_path) : '#' }}"
-                            class="btn btn-custom-dark {{ !$application->international_certificate_path ? 'disabled' : '' }}"
-                            @if(!$application->international_certificate_path) aria-disabled="true" @endif
-                            download>
+                            <a href="{{ $application->ncageRecord->international_certificate_path ?? '#' }}"
+                                class="btn btn-custom-dark {{ ($application->status_id == 5 && $application->ncageRecord && $application->ncageRecord->international_certificate_path) ? '' : 'disabled' }}"
+                                @if(!($application->status_id == 5 && $application->ncageRecord && $application->ncageRecord->international_certificate_path)) aria-disabled="true" @endif
+                                download>
                                 <i class="bi bi-globe me-2"></i>Unduh Sertifikat (INTL)
                             </a>
                         </div>

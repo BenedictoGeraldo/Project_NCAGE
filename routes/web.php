@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\FormNCAGEController;
 use App\Http\Controllers\EntityCheckController;
+use App\Http\Controllers\CertificateController;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -65,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Tempatkan rute lain yang butuh verifikasi di sini...
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
     Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
+    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])->name('certificate.download.record');
 });
 
 Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
