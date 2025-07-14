@@ -12,22 +12,20 @@
         <ul class="d-flex list-unstyled gap-4 mb-0">
             <li><a class="btn fw-bold fs-7 {{ Request::is('/') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
             <li><a class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}" href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
-            @auth
-                @php
-                    $userApplication = Auth::user()->ncageApplication;
-                @endphp
-                <li>
-                    <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}"
-                        @if ($userApplication)
-                            href="{{ route('tracking.show', $userApplication) }}"
-                        @else
-                            href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}"
-                        @endif
-                    >
-                        Pantau Status
-                    </a>
-                </li>
-            @endauth
+            @php
+                $userApplication = Auth::user()->ncageApplication ?? null;
+            @endphp
+            <li>
+                <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}"
+                    @if ($userApplication)
+                        href="{{ route('tracking.show', $userApplication) }}"
+                    @else
+                        href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}"
+                    @endif
+                >
+                    Pantau Status
+                </a>
+            </li>
         </ul>
     </div>
     @guest
