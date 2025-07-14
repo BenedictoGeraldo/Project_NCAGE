@@ -4,6 +4,7 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
 @section('content')
