@@ -59,9 +59,7 @@ Route::middleware('auth')->group(function () {
 // =========================================================================
 Route::middleware(['auth', 'verified'])->group(function () {
     // Rute Beranda setelah login
-    Route::get('/beranda', function () {
-        return 'Ini halaman Beranda khusus untuk user yang sudah login dan terverifikasi.';
-    })->name('beranda');
+    Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
     // Tempatkan rute lain yang butuh verifikasi di sini...
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');

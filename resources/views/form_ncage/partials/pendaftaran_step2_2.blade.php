@@ -11,13 +11,18 @@
 
 @foreach($fields as $field => $label)
     <div class="mb-4">
-        <label for="{{ $field }}">{{ $label }} <span class="text-danger">*</span></label>
+        <label for="{{ $field }}">
+            {{ $label }}
+            @if($field !== 'jabatan')
+                <span class="text-danger" data-bs-toggle="tooltip" title="Wajib diisi">*</span>
+            @endif
+        </label>
         @if(!empty($disabled) && $disabled)
             <div class="form-control bg-light">{{ $data[$field] ?? '-' }}</div>
         @else
             <input type="{{ $field === 'email' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control"
-                   value="{{ old($field, $data[$field] ?? '') }}">
-            @error($field) <small class="text-danger"></small> @enderror
+                   value="{{ old($field, $data[$field] ?? '') }}" placeholder="Masukkan {{ $label }}">
+            @error($field) <small class="text-danger">{{ $message }}</small> @enderror
         @endif
     </div>
 @endforeach
@@ -26,10 +31,10 @@
 @if(empty($disabled) || !$disabled)
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ route('pendaftaran-ncage.show', ['step' => 2]) }}"
-           class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2">
+           class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2">
             <i class="fa-solid fa-arrow-left"></i> Kembali
         </a>
-        <button type="submit" class="btn bg-active text-white rounded-pill px-4 py-2">
+        <button type="submit" class="btn btn-dark-red text-white rounded-pill px-4 py-2">
             Lanjutkan <i class="fa-solid fa-arrow-right"></i>
         </button>
     </div>

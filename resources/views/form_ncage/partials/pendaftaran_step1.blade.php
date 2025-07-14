@@ -12,11 +12,18 @@
         'surat_kuasa' => 'Surat Kuasa',
         'sam_gov' => 'Daftar Isian SAM.GOV',
     ];
+
+    $optionalFields = ['sk_domisili', 'surat_kuasa', 'sam_gov'];
 @endphp
 
 @foreach($fields as $field => $label)
     <div class="mb-3">
-        <label for="{{ $field }}">{{ $label }}</label>
+        <label for="{{ $field }}">
+            {{ $label }}
+            @if (!in_array($field, $optionalFields))
+                <span class="text-danger" data-bs-toggle="tooltip" title="Wajib diisi">*</span>
+            @endif
+        </label>
 
         @if(!empty($disabled) && $disabled)
             {{-- Mode Disabled --}}
@@ -59,7 +66,7 @@
                         Unggah Berkas
                     </span>
 
-                    <input type="file" name="{{ $field }}" id="input-{{ $field }}" hidden>
+                    <input type="file" name="{{ $field }}" id="input-{{ $field }}" hidden accept="application/pdf">
 
                     <!-- Tombol Aksi jika file sudah ada -->
                     @if(!empty($data['documents'][$field]))
@@ -77,16 +84,18 @@
                 </label>
             </div>
         @endif
-        @error($field) <small class="text-danger"></small> @enderror
+        @error($field)
+            <small class="text-danger">{{ $message }}</small>
+        @enderror
     </div>
 @endforeach
 
 @if(empty($disabled))
     <div class="d-flex justify-content-between mt-4">
-        <button type="submit" name="cancel" value="1" class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2">
+        <button type="submit" name="cancel" value="1" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2">
             <i class="fa-solid fa-arrow-left"></i> Kembali
         </button>
-        <button type="submit" class="btn bg-active text-white rounded-pill px-4 py-2">
+        <button type="submit" class="btn btn-dark-red text-white rounded-pill px-4 py-2">
             Lanjutkan <i class="fa-solid fa-arrow-right"></i>
         </button>
     </div>

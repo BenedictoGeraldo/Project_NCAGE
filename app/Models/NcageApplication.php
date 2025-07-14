@@ -47,4 +47,17 @@ class NcageApplication extends Model
     {
         return $this->hasOne(NcageRecord::class);
     }
+
+    
+    public function getStatusLabel(): string
+    {
+        return match ($this->status_id) {
+            1 => 'Draft',
+            2 => 'Menunggu Verifikasi',
+            3 => 'Verifikasi Berhasil',
+            4 => 'Menunggu Input Sertifikat',
+            5 => 'Selesai',
+            default => 'Status Tidak Dikenal',
+        };
+    }
 }

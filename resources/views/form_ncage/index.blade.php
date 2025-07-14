@@ -26,7 +26,7 @@
                         <li class="fst-italic">Semua file harus dalam format PDF.</li>
                         <li class="fst-italic">Ukuran maksimal per file adalah 5 MB.</li>
                         <li class="fst-italic">Khusus untuk persyaratan SAM.GOV. (Jumlah Karakter Alamat sebanyak 54)</li>
-                        <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui <a href="{{ route('surat-permohonan.show')}}">tautan ini</a> dan Surat Pernyataan Kebenaran Data dapat diunduh melalui <a href="{{ route('surat-pernyataan.show')}}">tautan ini</a>.</li>
+                        <li class="fst-italic">Template untuk Surat Permohonan NCAGE  dapat diunduh melalui <a href="{{ route('surat-permohonan.download') }}">tautan ini</a> dan Surat Pernyataan Kebenaran Data dapat diunduh melalui <a href="{{ route('surat-pernyataan.download')}}">tautan ini</a>.</li>
                     </ul>
                 </div>
             @elseif($step == 2)
@@ -111,29 +111,47 @@
                     @include('form_ncage.partials.pendaftaran_step2_4', ['disabled' => true])
                     
                     <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn bg-white nav-text border border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
-                        <button id="btnOpenModal" type="button" class="btn bg-active text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
+                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                        <button id="btnOpenModal" type="button" class="btn btn-dark-red text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 @endif
 
                 <!-- Modal Konfirmasi Submit -->
                 <div class="modal fade" id="konfirmasiSubmitModal" tabindex="-1" aria-labelledby="konfirmasiSubmitModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content rounded-4">
-                            <div class="modal-header">
-                                <h5 class="modal-title fw-bold" id="konfirmasiSubmitModalLabel">Konfirmasi Pengiriman Data</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                            </div>
-                            <div class="modal-body">
-                                Apakah Anda yakin ingin mengirimkan seluruh data ini? Setelah dikirim, data tidak dapat diubah.
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary rounded-pill px-4 py-2" data-bs-dismiss="modal">Batal</button>
-                                <button type="button" class="btn btn-primary rounded-pill px-4 py-2" id="btnSubmitFinal">Ya, Kirim Data</button>
+                        <div class="modal-content p-4 rounded-4 border-0">
+                            <div class="text-center">
+                                <h4 class="fw-bold mb-3">Apakah anda yakin?</h4>
+                                <hr class="border-2 border-dark-red opacity-100 mb-4" />
+                                <div class="d-flex justify-content-center mb-4">
+                                    <img src="{{ asset('images/icons/icon-yakin-pop-up.svg') }}" alt="Ikon Konfirmasi" style="width: 25%; height: auto;">
+                                </div>
+                                <p class="mb-4">
+                                    Anda akan mengirimkan data dan dokumen permohonan NCAGE Anda.
+                                    Pastikan semua informasi sudah benar.
+                                </p>
+
+                                <div class="form-check text-start mb-4 d-flex align-items-start">
+                                    <input class="form-check-input mt-1" type="checkbox" value="" id="pernyataanCheckbox">
+                                    <label class="form-check-label ms-2 text-muted" for="pernyataanCheckbox" style="font-size: 0.6rem;">
+                                        Saya menyatakan bahwa semua data yang saya masukkan dan dokumen yang saya unggah adalah benar dan dapat dipertanggungjawabkan.
+                                    </label>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3 px-2">
+                                    <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 fw-bold" data-bs-dismiss="modal">
+                                        <i class="fa-solid fa-arrow-left"></i> Kembali
+                                    </button>
+                                    <button type="button" class="btn btn-dark-red rounded-pill px-4 fw-bold d-flex align-items-center" id="btnSubmitFinal">
+                                        Kirim <i class="fa-solid fa-paper-plane ms-2"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+
             </form>
         </div>
     </div>
@@ -245,6 +263,88 @@
 
             btnSubmitFinal.addEventListener('click', function() {
                 form.submit();
+            });
+        }
+    });
+
+    // script option lainnya
+    function toggleOtherInput(select) {
+        if(select.id === 'tujuan_penerbitan') {
+            const otherInput = document.getElementById('tujuan_penerbitan_lainnya');
+            if(select.value === '3') {
+                otherInput.style.display = 'block';
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.value = '';
+            }
+        }
+    }
+
+    function updateSelectColor(sel) {
+        if(sel.value === '') {
+            sel.classList.add('placeholder');
+        } else {
+            sel.classList.remove('placeholder');
+        }
+    }
+    // panggil pas load dan pas onchange
+    document.querySelectorAll('select').forEach(function(sel) {
+        updateSelectColor(sel);
+        sel.addEventListener('change', function() {
+            updateSelectColor(sel);
+        });
+    });
+
+    // script API untuk provinsi dan kota di Indonesia
+    document.addEventListener('DOMContentLoaded', async function () {
+        const provinsiSelect = document.getElementById('provinsi');
+        const kotaSelect = document.getElementById('kota');
+
+        const oldProvinsi = "{{ old('provinsi', $data['provinsi'] ?? '') }}";
+        const oldKota = "{{ old('kota', $data['kota'] ?? '') }}";
+
+        // Ambil daftar provinsi
+        const provinsiRes = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
+        const provinsiData = await provinsiRes.json();
+
+        // Tampilkan provinsi
+        provinsiData.forEach(prov => {
+            const option = document.createElement('option');
+            option.value = prov.name;
+            option.text = prov.name;
+            option.dataset.id = prov.id;
+
+            if (prov.name === oldProvinsi) {
+                option.selected = true;
+                loadKota(prov.id); // Load kota jika provinsi sudah ada
+            }
+
+            provinsiSelect.appendChild(option);
+        });
+
+        // Saat provinsi berubah
+        provinsiSelect.addEventListener('change', function () {
+            const selected = this.options[this.selectedIndex];
+            const provId = selected.dataset.id;
+            kotaSelect.innerHTML = '<option value="">Memuat Kota...</option>';
+            loadKota(provId);
+        });
+
+        async function loadKota(provId) {
+            const kotaRes = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`);
+            const kotaData = await kotaRes.json();
+
+            kotaSelect.innerHTML = '<option value="">Pilih Kota</option>';
+            kotaData.forEach(kota => {
+                const option = document.createElement('option');
+                option.value = kota.name;
+                option.text = kota.name;
+
+                if (kota.name === oldKota) {
+                    option.selected = true;
+                }
+
+                kotaSelect.appendChild(option);
             });
         }
     });

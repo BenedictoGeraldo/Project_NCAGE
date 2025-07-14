@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('address');
             $table->string('phone_number', 20);
             $table->string('email');
-            $table->string('position', 100);
+            $table->string('position', 100)->nullable();
 
             $table->timestamps();
         });
