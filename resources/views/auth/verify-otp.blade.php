@@ -15,7 +15,7 @@
     </div>
 
     <div class="card-container" style="max-width: 500px;">
-        <h2 class="card-title text-center">Masukkan Kode OTP</h2>
+        <h2 class="card-title d-flex justify-content-center text-center">Masukkan Kode OTP</h2>
         <p class="text-center text-muted mb-4">
             Kami telah mengirimkan kode 6 digit ke alamat email Anda.
         </p>
@@ -39,8 +39,7 @@
         <form method="POST" action="{{ route('otp.verify') }}"> {{-- Rute ini akan kita buat di Tahap 5 --}}
             @csrf
 
-            {{-- Input tersembunyi untuk membawa data email dari session --}}
-            <input type="hidden" name="email" value="{{ session('email') ?? old('email') }}">
+            <input type="hidden" name="email" value="{{ session('registration_data')['email'] ?? '' }}">
 
             <div class="mb-3">
                 <label for="otp_code" class="form-label">Kode OTP</label>

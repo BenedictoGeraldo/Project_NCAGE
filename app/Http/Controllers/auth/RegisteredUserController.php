@@ -22,40 +22,37 @@ class RegisteredUserController extends Controller
 
     public function store(Request $request)
     {
-        //validasi form regis
-        $request->validate([
+        //validasi data form
+        $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'company_name' => ['required', 'string', 'max:255'],
             'phone_number' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'terms' => ['accepted'],
         ]);
 
+        //hash password
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
-        //membuat user baru
-        $user = User::create([
-            'name' => $request->name,
-            'company_name' => $request->company_name,
-            'phone_number' => $request->phone_number,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        //simpan data registrasi ke dalam session
+        $request->session()->put('registration_data', $validatedData);
 
-        $otp = random_int(100000, 999999); //membuat kode otp acak
-        $otpExpiresAt = now()->addMinutes(10); //menentukan waktu kadaluarsa kode otp selama 10 menit
-        $user->update([
-            'otp_code' => $otp,
-            'otp_expires_at' =>$otpExpiresAt,
-        ]); //menyimpan otp dan waktu kadaluarsanya ke database user
+        //buat dan simpan otp ke dalam session
+        $otp = random_int(100000, 999999);
+        $request->session()->put('otp_code', $otp);
+        $request->session()->put('otp_expires_at', now()->addMinutes(10));
 
-        try {
-            Mail::to($user->email)->send(new SendOtpMail($otp));
+        //kirim otp ke email
+        try{
+            Mail::to($validatedData['email'])->send(new SendOtpMail($otp));
         } catch (\Exception $e) {
-            //log bila email gagal terkiirm
-            Log::error('Gagal mengirim email OTP ke: ' . $user->email . '. Error: ' . $e->getMessage());
+            Log::error('Gagal mengirim email OTP ke: ' . $validatedData['email'] . '. Error: ' . $e->getMessage());
+            // Jika gagal, kembali dengan pesan error
+            return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Silakan coba lagi.']);
         }
 
-        return redirect()->route('verification.notice')->with('email', $user->email);
+        //direct ke halaman veirifkasi OTP
+        return redirect()->route('verification.notice');
     }
 }
