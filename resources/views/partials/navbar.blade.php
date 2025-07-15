@@ -17,12 +17,7 @@
             @endphp
             <li>
                 <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}"
-                    @if ($userApplication)
-                        href="{{ route('tracking.show', $userApplication) }}"
-                    @else
-                        href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}"
-                    @endif
-                >
+                href="{{ route('tracking.index') }}">
                     Pantau Status
                 </a>
             </li>

@@ -56,8 +56,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
     // Rute Pantau Status
+    Route::get('/pantau-status', [TrackingController::class, 'index'])->name('tracking.index');
     Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
-    
+
     // Rute Pendaftaran NCAGE (DIPINDAHKAN KE SINI)
     Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
     Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
