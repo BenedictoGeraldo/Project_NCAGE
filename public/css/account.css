@@ -19,7 +19,7 @@ body {
     border-top: 3px solid #6a040f;
     /* 3. Lebar garis diperpanjang */
     width: 100%;
-    margin: 0.5rem auto 2.5rem auto;
+    margin: 0.5rem auto 1.2rem auto;
     opacity: 1;
 }
 
@@ -40,7 +40,7 @@ body {
 }
 
 .btn-change-profile {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     font-size: 0.8rem;
     font-weight: 600;
     border-radius: 20px;

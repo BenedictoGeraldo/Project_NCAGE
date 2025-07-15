@@ -38,27 +38,27 @@
 
             {{-- Form Fields --}}
             <div class="mb-3">
-                <label for="name" class="form-label fw-bold">Nama Lengkap (Point of Contact)</label>
+                <label for="name" class="form-label">Nama Lengkap (Point of Contact)</label>
                 <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $user->name) }}">
             </div>
 
             <div class="mb-3">
-                <label for="company_name" class="form-label fw-bold">Nama Perusahaan</label>
+                <label for="company_name" class="form-label">Nama Perusahaan</label>
                 <input type="text" class="form-control" id="company_name" name="company_name" value="{{ old('company_name', $user->company_name) }}">
             </div>
 
             <div class="mb-3">
-                <label for="phone_number" class="form-label fw-bold">Nomor Telepon (Whatsapp)</label>
+                <label for="phone_number" class="form-label">Nomor Telepon (Whatsapp)</label>
                 <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ old('phone_number', $user->phone_number) }}">
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label fw-bold">Email</label>
+                <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" value="{{ $user->email }}" readonly disabled>
             </div>
 
             <div class="mb-4">
-                <label for="password" class="form-label fw-bold">Password</label>
+                <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" value="••••••••" readonly disabled>
             </div>
 
