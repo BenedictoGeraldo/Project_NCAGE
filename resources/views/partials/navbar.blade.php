@@ -38,22 +38,43 @@
     @endguest
 
     @auth
+        {{-- Bagian ini akan tampil jika pengguna sudah login --}}
         <div class="ms-auto text-white position-relative z-1 dropdown">
-            {{-- TAMPILKAN INI HANYA JIKA PENGGUNA SUDAH LOGIN --}}
-            <div class="profile-image">
-                <i class="fa-solid fa-circle-user"></i>
-            </div>
+            
+            {{-- Tombol Pemicu Dropdown (Ikon/Gambar Profil) --}}
+            <a href="#" class="profile-link">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8C1515&color=fff&rounded=true&size=40" 
+                    alt="Foto Profil" class="profile-image">
+            </a>
 
-            {{-- Tombol Logout harus menggunakan form dengan method POST untuk keamanan --}}
-            <div class="dropdown-menu">
-                <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); this.closest('form').submit();">
-                    Logout
-                </a>
-            </form>
-            </div>
+            {{-- Menu Dropdown --}}
+            <ul class="dropdown-menu dropdown-menu-end">
+                {{-- Header Dropdown Sesuai Desain --}}
+                <li class="dropdown-header-custom text-center">
+                    <h6>Pengaturan</h6>
+                    <hr>
+                </li>
+                
+                {{-- Link ke Halaman Akun --}}
+                <li>
+                    <a class="dropdown-item" href="{{ route('profile.show') }}">
+                        <i class="fa-solid fa-user"></i>
+                        Akun
+                    </a>
+                </li>
+
+                {{-- Tombol Logout --}}
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                        @csrf
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                        onclick="event.preventDefault(); this.closest('form').submit();">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                            Keluar
+                        </a>
+                    </form>
+                </li>
+            </ul>
         </div>
     @endauth
 </nav>

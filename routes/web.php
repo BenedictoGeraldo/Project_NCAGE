@@ -11,6 +11,7 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\FormNCAGEController;
 use App\Http\Controllers\EntityCheckController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\ProfileController;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -68,4 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rute lainnya yang butuh login & verifikasi
     Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])->name('certificate.download.record');
+
+    Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 });

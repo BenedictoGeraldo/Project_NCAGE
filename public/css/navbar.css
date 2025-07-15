@@ -1,64 +1,108 @@
+/* Gaya yang sudah Anda miliki */
 .nav-text {
     color: #6a040f;
 }
-
 .bg-active {
     background-color: #6a040f !important;
 }
-
 .border-active {
     border-color: #6a040f !important;
 }
-
 .bg-nav {
     background-color: #f5f5f5 !important;
 }
-
 .fs-7 {
     font-size: 0.9rem;
 }
 
-.fa-circle-user {
-    color: #6a040f;
+/* --- GAYA BARU UNTUK PROFIL & DROPDOWN --- */
+
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
 }
 
 /* Dropdown container */
 .dropdown {
     position: relative;
-    cursor: pointer;
-    display: inline-block;
+    /* PENTING: Menambahkan padding atas untuk membuat "jembatan" tak terlihat */
+    /* Ini akan menjaga status hover saat mouse bergerak ke bawah */
+    padding-top: 15px;
+    margin-top: -15px; /* Menetralkan padding agar layout tidak bergeser */
 }
 
-/* Hidden by default */
+/* Sembunyikan menu secara default */
 .dropdown-menu {
     display: none;
     position: absolute;
     right: 0;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    min-width: 120px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 100;
+    top: 100%; /* Posisi menu tepat di bawah area padding */
+    z-index: 1000;
 }
 
-/* Show on hover */
+/* Tampilkan menu saat container di-hover */
 .dropdown:hover .dropdown-menu {
     display: block;
 }
 
-/* Logout button styling */
-.dropdown-item {
-    padding: 10px 15px;
-    text-align: left;
-    width: 100%;
-    border: none;
-    background: none;
+/* Styling untuk tampilan dropdown menu */
+.dropdown-menu {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 180px;
+    padding: 0;
+    overflow: hidden; /* Agar border-radius bekerja dengan baik */
+}
+
+/* Membuat segitiga kecil (caret) yang menunjuk ke atas */
+.dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -10px; /* Posisikan di atas menu */
+    right: 15px; /* Sejajarkan dengan ikon profil */
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent; /* Hanya border bawah yang terlihat */
+}
+
+/* Styling untuk header dropdown */
+.dropdown-header-custom {
+    padding: 1rem 1.25rem 0.5rem 1.25rem;
+}
+.dropdown-header-custom h6 {
+    margin: 0;
+    font-weight: 600;
     color: #333;
-    font-size: 14px;
+}
+.dropdown-header-custom hr {
+    margin: 0.5rem 0 0 0;
+    border: none; /* Hapus border default */
+    height: 2px; /* Atur ketebalan garis */
+    background-color: #6A040F; /* Atur warna garis */
+    opacity: 1; /* Pastikan garis tidak transparan */
+}
+/* Styling untuk setiap item di dropdown */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: #6a040f;
+    margin-right: 0.75rem;
 }
 
 .dropdown-item:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
+    background-color: #f5f5f5;
 }
