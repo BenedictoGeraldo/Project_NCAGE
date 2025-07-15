@@ -25,9 +25,9 @@
                     <div class="footer-column">
                         <h5 class="footer-heading">Tautan</h5>
                         <ul class="footer-links">
-                            <li><a href="#">Beranda</a></li>
-                            <li><a href="#">Pendaftaran NCAGE</a></li>
-                            <li><a href="#">Pantau Status</a></li>
+                            <li><a href="{{ route('home')}}">Beranda</a></li>
+                            <li><a href="{{ route('pendaftaran-ncage.show', ['step' => 1])}}">Pendaftaran NCAGE</a></li>
+                            <li><a href="{{ route('tracking.index') }}">Pantau Status</a></li>
                         </ul>
                     </div>
 

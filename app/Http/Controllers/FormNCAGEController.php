@@ -42,13 +42,10 @@ class FormNCAGEController extends Controller
                 'substep' => $currentSubstep,
             ])->with('error', 'Silakan selesaikan sub-langkah sebelumnya terlebih dahulu.');
         }
-        // Deklarasi Var Pantau Status
-        $application = NcageApplication::where('user_id', auth()->user()->id)->first();
         return view("form_ncage.index", [
             'step' => $step,
             'substep' => $substep,
-            'data' => Session::get('form_ncage', []),
-            'application' => $application
+            'data' => Session::get('form_ncage', [])
         ]);
     }
 

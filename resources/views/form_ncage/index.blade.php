@@ -152,30 +152,28 @@
                 </div>
 
                 <!-- Modal Sukses -->
-                @if($application != null)
-                    <div class="modal fade" id="modalSuksesSubmit" tabindex="-1" aria-labelledby="modalSuksesSubmitLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content p-4 rounded-4 border-0 text-center">
-                                <h4 class="fw-bold mb-3">Permohonan Berhasil Dikirim!</h4>
-                                <hr class="border-2 border-success opacity-100 mb-4" />
-                                <div class="d-flex justify-content-center mb-4">
-                                    <img src="{{ asset('images/icons/icon-success-dark-red.png') }}" alt="Sukses" style="width: 15%; height: auto;">
-                                </div>
-                                <p class="mb-4">
-                                    Permohonan Anda telah berhasil dikirim dan akan segera diverifikasi oleh tim kami. Anda dapat memantau statusnya di halaman "Pantau Status".
-                                </p>
-                                <div class="d-flex justify-content-between mt-3 gap-2">
-                                    <a href="{{ route('home') }}" class="btn btn-outline-dark-red rounded-pill px-4">
-                                        <i class="fa-solid fa-arrow-left"></i> Kembali Ke Beranda
-                                    </a>
-                                    <a href="{{ route('tracking.show', ['application' => $application]) }}" class="btn btn-dark-red rounded-pill px-4">
-                                        Ke Pantau Status <i class="fa-solid fa-arrow-right"></i>
-                                    </a>
-                                </div>
+                <div class="modal fade" id="modalSuksesSubmit" tabindex="-1" aria-labelledby="modalSuksesSubmitLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content p-4 rounded-4 border-0 text-center">
+                            <h4 class="fw-bold mb-3">Permohonan Berhasil Dikirim!</h4>
+                            <hr class="border-2 border-success opacity-100 mb-4" />
+                            <div class="d-flex justify-content-center mb-4">
+                                <img src="{{ asset('images/icons/icon-success-dark-red.png') }}" alt="Sukses" style="width: 15%; height: auto;">
+                            </div>
+                            <p class="mb-4">
+                                Permohonan Anda telah berhasil dikirim dan akan segera diverifikasi oleh tim kami. Anda dapat memantau statusnya di halaman "Pantau Status".
+                            </p>
+                            <div class="d-flex justify-content-between mt-3 gap-2">
+                                <a href="{{ route('home') }}" class="btn btn-outline-dark-red rounded-pill px-4">
+                                    <i class="fa-solid fa-arrow-left"></i> Kembali Ke Beranda
+                                </a>
+                                <a href="{{ route('tracking.index') }}" class="btn btn-dark-red rounded-pill px-4">
+                                    Ke Pantau Status <i class="fa-solid fa-arrow-right"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
-                @endif
+                </div>
 
                 <!-- Modal Keluar -->
                 <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
