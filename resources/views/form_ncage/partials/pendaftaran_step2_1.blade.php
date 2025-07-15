@@ -13,56 +13,60 @@
 <div class="custom-margin-1">
     <div class="d-flex gap-4">
         <label>Jenis Permohonan <span class="text-danger">*</span></label>
-        @if(!empty($disabled) && $disabled)
-            <div class="form-control bg-light">
-                {{ $data['jenis_permohonan'] == 1 ? 'Perorangan' : ($data['jenis_permohonan'] == 2 ? 'Perusahaan / Kelompok' : '-') }}
+
+        <div class="d-flex gap-4">
+            @php
+                $selected = old('jenis_permohonan', $data['jenis_permohonan'] ?? '');
+            @endphp
+
+            <div class="input-permohonan">
+                <input type="radio" name="jenis_permohonan" value="1"
+                       {{ $selected == 1 ? 'checked' : '' }}
+                       class="form-check-input" id="permohonan1"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="permohonan1">Perorangan</label>
             </div>
-        @else
-            <div class="d-flex gap-4">
-                <div class="input-permohonan">
-                    <input type="radio" name="jenis_permohonan" value="1"
-                           {{ old('jenis_permohonan', $data['jenis_permohonan'] ?? '') == 1 ? 'checked' : '' }}
-                           class="form-check-input" id="permohonan1">
-                    <label class="form-check-label text-gray ms-2" for="permohonan1">Perorangan</label>
-                </div>
-                <div class="input-permohonan-2">
-                    <input type="radio" name="jenis_permohonan" value="2"
-                           {{ old('jenis_permohonan', $data['jenis_permohonan'] ?? '') == 2 ? 'checked' : '' }}
-                           class="form-check-input" id="permohonan2">
-                    <label class="form-check-label text-gray ms-2" for="permohonan2">Perusahaan / Kelompok</label>
-                </div>
+
+            <div class="input-permohonan-2">
+                <input type="radio" name="jenis_permohonan" value="2"
+                       {{ $selected == 2 ? 'checked' : '' }}
+                       class="form-check-input" id="permohonan2"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="permohonan2">Perusahaan / Kelompok</label>
             </div>
-            @endif
         </div>
-        @error('jenis_permohonan') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+    @error('jenis_permohonan') <small class="text-danger">{{ $message }}</small> @enderror
 </div>
 
 <div class="custom-margin-1">
     <div class="d-flex gap-4">
         <label>Jenis Permohonan Ncage <span class="text-danger">*</span></label>
-        @if(!empty($disabled) && $disabled)
-            <div class="form-control bg-light">
-                {{ $data['jenis_permohonan_ncage'] == 1 ? 'Permohonan Baru' : ($data['jenis_permohonan_ncage'] == 2 ? 'Perbarui Data / Update' : '-') }}
+        <div class="d-flex gap-4">
+            @php
+                $selected = old('jenis_permohonan_ncage', $data['jenis_permohonan_ncage'] ?? '');
+            @endphp
+
+            <div class="input-permohonan">
+                <input type="radio" name="jenis_permohonan_ncage" value="1"
+                       {{ $selected == 1 ? 'checked' : '' }}
+                       class="form-check-input" id="permohonanncage1"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="permohonanncage1">Permohonan Baru</label>
             </div>
-        @else
-            <div class="d-flex gap-4">
-                <div class="input-permohonan">
-                    <input type="radio" name="jenis_permohonan_ncage" value="1"
-                           {{ old('jenis_permohonan_ncage', $data['jenis_permohonan_ncage'] ?? '') == 1 ? 'checked' : '' }}
-                           class="form-check-input" id="permohonanncage1">
-                    <label class="form-check-label text-gray ms-2" for="permohonanncage1">Permohonan Baru</label>
-                </div>
-                <div class="input-permohonan-2">
-                    <input type="radio" name="jenis_permohonan_ncage" value="2"
-                           {{ old('jenis_permohonan_ncage', $data['jenis_permohonan_ncage'] ?? '') == 2 ? 'checked' : '' }}
-                           class="form-check-input" id="permohonanncage2">
-                    <label class="form-check-label text-gray ms-2" for="permohonanncage2">Perbarui Data / Update</label>
-                </div>
+
+            <div class="input-permohonan-2">
+                <input type="radio" name="jenis_permohonan_ncage" value="2"
+                       {{ $selected == 2 ? 'checked' : '' }}
+                       class="form-check-input" id="permohonanncage2"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="permohonanncage2">Perbarui Data / Update</label>
             </div>
-            @endif
         </div>
-        @error('jenis_permohonan_ncage') <small class="text-danger">{{ $message }}</small> @enderror
+    </div>
+    @error('jenis_permohonan_ncage') <small class="text-danger">{{ $message }}</small> @enderror
 </div>
+
 
 @php
     $fields = [
@@ -78,10 +82,10 @@
             '3' => 'Lainnya',
         ],
         'tipe_entitas' => [
-            'E' => 'Pabrikan',
-            'F' => 'Supplier/Distributor/Sales/Ritel',
-            'G' => 'Jasa Layanan/Organisasi Profesional/Konstruksi/Bank/Universitas/Konsultan/Yayasan/LSM',
-            'H' => 'Pemerintah, Kementrian, Lembaga, U.O.Militer',
+            'E' => 'E - Pabrikan',
+            'F' => 'F - Supplier/Distributor/Sales/Ritel',
+            'G' => 'G - Jasa Layanan/Organisasi Profesional/Konstruksi/Bank/Universitas/Konsultan/Yayasan/LSM',
+            'H' => 'H - Pemerintah, Kementrian, Lembaga, U.O.Militer',
         ],
         'status_kepemilikan' => [
             '1' => 'Sendiri',
@@ -96,7 +100,12 @@
         <label for="{{ $field }}">{{ $label }} <span class="text-danger" data-bs-toggle="tooltip" title="Wajib diisi">*</span></label>
 
         @if(!empty($disabled) && $disabled)
-            <div class="form-control bg-light">{{ $data[$field] ?? '-' }}</div>
+            @php
+                $value = $data[$field] ?? null;
+                $displayValue = $options[$field][$value] ?? $value ?? '-';
+            @endphp
+            <div class="form-control bg-light">{{ $displayValue }}</div>
+
         @else
             @if(in_array($field, ['tujuan_penerbitan', 'tipe_entitas', 'status_kepemilikan']))
                 <select name="{{ $field }}" id="{{ $field }}" class="form-control form-select" onchange="toggleOtherInput(this)">
@@ -126,28 +135,38 @@
 
 <div class="custom-margin-1">
     <div class="d-flex gap-4">
-        <label>Terdaftar (AHU.Online) <span class="text-danger" data-bs-toggle="tooltip" title="Wajib diisi">*</span></label>
-        @if(!empty($disabled) && $disabled)
-            <div class="form-control bg-light">
-                {{ $data['terdaftar_ahu'] == 1 ? 'Terdaftar' : ($data['terdaftar_ahu'] == 2 ? 'Belum Terdaftar' : '-') }}
+        <label>Terdaftar (AHU.Online)
+            <span class="text-danger" data-bs-toggle="tooltip" title="Wajib diisi">*</span>
+        </label>
+
+        <div class="d-flex gap-4">
+            @php
+                $selected = old('terdaftar_ahu', $data['terdaftar_ahu'] ?? '');
+            @endphp
+
+            <div class="input-terdaftar">
+                <input type="radio" name="terdaftar_ahu" value="1"
+                       {{ $selected == 1 ? 'checked' : '' }}
+                       class="form-check-input" id="terdaftar1"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="terdaftar1">Terdaftar</label>
             </div>
-        @else
-            <div class="d-flex gap-4">
-                <div class="input-terdaftar">
-                    <input type="radio" name="terdaftar_ahu" value="1"
-                           {{ old('terdaftar_ahu', $data['terdaftar_ahu'] ?? '') == 1 ? 'checked' : '' }}
-                           class="form-check-input" id="terdaftar1">
-                    <label class="form-check-label text-gray ms-2" for="terdaftar1">Terdaftar</label>
-                </div>
-                <div class="input-terdaftar-2">
-                    <input type="radio" name="terdaftar_ahu" value="2"
-                           {{ old('terdaftar_ahu', $data['terdaftar_ahu'] ?? '') == 2 ? 'checked' : '' }}
-                           class="form-check-input" id="terdaftar2">
-                    <label class="form-check-label text-gray ms-2" for="terdaftar2">Belum Terdaftar</label>
-                </div>
+
+            <div class="input-terdaftar-2">
+                <input type="radio" name="terdaftar_ahu" value="2"
+                       {{ $selected == 2 ? 'checked' : '' }}
+                       class="form-check-input" id="terdaftar2"
+                       {{ !empty($disabled) && $disabled ? 'disabled' : '' }}>
+                <label class="form-check-label text-gray ms-2" for="terdaftar2">Belum Terdaftar</label>
             </div>
-        @endif
+        </div>
     </div>
+
+    {{-- Hidden field to submit the selected value if radio is disabled --}}
+    @if(!empty($disabled) && $disabled)
+        <input type="hidden" name="terdaftar_ahu" value="{{ $selected }}">
+    @endif
+
     @error('terdaftar_ahu') <small class="text-danger">{{ $message }}</small> @enderror
 </div>
 

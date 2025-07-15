@@ -27,6 +27,7 @@ class ClearNCAGEData
             }
 
             Session::forget('form_ncage');
+            Session::forget('form_ncage_progress');
         }
 
         return $next($request);

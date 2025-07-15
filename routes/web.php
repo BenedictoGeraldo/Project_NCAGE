@@ -62,6 +62,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rute Pendaftaran NCAGE (DIPINDAHKAN KE SINI)
     Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
     Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
+    Route::post('/pendaftaran-ncage/upload-temp', [FormNCAGEController::class, 'uploadTemp']);
+    Route::post('/pendaftaran-ncage/remove-file', [FormNCAGEController::class, 'removeFile']);
     Route::get('/surat-permohonan', [FormNCAGEController::class, 'showSuratPermohonan'])->name('surat-permohonan.show');
     Route::get('/download-surat-permohonan', [FormNCAGEController::class, 'downloadSuratPermohonan'])->name('surat-permohonan.download');
     Route::get('/surat-pernyataan', [FormNCAGEController::class, 'showSuratPernyataan'])->name('surat-pernyataan.show');

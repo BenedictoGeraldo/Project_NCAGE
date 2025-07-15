@@ -1,4 +1,7 @@
 @php
+    $formSession = session('form_ncage', []);
+    $data['documents'] = $formSession['documents'] ?? [];
+
     $fields = [
         'surat_permohonan' => 'Surat Permohonan NCAGE',
         'surat_kebenaran' => 'Surat Pernyataan Kebenaran Data',
@@ -15,6 +18,7 @@
 
     $optionalFields = ['sk_domisili', 'surat_kuasa', 'sam_gov'];
 @endphp
+
 
 @foreach($fields as $field => $label)
     <div class="mb-3">
@@ -68,17 +72,12 @@
 
                     <input type="file" name="{{ $field }}" id="input-{{ $field }}" hidden accept="application/pdf">
 
-                    <!-- Tombol Aksi jika file sudah ada -->
                     @if(!empty($data['documents'][$field]))
                         <div class="mt-2 d-flex gap-2 justify-content-center" id="actions-{{ $field }}">
-                            <!-- Button Hapus -->
-                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2 fw-bold action-button" onclick="removeFile('{{ $field }}', event)">
+                            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-2 fw-bold action-button"
+                                onclick="removeFile('{{ $field }}', event)">
                                 Hapus
                             </button>
-                            <!-- Button Ganti -->
-                            {{-- <button type="button" class="btn btn-sm btn-warning" onclick="document.getElementById('input-{{ $field }}').click();">
-                                Ganti File
-                            </button> --}}
                         </div>
                     @endif
                 </label>

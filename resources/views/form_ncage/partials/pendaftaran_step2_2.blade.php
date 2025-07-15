@@ -20,8 +20,14 @@
         @if(!empty($disabled) && $disabled)
             <div class="form-control bg-light">{{ $data[$field] ?? '-' }}</div>
         @else
-            <input type="{{ $field === 'email' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control"
-                   value="{{ old($field, $data[$field] ?? '') }}" placeholder="Masukkan {{ $label }}">
+            <input
+                type="{{ $field === 'email' ? 'email' : ($field === 'no_identitas' ? 'text' : 'text') }}"
+                name="{{ $field }}"
+                class="form-control"
+                value="{{ old($field, $data[$field] ?? '') }}"
+                placeholder="Masukkan {{ $label }}"
+                @if($field === 'no_identitas') inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')" @endif
+            >
             @error($field) <small class="text-danger">{{ $message }}</small> @enderror
         @endif
     </div>

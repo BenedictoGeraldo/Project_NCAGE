@@ -24,7 +24,10 @@
         @else
             <input type="text" name="{{ $field }}" class="form-control"
                    placeholder="Masukkan {{ $label }}"
-                   value="{{ old($field, $data[$field] ?? '') }}">
+                   value="{{ old($field, $data[$field] ?? '') }}"
+                   @if($field === 'kode_pos_1' || $field === 'kode_pos_2')
+                       inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                   @endif>
             @error($field) <small class="text-danger"></small> @enderror
         @endif
     </div>

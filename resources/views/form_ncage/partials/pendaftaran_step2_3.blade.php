@@ -30,7 +30,7 @@
     {{-- Provinsi --}}
     <div class="w-50">
         <label for="provinsi">Provinsi <span class="text-danger">*</span></label>
-        <select id="provinsi" name="provinsi" class="form-control form-select">
+        <select id="provinsi" name="provinsi" class="form-control form-select" {{ !empty($disabled) ? 'disabled' : '' }}>
             <option value="" disabled selected>Pilih Provinsi</option>
         </select>
         @error('provinsi') <small class="text-danger">{{ $message }}</small> @enderror
@@ -39,7 +39,7 @@
     {{-- Kota --}}
     <div class="w-50">
         <label for="kota">Kota <span class="text-danger">*</span></label>
-        <select id="kota" name="kota" class="form-control form-select">
+        <select id="kota" name="kota" class="form-control form-select" {{ !empty($disabled) ? 'disabled' : '' }}>
             <option value="" disabled selected>Pilih Kota</option>
         </select>
         @error('kota') <small class="text-danger">{{ $message }}</small> @enderror
@@ -66,7 +66,10 @@
                 <textarea name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}">{{ old($field, $data[$field] ?? '') }}</textarea>
             @else
                 <input type="{{ $field === 'email_kantor' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}"
-                       value="{{ old($field, $data[$field] ?? '') }}">
+                       value="{{ old($field, $data[$field] ?? '') }}"
+                       @if($field === 'no_telp' || $field === 'no_fax' || $field === 'kode_pos')
+                           inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                       @endif>
             @endif
             @error($field) <small class="text-danger">{{ $message }}</small> @enderror
         @endif
