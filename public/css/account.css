@@ -1,17 +1,33 @@
+/* Import font Poppins */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif !important;
+}
+
 .card-container-akun {
     background-color: #fff;
-    padding: 2rem 3rem;
+    padding: 2.5rem 3rem;
     border-radius: 1rem;
     box-shadow: 0 4px 20px rgba(0,0,0,0.07);
-    max-width: 700px;
+    /* 1. Lebar card diperbesar */
+    max-width: 900px;
 }
 
 .title-divider {
     border: 0;
     border-top: 3px solid #6a040f;
-    width: 60px;
-    margin: 0.5rem auto 1.5rem auto;
+    /* 3. Lebar garis diperpanjang */
+    width: 100%;
+    margin: 0.5rem auto 2.5rem auto;
     opacity: 1;
+}
+
+.profile-picture-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
 }
 
 .profile-picture {
@@ -20,6 +36,34 @@
     border-radius: 50%;
     border: 3px solid #fff;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    object-fit: cover;
+}
+
+.btn-change-profile {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid #6a040f;
+    color: #6a040f;
+    background-color: transparent;
+}
+.btn-change-profile:hover {
+    background-color: #6a040f;
+    color: white;
+}
+
+.btn-kembali {
+    border: 1.5px solid #6a040f;
+    color: #6a040f;
+    font-weight: 600;
+    border-radius: 15px;
+}
+.btn-kembali:hover {
+    border: 2px solid #6a040f;
+    background-color: #f8f9fa;
+    color: #6a040f;
 }
 
 .btn-simpan {
@@ -27,7 +71,6 @@
     color: white;
     font-weight: 600;
 }
-
 .btn-simpan:hover {
     background-color: #8C1515;
     color: white;

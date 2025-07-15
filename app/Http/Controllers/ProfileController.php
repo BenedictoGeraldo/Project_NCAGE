@@ -4,54 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Facades\Storage; // <-- Tambahkan ini untuk mengelola file
 
 class ProfileController extends Controller
 {
+    /**
+     * Menampilkan halaman profil (akun) pengguna.
+     */
     public function show()
     {
-        //menampilkan halaman profil pengguna
         $user = Auth::user();
-
-        //tampilkan view akun dan kirim data pengguna ke dalam
         return view('account.account', ['user' => $user]);
     }
 
-    //memperbarui data pengguna
+    /**
+     * Memperbarui data profil pengguna.
+     */
     public function update(Request $request)
     {
-        // Dapatkan pengguna yang sedang login
+        /** @var \App\Models\User $user */ // <-- TAMBAHKAN BARIS INI
         $user = Auth::user();
 
-        //validasi input dari form
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'company_name' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string', 'max:255'],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'phone_number' => ['required', 'string', 'max:20'],
+            'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
         ]);
 
-        //update data dasar
+        // Update data dasar
         $user->name = $request->name;
         $user->company_name = $request->company_name;
         $user->phone_number = $request->phone_number;
 
-        // 2. Jika pengguna memasukkan password baru, update passwordnya
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        // Jika ada file foto profil yang di-upload
+        if ($request->hasFile('profile_photo')) {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
         }
 
-        // 3. Simpan SEMUA perubahan ke database dalam satu kali proses
-        try {
-        // Coba simpan perubahan ke database
-            $user->save();
-        } catch (\Exception $e) {
-            // Jika gagal, hentikan program dan tampilkan pesan error dari database
-            dd($e->getMessage());
-        }
+        // Simpan semua perubahan
+        $user->save();
 
-        //kembali ke halaman akun dengan pesan sukses
-        return redirect()->route('profile.show')->with('status', 'Profil berhasil diperbarui');
+        return redirect()->route('profile.show')->with('status', 'Profil berhasil diperbarui!');
     }
 }
