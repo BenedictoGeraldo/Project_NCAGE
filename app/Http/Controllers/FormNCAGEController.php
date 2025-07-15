@@ -272,93 +272,93 @@ class FormNCAGEController extends Controller
             }
 
         } elseif ($request->step == 3) {
-            // $finalPath = "uploads/{$userId}";
-            // if (!file_exists(public_path($finalPath))) {
-            //     mkdir(public_path($finalPath), 0755, true);
-            // }
+            $finalPath = "uploads/{$userId}";
+            if (!file_exists(public_path($finalPath))) {
+                mkdir(public_path($finalPath), 0755, true);
+            }
 
-            // // Pindahkan file dari temp ke folder final
-            // foreach ($data['documents'] as $field => $path) {
-            //     $newPath = "{$finalPath}/" . basename($path);
-            //     rename(public_path($path), public_path($newPath));
-            //     $data['documents'][$field] = $newPath;
-            // }
+            // Pindahkan file dari temp ke folder final
+            foreach ($data['documents'] as $field => $path) {
+                $newPath = "{$finalPath}/" . basename($path);
+                rename(public_path($path), public_path($newPath));
+                $data['documents'][$field] = $newPath;
+            }
 
-            // // Simpan ke database
-            // // FormNCAGE::create([
+            // Simpan ke database
+            // FormNCAGE::create([
                 
-            // // ])
+            // ])
 
-            // $ncageApplication = NcageApplication::create([
-            //     'user_id' => $userId,
-            //     'status_id' => 3,
-            //     'documents' => json_encode($data['documents'])
-            // ]);
+            $ncageApplication = NcageApplication::create([
+                'user_id' => $userId,
+                'status_id' => 3,
+                'documents' => json_encode($data['documents'])
+            ]);
 
-            // ApplicationIdentity::create([
-            //     'ncage_application_id' => $ncageApplication->id,
-            //     'submission_date' => $data['tanggal_pengajuan'],
-            //     'application_type' => $data['jenis_permohonan'],
-            //     'ncage_request_type' => $data['jenis_permohonan_ncage'],
-            //     'purpose' => $data['tujuan_penerbitan'],
-            //     'entity_type' => $data['tipe_entitas'],
-            //     'building_ownership_status' => $data['status_kepemilikan'],
-            //     'is_ahu_registered' => $data['terdaftar_ahu'],
-            //     'office_coordinate' => $data['koordinat_kantor'],
-            //     'nib' => $data['nib'],
-            //     'npwp' => $data['npwp'],
-            //     'business_field' => $data['bidang_usaha'],
-            //     'created_at' => now(),
-            //     'updated_at' => now()
-            // ]);
+            ApplicationIdentity::create([
+                'ncage_application_id' => $ncageApplication->id,
+                'submission_date' => $data['tanggal_pengajuan'],
+                'application_type' => $data['jenis_permohonan'],
+                'ncage_request_type' => $data['jenis_permohonan_ncage'],
+                'purpose' => $data['tujuan_penerbitan'],
+                'entity_type' => $data['tipe_entitas'],
+                'building_ownership_status' => $data['status_kepemilikan'],
+                'is_ahu_registered' => $data['terdaftar_ahu'],
+                'office_coordinate' => $data['koordinat_kantor'],
+                'nib' => $data['nib'],
+                'npwp' => $data['npwp'],
+                'business_field' => $data['bidang_usaha'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-            // ApplicationContact::create([
-            //     'ncage_application_id' => $ncageApplication->id,
-            //     'name' => $data['nama_pemohon'],
-            //     'identity_number' => $data['no_identitas'],
-            //     'address' => $data['alamat'],
-            //     'phone_number' => $data['no_tel'],
-            //     'email' => $data['email'],
-            //     'position' => $data['jabatan'],
-            //     'created_at' => now(),
-            //     'updated_at' => now()
-            // ]);
+            ApplicationContact::create([
+                'ncage_application_id' => $ncageApplication->id,
+                'name' => $data['nama_pemohon'],
+                'identity_number' => $data['no_identitas'],
+                'address' => $data['alamat'],
+                'phone_number' => $data['no_tel'],
+                'email' => $data['email'],
+                'position' => $data['jabatan'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-            // CompanyDetail::create([
-            //     'ncage_application_id' => $ncageApplication->id,
-            //     'name' => $data['nama_badan_usaha'],
-            //     'province' => $data['provinsi'],
-            //     'city' => $data['kota'],
-            //     'address' => $data['alamat_kantor'],
-            //     'postal_code' => $data['kode_pos'],
-            //     'po_box' => $data['po_box'],
-            //     'phone' => $data['no_telp'],
-            //     'fax' => $data['no_fax'],
-            //     'email' => $data['email_kantor'],
-            //     'website' => $data['website_kantor'],
-            //     'affiliate' => $data['perusahaan_afiliasi'],
-            //     'created_at' => now(),
-            //     'updated_at' => now()
-            // ]);
+            CompanyDetail::create([
+                'ncage_application_id' => $ncageApplication->id,
+                'name' => $data['nama_badan_usaha'],
+                'province' => $data['provinsi'],
+                'city' => $data['kota'],
+                'address' => $data['alamat_kantor'],
+                'postal_code' => $data['kode_pos'],
+                'po_box' => $data['po_box'],
+                'phone' => $data['no_telp'],
+                'fax' => $data['no_fax'],
+                'email' => $data['email_kantor'],
+                'website' => $data['website_kantor'],
+                'affiliate' => $data['perusahaan_afiliasi'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-            // OtherInformation::create([
-            //     'ncage_application_id' => $ncageApplication->id,
-            //     'products' => $data['produk_dihasilkan'],
-            //     'production_capacity' => $data['kemampuan_produksi'],
-            //     'number_of_employees' => $data['jumlah_karyawan'],
-            //     'branch_office_name' => $data['kantor_cabang_1'],
-            //     'branch_office_street' => $data['nama_jalan_1'],
-            //     'branch_office_city' => $data['kota_1'],
-            //     'branch_office_postal_code' => $data['kode_pos_1'],
-            //     'affiliate_company' => $data['perusahaan_afiliasi_2'],
-            //     'affiliate_company_street' => $data['nama_jalan_2'],
-            //     'affiliate_company_city' => $data['kota_2'],
-            //     'affiliate_company_postal_code' => $data['kode_pos_2'],
-            //     'created_at' => now(),
-            //     'updated_at' => now()
-            // ]);
+            OtherInformation::create([
+                'ncage_application_id' => $ncageApplication->id,
+                'products' => $data['produk_dihasilkan'],
+                'production_capacity' => $data['kemampuan_produksi'],
+                'number_of_employees' => $data['jumlah_karyawan'],
+                'branch_office_name' => $data['kantor_cabang_1'],
+                'branch_office_street' => $data['nama_jalan_1'],
+                'branch_office_city' => $data['kota_1'],
+                'branch_office_postal_code' => $data['kode_pos_1'],
+                'affiliate_company' => $data['perusahaan_afiliasi_2'],
+                'affiliate_company_street' => $data['nama_jalan_2'],
+                'affiliate_company_city' => $data['kota_2'],
+                'affiliate_company_postal_code' => $data['kode_pos_2'],
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
 
-            // Session::forget('form_ncage');
+            Session::forget('form_ncage');
             Session::flash('submit_success', true);
             Session::flash('form_submitted', true);
             return redirect()->route('pendaftaran-ncage.show', ['step' => 3]);
