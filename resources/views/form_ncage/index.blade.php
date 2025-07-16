@@ -253,6 +253,7 @@
                 })
                 .then(data => {
                     if (data.success) {
+                        console.log('Session sekarang:', data.session); // ✅ LOG session dari server
                         // Berhasil upload, update UI seperti biasa
                         document.getElementById('icon-' + field).innerHTML = '<i class="fa-solid fa-file-pdf text-danger"></i>';
                         document.getElementById('desc-' + field).textContent = file.name;
@@ -481,8 +482,14 @@
 
         // Cek apakah form sudah disubmit (dari session)
         const isFormSubmitted = {{ session()->has('form_submitted') ? 'true' : 'false' }};
+        const hasFormData = {{ session()->has('form_ncage') ? 'true' : 'false' }};
+        const excludedLinks = [
+            '{{ route('logout') }}',
+            '{{ route('surat-permohonan.download') }}',
+            '{{ route('surat-pernyataan.download') }}'
+        ];
 
-        if (!isFormSubmitted) {
+        if (!isFormSubmitted && hasFormData == true) {
             document.querySelectorAll('a[href]').forEach(link => {
                 const href = link.getAttribute('href');
 
@@ -501,6 +508,7 @@
                 if (linkUrl.pathname.startsWith(baseFormPath)) {
                     return; // Masih dalam form, tidak perlu konfirmasi
                 }
+                if (excludedLinks.includes(linkUrl.href)) return;
 
                 // Link keluar, tampilkan modal
                 link.addEventListener('click', function (e) {
