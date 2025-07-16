@@ -68,11 +68,12 @@ class NcageApplication extends Model
     public function getStatusLabel(): string
     {
         return match ($this->status_id) {
-            1 => 'Draft',
-            2 => 'Menunggu Verifikasi',
-            3 => 'Verifikasi Berhasil',
-            4 => 'Menunggu Input Sertifikat',
-            5 => 'Selesai',
+            1 => 'Permohonan Dikirim',
+            2 => 'Verifikasi Berkas & Data',
+            3 => 'Butuh Perbaikan',
+            4 => 'Proses Validasi',
+            5 => 'Sertifikat Diterbitkan',
+            6 => 'Permohonan Ditolak',
             default => 'Status Tidak Dikenal',
         };
     }

@@ -150,26 +150,26 @@
         <!-- Tombol Aksi -->
         <div class="card p-2 rounded-pill">
             <div class="d-flex justify-content-between">
-            <a href="" class="btn btn-outline-dark-red rounded-pill px-4 fw-semibold">
+            <a href="{{ route('filament.admin.resources.ncage-applications.index') }}" class="btn btn-outline-dark-red rounded-pill px-4 fw-semibold">
                 <i class="bi bi-arrow-left"></i> Kembali
             </a>
 
             <div class="d-flex gap-2">
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('ncage.reject', $recordId) }}">
                     @csrf
                     <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold">
                         Tolak Permohonan <i class="bi bi-x-circle ms-1"></i>
                     </button>
                 </form>
 
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('ncage.revision', $recordId) }}">
                     @csrf
                     <button type="submit" class="btn btn-warning rounded-pill px-4 fw-semibold">
                         Minta Revisi <i class="bi bi-pencil-square ms-1"></i>
                     </button>
                 </form>
 
-                <form method="POST" action="">
+                <form method="POST" action="{{ route('ncage.approve', $recordId) }}">
                     @csrf
                     <button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold">
                         Setujui Verifikasi <i class="bi bi-check2-circle ms-1"></i>

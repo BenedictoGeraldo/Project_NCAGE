@@ -1,5 +1,7 @@
 @php
     $fields = [
+        'provinsi' => 'Provinsi',
+        'kota' => 'Kota',
         'alamat_kantor' => 'Alamat Kantor',
         'kode_pos' => 'Kode Pos',
         'po_box' => 'PO.Box',
@@ -24,28 +26,6 @@
         @error('nama_badan_usaha') <small class="text-danger">{{ $message }}</small> @enderror
     @endif
 </div>
-
-{{-- Provinsi & Kota --}}
-<div class="mb-4 d-flex gap-3">
-    {{-- Provinsi --}}
-    <div class="w-50">
-        <label for="provinsi">Provinsi <span class="text-danger">*</span></label>
-        <select id="provinsi" name="provinsi" class="form-control form-select" {{ !empty($disabled) ? 'disabled' : '' }}>
-            <option value="" disabled selected>Pilih Provinsi</option>
-        </select>
-        @error('provinsi') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-
-    {{-- Kota --}}
-    <div class="w-50">
-        <label for="kota">Kota <span class="text-danger">*</span></label>
-        <select id="kota" name="kota" class="form-control form-select" {{ !empty($disabled) ? 'disabled' : '' }}>
-            <option value="" disabled selected>Pilih Kota</option>
-        </select>
-        @error('kota') <small class="text-danger">{{ $message }}</small> @enderror
-    </div>
-</div>
-
 
 {{-- Input Fields --}}
 @foreach($fields as $field => $label)

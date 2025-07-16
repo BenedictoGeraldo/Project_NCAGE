@@ -9,7 +9,14 @@
 <div class="container mt-5">
     <div class="card rounded-4 p-4">
         <div class="card-title pt-5 px-5 text-center justify-content-center d-flex flex-column align-items-center">
-            <h2 class="fw-bold">Unggah Dokumen Persyaratan</h2>
+            @if($step == 1)
+                <h2 class="fw-bold">Unggah Dokumen Persyaratan</h2>
+            @elseif($step == 2)
+                <h2 class="fw-bold">Lengkapi Formulir Permintaan</h2>       
+            @elseif($step == 3)
+                <h2 class="fw-bold">Konfirmasi & Kirim Permohonan</h2>         
+            @endif
+            
             <div class="line w-100 rounded-pill"></div>
         </div>
         <div class="form-container py-4 px-5">
@@ -422,58 +429,58 @@
     });
 
     // script API untuk provinsi dan kota di Indonesia
-    document.addEventListener('DOMContentLoaded', async function () {
-        const provinsiSelect = document.getElementById('provinsi');
-        const kotaSelect = document.getElementById('kota');
+    // document.addEventListener('DOMContentLoaded', async function () {
+    //     const provinsiSelect = document.getElementById('provinsi');
+    //     const kotaSelect = document.getElementById('kota');
 
-        const oldProvinsi = "{{ old('provinsi', $data['provinsi'] ?? '') }}";
-        const oldKota = "{{ old('kota', $data['kota'] ?? '') }}";
+    //     const oldProvinsi = "{{ old('provinsi', $data['provinsi'] ?? '') }}";
+    //     const oldKota = "{{ old('kota', $data['kota'] ?? '') }}";
 
-        // Ambil daftar provinsi
-        const provinsiRes = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
-        const provinsiData = await provinsiRes.json();
+    //     // Ambil daftar provinsi
+    //     const provinsiRes = await fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json');
+    //     const provinsiData = await provinsiRes.json();
 
-        // Tampilkan provinsi
-        provinsiData.forEach(prov => {
-            const option = document.createElement('option');
-            option.value = prov.name;
-            option.text = prov.name;
-            option.dataset.id = prov.id;
+    //     // Tampilkan provinsi
+    //     provinsiData.forEach(prov => {
+    //         const option = document.createElement('option');
+    //         option.value = prov.name;
+    //         option.text = prov.name;
+    //         option.dataset.id = prov.id;
 
-            if (prov.name === oldProvinsi) {
-                option.selected = true;
-                loadKota(prov.id); // Load kota jika provinsi sudah ada
-            }
+    //         if (prov.name === oldProvinsi) {
+    //             option.selected = true;
+    //             loadKota(prov.id); // Load kota jika provinsi sudah ada
+    //         }
 
-            provinsiSelect.appendChild(option);
-        });
+    //         provinsiSelect.appendChild(option);
+    //     });
 
-        // Saat provinsi berubah
-        provinsiSelect.addEventListener('change', function () {
-            const selected = this.options[this.selectedIndex];
-            const provId = selected.dataset.id;
-            kotaSelect.innerHTML = '<option value="">Memuat Kota...</option>';
-            loadKota(provId);
-        });
+    //     // Saat provinsi berubah
+    //     provinsiSelect.addEventListener('change', function () {
+    //         const selected = this.options[this.selectedIndex];
+    //         const provId = selected.dataset.id;
+    //         kotaSelect.innerHTML = '<option value="">Memuat Kota...</option>';
+    //         loadKota(provId);
+    //     });
 
-        async function loadKota(provId) {
-            const kotaRes = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`);
-            const kotaData = await kotaRes.json();
+    //     async function loadKota(provId) {
+    //         const kotaRes = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`);
+    //         const kotaData = await kotaRes.json();
 
-            kotaSelect.innerHTML = '<option value="">Pilih Kota</option>';
-            kotaData.forEach(kota => {
-                const option = document.createElement('option');
-                option.value = kota.name;
-                option.text = kota.name;
+    //         kotaSelect.innerHTML = '<option value="">Pilih Kota</option>';
+    //         kotaData.forEach(kota => {
+    //             const option = document.createElement('option');
+    //             option.value = kota.name;
+    //             option.text = kota.name;
 
-                if (kota.name === oldKota) {
-                    option.selected = true;
-                }
+    //             if (kota.name === oldKota) {
+    //                 option.selected = true;
+    //             }
 
-                kotaSelect.appendChild(option);
-            });
-        }
-    });
+    //             kotaSelect.appendChild(option);
+    //         });
+    //     }
+    // });
 
     // script pop up keluar
     document.addEventListener('DOMContentLoaded', function () {
