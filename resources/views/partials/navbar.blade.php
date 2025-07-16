@@ -38,8 +38,13 @@
             
             {{-- Tombol Pemicu Dropdown (Ikon/Gambar Profil) --}}
             <a href="#" class="profile-link">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8C1515&color=fff&rounded=true&size=40" 
-                    alt="Foto Profil" class="profile-image">
+                @if (Auth::user()->profile_photo_path)
+                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" 
+                        alt="Foto Profil" class="profile-image">
+                @else
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8C1515&color=fff&rounded=true&size=40" 
+                        alt="Foto Profil" class="profile-image">
+                @endif
             </a>
 
             {{-- Menu Dropdown --}}

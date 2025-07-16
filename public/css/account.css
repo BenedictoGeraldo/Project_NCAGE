@@ -75,3 +75,49 @@ body {
     background-color: #8C1515;
     color: white;
 }
+
+/*Modal*/
+.custom-modal-content {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.confirm-divider {
+    border: 1px solid #8C1515;
+    opacity: 1;
+}
+
+.confirm-icon {
+    font-size: 56px;
+    color: #8C1515;
+}
+
+.btn-modal-kembali {
+    background-color: #FFFFFF;
+    color: #000000;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    padding: 8px 24px;
+    font-weight: 600;
+}
+
+.btn-modal-kembali:hover {
+    background-color: #f8f9fa;
+    color: #000000;
+}
+
+.btn-modal-simpan {
+    background-color: #8C1515;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 24px;
+    font-weight: 600;
+}
+
+.btn-modal-simpan:hover {
+    background-color: #701111;
+    color: #FFFFFF;
+}

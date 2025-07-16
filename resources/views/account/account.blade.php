@@ -74,6 +74,31 @@
         </form>
     </div>
 </div>
+
+    <!--Alert-->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal-content">
+                <div class="modal-body p-4 text-center">
+                    <h4 class="fw-bold">Konfirmasi Perubahan</h4>
+                    <hr class="confirm-divider">
+                    <div class="my-4">
+                        {{-- Ganti dengan ikon yang sesuai, misal ikon simpan --}}
+                        <i class="fa-solid fa-floppy-disk confirm-icon"></i>
+                    </div>
+                    <p>Apakah Anda yakin ingin menyimpan perubahan?</p>
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <button type="button" class="btn btn-modal-kembali" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-arrow-left me-2"></i>Kembali
+                        </button>
+                        <button type="button" class="btn btn-modal-simpan" id="confirm-update-btn">
+                            Simpan<i class="fa-solid fa-floppy-disk ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -97,15 +122,23 @@
             }
         });
     }
-
-    // Fungsionalitas untuk konfirmasi saat klik "Simpan"
+    
     const profileForm = document.getElementById('profile-form');
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    const confirmButton = document.getElementById('confirm-update-btn');
 
     if (profileForm) {
         profileForm.addEventListener('submit', function(event) {
-            if (!confirm('Apakah Anda yakin ingin menyimpan perubahan ini?')) {
-                event.preventDefault();
-            }
+            // Hentikan submit form dan tampilkan modal
+            event.preventDefault();
+            confirmationModal.show();
+        });
+    }
+
+    if (confirmButton) {
+        // Jika tombol "Simpan" di dalam modal diklik, submit form-nya
+        confirmButton.addEventListener('click', function() {
+            profileForm.submit();
         });
     }
 </script>

@@ -33,8 +33,8 @@
     <div>
         @include('partials.footer')
     </div>
-    @stack('scripts')
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+    @stack('scripts')
 </body>
 
 </html>
