@@ -57,10 +57,10 @@ class NcageRecordResource extends Resource
 
                 Forms\Components\Section::make('Kontak')
                     ->schema([
-                        Forms\Components\TextInput::make('tel')->label('Telepon')->tel(),
-                        Forms\Components\TextInput::make('fax')->label('Fax')->tel(),
-                        Forms\Components\TextInput::make('ema')->label('Email')->email(),
-                        Forms\Components\TextInput::make('www')->label('Website')->url(),
+                        Forms\Components\TextInput::make('tel')->label('Telepon'),
+                        Forms\Components\TextInput::make('fax')->label('Fax'),
+                        Forms\Components\TextInput::make('ema')->label('Email'),
+                        Forms\Components\TextInput::make('www')->label('Website'),
                     ])->columns(2),
 
                 Forms\Components\Section::make('Klasifikasi & Referensi')
@@ -181,7 +181,6 @@ class NcageRecordResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
