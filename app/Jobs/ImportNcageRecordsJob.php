@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ImportNcageRecordsJob implements ShouldQueue
 {
@@ -21,22 +21,6 @@ class ImportNcageRecordsJob implements ShouldQueue
     public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
-    }
-
-    /**
-     * Helper function untuk mengonversi format tanggal dengan aman.
-     */
-    private function reformatDate(string $dateString, string $fromFormat = 'd/m/Y', string $toFormat = 'Y-m-d'): ?string
-    {
-        if (empty($dateString)) {
-            return null;
-        }
-
-        try {
-            return Carbon::createFromFormat($fromFormat, $dateString)->format($toFormat);
-        } catch (\Exception $e) {
-            return null;
-        }
     }
 
     public function handle(): void
@@ -50,56 +34,93 @@ class ImportNcageRecordsJob implements ShouldQueue
             $absolutePath = Storage::disk('local')->path($this->filePath);
             Log::info('Memulai proses impor data NCAGE dari file: ' . $this->filePath);
 
-            $file = fopen($absolutePath, 'r');
-            fgetcsv($file); // Lewati header
-            NcageRecord::truncate();
+            // Ini otomatis mendeteksi apakah file itu XLSX atau CSV.
+            $collection = Excel::toCollection(null, $absolutePath)[0]; // Ambil data dari sheet pertama
+
+            $header = $collection->first()->toArray(); // Ambil baris pertama sebagai header
+            $rows = $collection->slice(1); // Ambil sisa baris sebagai data
 
             $count = 0;
-            while (($row = fgetcsv($file)) !== false) {
-                NcageRecord::create([
-                    'ncage_code' => $row[0] ?? null,
-                    'ncagesd' => $row[1] ?? null,
-                    'toec' => $row[2] ?? null,
-                    'entity_name' => $row[3] ?? null,
-                    'street' => $row[4] ?? null,
-                    'city' => $row[5] ?? null,
-                    'psc' => $row[6] ?? null,
-                    'country' => $row[7] ?? null,
-                    'ctr' => $row[8] ?? null,
-                    'stt' => $row[9] ?? null,
-                    'ste' => $row[10] ?? null,
-                    'is_sam_requested' => isset($row[11]) && in_array(strtoupper($row[11]), ['1', 'TRUE', 'Y']),
-                    'remarks' => $row[12] ?? null,
-                    'last_change_date_international' => $this->reformatDate($row[13] ?? ''),
-                    'change_date' => $this->reformatDate($row[14] ?? ''),
-                    'creation_date' => $this->reformatDate($row[15] ?? ''),
-                    'load_date' => $this->reformatDate($row[16] ?? ''),
-                    'national' => $row[17] ?? null,
-                    'nac' => $row[18] ?? null,
-                    'idn' => $row[19] ?? null,
-                    'bar' => $row[20] ?? null,
-                    'nai' => $row[21] ?? null,
-                    'cpv' => $row[22] ?? null,
-                    'uns' => $row[23] ?? null,
-                    'sic' => $row[24] ?? null,
-                    'tel' => $row[25] ?? null,
-                    'fax' => $row[26] ?? null,
-                    'ema' => $row[27] ?? null,
-                    'www' => $row[28] ?? null,
-                    'pob' => $row[29] ?? null,
-                    'pcc' => $row[30] ?? null,
-                    'pcs' => $row[31] ?? null,
-                    'rp1_5' => $row[32] ?? null,
-                    'nmcrl_ref_count' => isset($row[33]) && is_numeric($row[33]) ? (int)$row[33] : null,
-                ]);
-                $count++;
+            foreach ($rows as $row) {
+                try {
+                    // Gabungkan header dengan data baris untuk membuat array asosiatif
+                    // Contoh: ['NCAGE' => 'SK2M9', 'Entity Name' => 'ACME Corp']
+                    $data = array_combine($header, $row->toArray());
+
+                    // LOGIKA MAPPING & KONVERSI YANG SUDAH KITA BUAT
+                    $databaseData = [
+                        'ncage_code'        => $data['NCAGE'] ?? null,
+                        'ncagesd'           => $data['NCAGESD'] ?? null,
+                        'toec'              => $data['TOEC'] ?? null,
+                        'entity_name'       => $data['Entity Name'] ?? null,
+                        'street'            => $data['Street (ST1/2)'] ?? null,
+                        'city'              => $data['City (CIT)'] ?? null,
+                        'psc'               => $data['Post Code, Physical Address (PSC)'] ?? null,
+                        'country'           => $data['Country'] ?? null,
+                        'ctr'               => $data['ISO (CTR)'] ?? null,
+                        'stt'               => $data['State/Province (STT)'] ?? null,
+                        'ste'               => $data['FIPS State (STE)'] ?? null,
+                        'is_sam_requested'  => $data['Cage code requested for SAM'] ?? null,
+                        'remarks'           => $data['Remarks'] ?? null,
+                        'national'          => $data['National'] ?? null,
+                        'nac'               => $data['NAC'] ?? null,
+                        'idn'               => $data['IDN'] ?? null,
+                        'bar'               => $data['BAR'] ?? null,
+                        'nai'               => $data['NAI'] ?? null,
+                        'cpv'               => $data['CPV'] ?? null,
+                        'uns'               => $data['UNS'] ?? null,
+                        'sic'               => $data['SIC'] ?? null,
+                        'tel'               => $data['Voice telephone number (TEL)'] ?? null,
+                        'fax'               => $data['Telefax number (FAX)'] ?? null,
+                        'ema'               => $data['Email (EMA)'] ?? null,
+                        'www'               => $data['WWW (WWW)'] ?? null,
+                        'pob'               => $data['Post Office Box Number (POB)'] ?? null,
+                        'pcc'               => $data['City, Postal Address (PCC)'] ?? null,
+                        'pcs'               => $data['Post Code, Postal Address (PCS)'] ?? null,
+                        'rp1_5'             => $data['Replaced By (RP1-5)'] ?? null,
+                        'nmcrl_ref_count'   => $data['NMCRL Reference count'] ?? null,
+                    ];
+
+                    // Konversi Tanggal
+                    $dateFields = [
+                        'last_change_date_international' => 'Date Last Change International',
+                        'change_date' => 'Change Date',
+                        'creation_date' => 'Creation Date',
+                        'load_date' => 'Load Date',
+                    ];
+
+                    foreach ($dateFields as $dbKey => $excelKey) {
+                        $value = $data[$excelKey] ?? null;
+                        if (empty($value)) {
+                            $databaseData[$dbKey] = null; continue;
+                        }
+                        if (is_numeric($value)) {
+                            $databaseData[$dbKey] = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)->format('Y-m-d');
+                        } else {
+                            $databaseData[$dbKey] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+                        }
+                    }
+
+                    // Konversi Tipe Data Lain
+                    $databaseData['is_sam_requested'] = isset($databaseData['is_sam_requested']) && in_array(strtoupper($databaseData['is_sam_requested']), ['1', 'TRUE', 'Y', 'YES']);
+                    $databaseData['nmcrl_ref_count'] = isset($databaseData['nmcrl_ref_count']) && is_numeric($databaseData['nmcrl_ref_count']) ? (int)$databaseData['nmcrl_ref_count'] : null;
+
+                    NcageRecord::updateOrCreate(
+                        ['ncage_code' => $databaseData['ncage_code']], // Kunci untuk mencari data
+                        $databaseData  // Data yang akan di-update atau di-create
+                    );
+                    $count++;
+
+                } catch (\Exception $e) {
+                    Log::error("Gagal memproses baris data. Error: " . $e->getMessage(), ['row_data' => $row->toArray()]);
+                    continue;
+                }
             }
 
-            fclose($file);
-            Log::info("Selesai! Berhasil mengimpor {$count} data NCAGE.");
+            Log::info("Selesai! Berhasil mengimpor {$count} dari " . count($rows) . " total baris data.");
 
         } catch (\Exception $e) {
-            Log::error("Proses impor gagal: " . $e->getMessage());
+            Log::error("Proses impor gagal total: " . $e->getMessage());
         } finally {
             if (isset($this->filePath) && Storage::disk('local')->exists($this->filePath)) {
                 Storage::disk('local')->delete($this->filePath);
