@@ -16,14 +16,22 @@ class VerifyRequest extends Page
     public $recordId;
 
     public $applicationIdentity;
+
+    public $applicationContacts;
+    public $applicationCompany;
+    public $applicationOtherInformation;
     public $documents;
 
     public function mount($record): void
     {
         $this->recordId = $record;
 
-        $application = NcageApplication::findOrFail($record);
+        $application = NcageApplication::with(['identity', 'contacts', 'companyDetail', 'otherInformation'])->findOrFail($record);
         $this->applicationIdentity = $application->identity; // pastikan relasi `identity()` dibuat di model
+        $this->applicationContacts = $application->contacts;
+        $this->applicationCompany = $application->companyDetail;
+        $this->applicationOtherInformation = $application->otherInformation;
+
         $this->documents = json_decode($application->documents, true);
     }
 
@@ -31,6 +39,9 @@ class VerifyRequest extends Page
     {
         return [
             'applicationIdentity' => $this->applicationIdentity,
+            'applicationContacts' => $this->applicationContacts,
+            'applicationCompany' => $this->applicationCompany,
+            'applicationOtherInformation' => $this->applicationOtherInformation,
             'documents' => $this->documents,
         ];
     }

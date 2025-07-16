@@ -288,7 +288,7 @@ class FormNCAGEController extends Controller
 
             $ncageApplication = NcageApplication::create([
                 'user_id' => $userId,
-                'status_id' => 3,
+                'status_id' => 2,
                 'documents' => json_encode($data['documents'])
             ]);
 
@@ -418,6 +418,7 @@ class FormNCAGEController extends Controller
                 'success' => true,
                 'filename' => $filename,
                 'path' => $relativePath,
+                'session' => Session::get('form_ncage')  // Kirim session
             ]);
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Faker\Provider\ar_EG\Company;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,6 +42,21 @@ class NcageApplication extends Model
     public function identity(): HasOne
     {
         return $this->hasOne(ApplicationIdentity::class);
+    }
+
+    public function contacts(): HasOne
+    {
+        return $this->hasOne(ApplicationContact::class);
+    }
+
+    public function companyDetail(): HasOne
+    {
+        return $this->hasOne(CompanyDetail::class);
+    }
+
+    public function otherInformation(): HasOne
+    {
+        return $this->hasOne(OtherInformation::class);
     }
 
     public function ncageRecord(): HasOne

@@ -16,36 +16,116 @@
                     <!-- Tabs scrollable -->
                 <div class="mb-4 overflow-auto tab-scroll" style="white-space: nowrap;">
                     <div class="d-inline-flex gap-2 mb-2">
-                        <button class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold active">
+                        <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold bg-active text-white"
+                            data-tab="identity" onclick="toggleTabSection(this)">
                             A. Identifikasi Entitas
                         </button>
-                        <button class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold">
+                        <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold"
+                            data-tab="contact" onclick="toggleTabSection(this)">
                             B. Contact Person
                         </button>
-                        <button class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold">
+                        <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold"
+                            data-tab="company" onclick="toggleTabSection(this)">
                             C. Detail Badan Usaha
                         </button>
-                        <button class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold">
+                        <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 py-2 fw-semibold"
+                            data-tab="other" onclick="toggleTabSection(this)">
                             D. Informasi lainnya
                         </button>
                     </div>
                 </div>
 
-                    <h6 class="fw-bold mb-3">A. Identifikasi Entitas</h6>
+                    @php
+                        $identityFields = [
+                            'Tanggal Pengajuan' => $applicationIdentity->submission_date ?? '-',
+                            'Jenis Permohonan' => $applicationIdentity->application_type ?? '-',
+                            'Jenis Permohonan NCAGE' => $applicationIdentity->ncage_request_type ?? '-',
+                            'Tujuan Penerbitan NCAGE' => $applicationIdentity->purpose ?? '-',
+                            'Tipe Entitas' => $applicationIdentity->entity_type ?? '-',
+                            'Status Kepemilikan Bangunan' => $applicationIdentity->building_ownership_status ?? '-',
+                            'Terdafar (AHU.Online)' => $applicationIdentity->is_ahu_registered ?? '-',
+                            'Koordinat Kantor (GPS Map)' => $applicationIdentity->office_coordinate ?? '-',
+                            'NIB' => $applicationIdentity->nib ?? '-',
+                            'NPWP' => $applicationIdentity->npwp ?? '-',
+                            'Bidang Usaha' => $applicationIdentity->business_field ?? '-',
+                        ];
 
-                    <table style="line-height: 1.8; height: 400px;">
-                        <tr><td>Tanggal Pengajuan</td><td class="px-2">:</td><td>{{ $applicationIdentity->submission_date ?? '-' }}</td></tr>
-                        <tr><td>Jenis Permohonan</td><td class="px-2">:</td><td>{{ $applicationIdentity->application_type ?? '-' }}</td></tr>
-                        <tr><td>Jenis Permohonan NCAGE</td><td class="px-2">:</td><td>{{ $applicationIdentity->ncage_request_type ?? '-' }}</td></tr>
-                        <tr><td>Tujuan Penerbitan NCAGE</td><td class="px-2">:</td><td>{{ $applicationIdentity->purpose ?? '-' }}</td></tr>
-                        <tr><td>Tipe Entitas</td><td class="px-2">:</td><td>{{ $applicationIdentity->entity_type ?? '-' }}</td></tr>
-                        <tr><td>Status Kepemilikan Bangunan</td><td class="px-2">:</td><td>{{ $applicationIdentity->building_ownership_status ?? '-' }}</td></tr>
-                        <tr><td>Terdafar (AHU.Online)</td><td class="px-2">:</td><td>{{ $applicationIdentity->is_ahu_registered ?? '-' }}</td></tr>
-                        <tr><td>Koordinat Kantor (GPS Map)</td><td class="px-2">:</td><td>{{ $applicationIdentity->office_coordinate ?? '-' }}</td></tr>
-                        <tr><td>NIB</td><td class="px-2">:</td><td>{{ $applicationIdentity->nib ?? '-' }}</td></tr>
-                        <tr><td>NPWP</td><td class="px-2">:</td><td>{{ $applicationIdentity->npwp ?? '-' }}</td></tr>
-                        <tr><td>Bidang Usaha</td><td class="px-2">:</td><td>{{ $applicationIdentity->business_field ?? '-' }}</td></tr>
-                    </table>
+                        $contactFields = [
+                            'Nama' => $applicationContacts->name ?? '-',
+                            'Nomor Identitas' => $applicationContacts->identity_number ?? '-',
+                            'Alamat' => $applicationContacts->address ?? '-',
+                            'Email' => $applicationContacts->email ?? '-',
+                            'Telepon' => $applicationContacts->phone_number ?? '-',
+                            'Jabatan' => $applicationContacts->position ?? '-',
+                        ];
+
+                        $companyFields = [
+                            'Nama' => $applicationCompany->name ?? '-',
+                            'Provinsi' => $applicationCompany->province ?? '-',
+                            'Kota' => $applicationCompany->city ?? '-',
+                            'Alamat' => $applicationCompany->address ?? '-',
+                            'Kode Pos' => $applicationCompany->postal_code ?? '-',
+                            'Po. Box' => $applicationCompany->po_box ?? '-',
+                            'Telepon' => $applicationCompany->phone_number ?? '-',
+                            'Fax' => $applicationCompany->fax ?? '-',
+                            'Email' => $applicationCompany->email ?? '-',
+                            'Website' => $applicationCompany->website ?? '-',
+                            'Perusahaan Afiliasi' => $applicationCompany->affiliate ?? '-',
+                        ];
+
+                        $otherFields = [
+                            'Produk' => $applicationOtherInformation->products ?? '-',
+                            'Kapasitas Produksi' => $applicationOtherInformation->production_capacity ?? '-',
+                            'Jumlah Karyawan' => $applicationOtherInformation->number_of_employees ?? '-',
+                            'Nama Kantor Cabang' => $applicationOtherInformation->branch_office_name ?? '-',
+                            'Jalan Kantor Cabang' => $applicationOtherInformation->branch_office_street ?? '-',
+                            'Kota Kantor Cabang' => $applicationOtherInformation->branch_office_city ?? '-',
+                            'Kode Pos Kantor Cabang' => $applicationOtherInformation->branch_office_postal_code ?? '-',
+                            'Perusahaan Affiliasi' => $applicationOtherInformation->affiliate_company ?? '-',
+                            'Jalan Perusahaan Affiliasi' => $applicationOtherInformation->affiliate_company_street ?? '-',
+                            'Kota Perusahaan Affiliasi' => $applicationOtherInformation->affiliate_company_city ?? '-',
+                            'Kode Pos Perusahaan Affiliasi' => $applicationOtherInformation->affiliate_company_postal_code ?? '-',
+                        ];
+
+                        function renderFields($fields) {
+                            foreach ($fields as $label => $value) {
+                                echo "<tr><td>{$label}</td><td class='px-2'>:</td><td>{$value}</td></tr>";
+                            }
+                        }
+                    @endphp
+
+                    <!-- Konten Tab: Identifikasi Entitas -->
+
+                    <div id="tab-identity" class="tab-section">
+                        <h6 class="fw-bold mb-3">A. Identifikasi Entitas</h6>
+                        <table style="line-height: 1.8; height: 400px;">
+                            {!! renderFields($identityFields) !!}
+                        </table>
+                    </div>
+
+                    <!-- Konten Tab: Contact Person -->
+                    <div id="tab-contact" class="tab-section" style="display: none;">
+                        <h6 class="fw-bold mb-3">B. Narahubung</h6>
+                        <table style="line-height: 1.8; height: 400px;">
+                            {!! renderFields($contactFields) !!}
+                        </table>
+                    </div>
+
+                    <!-- Konten Tab: Company Detail -->
+                    <div id="tab-company" class="tab-section" style="display: none;">
+                        <h6 class="fw-bold mb-3">C. Detail Badan Usaha</h6>
+                        <table style="line-height: 1.8; height: 400px;">
+                            {!! renderFields($companyFields) !!}
+                        </table>
+                    </div>
+
+                    <!-- Konten Tab: Other Information -->
+                    <div id="tab-other" class="tab-section" style="display: none;">
+                        <h6 class="fw-bold mb-3">D. Informasi Lainnya</h6>
+                        <table style="line-height: 1.8; height: 400px;">
+                            {!! renderFields($otherFields) !!}
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -116,6 +196,16 @@
                 frame.src = '';
                 preview.style.display = 'none';
             }
+        }
+
+        function toggleTabSection(button) {
+            const tabId = button.dataset.tab;
+
+            document.querySelectorAll('.tab-section').forEach(el => el.style.display = 'none');
+            document.getElementById(`tab-${tabId}`).style.display = 'block';
+
+            document.querySelectorAll('.tab-scroll .btn').forEach(btn => btn.classList.remove('bg-active', 'text-white'));
+            button.classList.add('bg-active', 'text-white');
         }
     </script>
 @endsection
