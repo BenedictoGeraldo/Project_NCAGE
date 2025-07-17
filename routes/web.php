@@ -12,6 +12,7 @@ use App\Http\Controllers\FormNCAGEController;
 use App\Http\Controllers\EntityCheckController;
 use App\Http\Controllers\CertificateController;
 use App\Models\NcageApplication;
+use Illuminate\Http\Request;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -53,17 +54,23 @@ Route::post('/ncage-applications/{record}/approve', function (NcageApplication $
         ->with('success', 'Permohonan disetujui.');
 })->name('ncage.approve');
 
-Route::post('/ncage-applications/{record}/revision', function (NcageApplication $record) {
-    $record->update(['status_id' => 3]);
-    return redirect()->route('filament.admin.resources.ncage-applications.index')
-        ->with('success', 'Permohonan diminta revisi.');
-})->name('ncage.revision');
-
-Route::post('/ncage-applications/{record}/reject', function (NcageApplication $record) {
-    $record->update(['status_id' => 6]);
+Route::post('/ncage-applications/{record}/reject', function (NcageApplication $record, Request $request) {
+    $record->update([
+        'status_id' => 6,
+        'revision_notes' => $request->input('reason'),
+    ]);
     return redirect()->route('filament.admin.resources.ncage-applications.index')
         ->with('success', 'Permohonan ditolak.');
 })->name('ncage.reject');
+
+Route::post('/ncage-applications/{record}/revision', function (NcageApplication $record, Request $request) {
+    $record->update([
+        'status_id' => 3,
+        'revision_notes' => $request->input('reason'),
+    ]);
+    return redirect()->route('filament.admin.resources.ncage-applications.index')
+        ->with('success', 'Permohonan diminta revisi.');
+})->name('ncage.revision');
 
 // =========================================================================
 // RUTE TERPROTEKSI (WAJIB SUDAH LOGIN DAN SUDAH VERIFIKASI)

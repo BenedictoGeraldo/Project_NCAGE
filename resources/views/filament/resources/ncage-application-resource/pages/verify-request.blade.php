@@ -155,19 +155,15 @@
             </a>
 
             <div class="d-flex gap-2">
-                <form method="POST" action="{{ route('ncage.reject', $recordId) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold">
-                        Tolak Permohonan <i class="bi bi-x-circle ms-1"></i>
-                    </button>
-                </form>
+                <button type="button" class="btn btn-danger rounded-pill px-4 fw-semibold"
+                    onclick="openReasonModal('{{ route('ncage.reject', $recordId) }}', 'Tolak Permohonan', 1)">
+                    Tolak Permohonan <i class="fa-solid fa-x ms-2"></i>
+                </button>
 
-                <form method="POST" action="{{ route('ncage.revision', $recordId) }}">
-                    @csrf
-                    <button type="submit" class="btn btn-warning rounded-pill px-4 fw-semibold">
-                        Minta Revisi <i class="bi bi-pencil-square ms-1"></i>
-                    </button>
-                </form>
+                <button type="button" class="btn btn-warning rounded-pill px-4 fw-semibold"
+                    onclick="openReasonModal('{{ route('ncage.revision', $recordId) }}', 'Kirim Kembali untuk Revisi', 2)">
+                    Minta Revisi <i class="fa-solid fa-pencil ms-2"></i>
+                </button>
 
                 <form method="POST" action="{{ route('ncage.approve', $recordId) }}">
                     @csrf
@@ -178,6 +174,37 @@
             </div>
         </div>
         </div>
+    </div>
+
+    <!-- Modal: Alasan Penolakan/Revisi -->
+    <div class="modal fade" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center rounded-4 p-4">
+        <h5 class="fw-bold mb-2" id="reasonModalLabel">Tolak Permohonan?</h5>
+        <div class="border border-2 border-dark-red w-100 rounded-pill mb-3"></div>
+
+        <div id="icon-mode" class="p-1 mb-2" style="height: 4rem; width: auto;">
+            <div class="display-5 text-dark-red">✕</div>
+        </div>
+
+        <form id="reasonForm" method="POST">
+            @csrf
+            <div class="mb-3 text-start">
+            <label id="reasonLabel" for="reasonInput" class="form-label"></label>
+            <textarea class="form-control" name="reason" id="reasonInput" rows="3" required></textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-dark-red rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
+                <i class="fa-solid fa-arrow-left me-2"></i> Kembali
+            </button>
+            <button type="submit" class="btn btn-dark-red rounded-pill px-4 fw-semibold text-white" id="submitReasonButton">
+                Tolak Permohonan <i class="bi bi-x-circle ms-1"></i>
+            </button>
+            </div>
+        </form>
+        </div>
+    </div>
     </div>
 @endsection
 
@@ -206,6 +233,31 @@
 
             document.querySelectorAll('.tab-scroll .btn').forEach(btn => btn.classList.remove('bg-active', 'text-white'));
             button.classList.add('bg-active', 'text-white');
+        }
+
+        function openReasonModal(actionUrl, mode, icon) {
+            const form = document.getElementById('reasonForm');
+            form.action = actionUrl;
+
+            const submitBtn = document.getElementById('submitReasonButton');
+            const iconMode = document.getElementById('icon-mode');
+            const reasonLabel = document.getElementById('reasonLabel');
+            if(icon == 1) {
+                submitBtn.innerHTML = mode + ' <span class="ms-2">✕</span>';
+                iconMode.innerHTML = '<div class="display-5 text-dark-red">✕</div>';
+                reasonLabel.innerText = 'Alasan Penolakan:';
+            } else {
+                submitBtn.innerHTML = 'Kirim Revisi' + ' <i class="fa-solid fa-paper-plane ms-2"></i>';
+                iconMode.innerHTML = '<img src="{{ asset('images/icons/icon-revisi.png') }}" class="img-fluid" style="max-height: 100%; max-width: 100%;" />';
+                reasonLabel.innerText = 'Catatan Perbaikan:';
+            }
+            document.getElementById('reasonModalLabel').innerText = mode + '?';
+
+            const textarea = document.getElementById('reasonInput');
+            textarea.value = '';
+
+            const modal = new bootstrap.Modal(document.getElementById('reasonModal'));
+            modal.show();
         }
     </script>
 @endsection

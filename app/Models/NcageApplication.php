@@ -15,6 +15,7 @@ class NcageApplication extends Model
     protected $fillable = [
         'user_id',
         'status_id',
+        'revision_notes',
         'documents',
     ];
 

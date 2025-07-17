@@ -16,6 +16,7 @@ class NcageApplicationResource extends Resource
     protected static ?string $model = NcageApplication::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Data Permohonan NCAGE';
 
     // Kosongkan form, karena tidak digunakan
     public static function form(Form $form): Form
@@ -62,6 +63,15 @@ class NcageApplicationResource extends Resource
                     ->visible(fn ($record) => $record->status_id === 4)
                     ->url(fn ($record) => route('filament.admin.resources.ncage-applications.validate-request', ['record' => $record->id])),
             ]);
+    }
+
+    /**
+     * ✅ Override query untuk eager loading relasi `user`
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with('user'); // Hindari N+1
     }
 
     public static function getRelations(): array
