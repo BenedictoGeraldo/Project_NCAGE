@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
 
 class NcageRecordResource extends Resource
 {
@@ -181,6 +182,14 @@ class NcageRecordResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Action::make('downloadCertificate')
+                    ->label('Unduh Sertifikat Indonesia')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    // Arahkan ke route yang sudah kita buat
+                    ->url(fn (NcageRecord $record): string => route('certificate.download.record', $record))
+                    // Buka di tab baru
+                    ->openUrlInNewTab()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

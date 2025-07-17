@@ -16,14 +16,7 @@
 @include('partials.navbar')
 
 @php
-    $status_ids = [
-        'dikirim' => 1,
-        'verifikasi' => 2,
-        'perbaikan' => 3,
-        'validasi' => 4,
-        'terbit' => 5,
-    ];
-    $current_status_id = $application->status_id;
+    $status = $application->status_id;
 @endphp
 
 <main class="container my-5">
@@ -64,7 +57,7 @@
 
         <h2 class="sub-title text-center mb-4">Detail Status</h2>
         <div class="timeline-container">
-            <div class="timeline-step completed">
+            <div class="timeline-step {{ $status >= 1 ? 'completed' : 'pending' }}">
                 <div class="timeline-icon"><i class="bi bi-check-lg"></i></div>
                 <div class="timeline-content">
                     <div class="timeline-content-text">
@@ -74,91 +67,93 @@
                     </div>
                 </div>
             </div>
-
-            @php
-                $verifikasiClass = 'pending';
-                if ($current_status_id == $status_ids['verifikasi']) $verifikasiClass = 'in-progress';
-                if ($current_status_id == $status_ids['perbaikan']) $verifikasiClass = 'revision-needed';
-                if ($current_status_id > $status_ids['perbaikan']) $verifikasiClass = 'completed';
-            @endphp
-            <div class="timeline-step {{ $verifikasiClass }}">
-                <div class="timeline-icon">
-                    @if($verifikasiClass == 'completed') <i class="bi bi-check-lg"></i>
-                    @elseif($verifikasiClass == 'revision-needed') <i class="bi bi-exclamation-circle-fill"></i>
-                    @else <i class="bi bi-arrow-repeat"></i> @endif
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-content-text">
-                        <h5 class="fw-bold">Verifikasi Berkas & Data</h5>
-                        @if($verifikasiClass == 'in-progress')
-                            <p class="text-primary small mb-1">Sedang Berlangsung...</p>
-                            <p class="mb-0">Tim Puskod sedang melakukan verifikasi terhadap kelengkapan dan kesesuaian data yang Anda kirimkan.</p>
-                        @elseif($verifikasiClass == 'revision-needed')
-                            <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan...</p>
-                            <p class="mb-0">{{ $application->revision_notes }}</p>
-                        @else
-                            <p class="mb-0">Proses verifikasi berkas dan data.</p>
-                        @endif
+            @if ($status != 6)
+                <div class="timeline-step
+                    @if($status == 2) in-progress
+                    @elseif($status == 3) revision-needed
+                    @elseif($status > 3) completed
+                    @else pending @endif">
+                    <div class="timeline-icon">
+                        @if($status > 3) <i class="bi bi-check-lg"></i>
+                        @elseif($status == 3) <i class="bi bi-exclamation-circle-fill"></i>
+                        @else <i class="bi bi-arrow-repeat"></i> @endif
                     </div>
-                    @if($verifikasiClass == 'revision-needed')
-                        <a href="#" class="btn btn-custom-dark mt-2 mt-md-0"><i class="bi bi-cloud-upload-fill me-2"></i>Unggah Berkas Ulang</a>
-                    @endif
-                </div>
-            </div>
-
-            @php
-                $validasiClass = 'pending';
-                if ($current_status_id == $status_ids['validasi']) $validasiClass = 'in-progress';
-                if ($current_status_id > $status_ids['validasi']) $validasiClass = 'completed';
-            @endphp
-            <div class="timeline-step {{ $validasiClass }}">
-                <div class="timeline-icon">
-                    @if($validasiClass == 'completed') <i class="bi bi-check-lg"></i> @else <i class="bi bi-hourglass-split"></i> @endif
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-content-text">
-                        <h5 class="fw-bold">Proses Validasi</h5>
-                        <p class="mb-0">Setelah verifikasi selesai, data akan diproses lebih lanjut untuk penetapan kode entitas.</p>
-                    </div>
-                </div>
-            </div>
-
-            @php
-                $terbitClass = 'pending';
-                if ($current_status_id == $status_ids['terbit']) $terbitClass = 'completed';
-            @endphp
-            <div class="timeline-step {{ $terbitClass }}">
-                 <div class="timeline-icon">
-                    @if($terbitClass == 'completed') <i class="bi bi-check-lg"></i> @else <i class="bi bi-file-earmark-text"></i> @endif
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-content-text">
-                        <h5 class="fw-bold">Sertifikat Diterbitkan</h5>
-                         @if($terbitClass == 'completed')
-                            <p class="text-muted small mb-1">{{ $application->updated_at->format('j F Y, H:i') }}</p>
-                            <p class="mb-0">Sertifikat NCAGE telah diterbitkan, silahkan unduh sertifikat tertera.</p>
-                        @else
-                            <p class="mb-0">Sertifikat NCAGE akan diterbitkan setelah semua proses validasi selesai.</p>
-                        @endif
-                    </div>
-                     @if($terbitClass == 'completed')
-                        <div class="d-flex flex-column flex-sm-row gap-2 mt-2 mt-md-0">
-                            <a href="{{ route('certificate.download', $application) }}"
-                                class="btn btn-custom-dark {{ ($application->status_id == 5 && $application->ncageRecord) ? '' : 'disabled' }}"
-                                @if(!($application->status_id == 5 && $application->ncageRecord)) aria-disabled="true" @endif>
-                                <i class="bi bi-download me-2"></i>Unduh Sertifikat (ID)
-                            </a>
-
-                            <a href="{{ $application->ncageRecord->international_certificate_path ?? '#' }}"
-                                class="btn btn-custom-dark {{ ($application->status_id == 5 && $application->ncageRecord && $application->ncageRecord->international_certificate_path) ? '' : 'disabled' }}"
-                                @if(!($application->status_id == 5 && $application->ncageRecord && $application->ncageRecord->international_certificate_path)) aria-disabled="true" @endif
-                                download>
-                                <i class="bi bi-globe me-2"></i>Unduh Sertifikat (INTL)
-                            </a>
+                    <div class="timeline-content">
+                        <div class="timeline-content-text">
+                            <h5 class="fw-bold">Verifikasi Berkas & Data</h5>
+                            @if($status == 2)
+                                <p class="text-primary small mb-1">Sedang Berlangsung...</p>
+                                <p class="mb-0">Tim Puskod sedang melakukan verifikasi data Anda.</p>
+                            @elseif($status == 3)
+                                <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan...</p>
+                                <p class="mb-0">{{ $application->revision_notes ?? 'Silakan hubungi admin.' }}</p>
+                            @else
+                                <p class="mb-0">Proses verifikasi berkas dan data.</p>
+                            @endif
                         </div>
-                    @endif
+                        @if($status == 3)
+                            <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="btn btn-custom-dark mt-2 mt-md-0">
+                                <i class="bi bi-pencil-fill me-2"></i>Lakukan Revisi Berkas
+                            </a>
+                        @endif
+                    </div>
                 </div>
-            </div>
+            @endif
+            @if ($status != 6)
+                <div class="timeline-step
+                    @if($status == 4) in-progress
+                    @elseif($status > 4) completed
+                    @else pending @endif">
+
+                    <div class="timeline-icon">
+                        @if($status > 4) <i class="bi bi-check-lg"></i> @else <i class="bi bi-hourglass-split"></i> @endif
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-content-text">
+                            <h5 class="fw-bold">Proses Validasi & Unggah Sertifikat</h5>
+                             @if($status == 4)
+                                <p class="text-primary small mb-1">Menunggu...</p>
+                            @endif
+                            <p class="mb-0">Setelah verifikasi selesai, data akan diproses lebih lanjut untuk penetapan kode entitas.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+            @if ($status != 6)
+                <div class="timeline-step {{ $status == 5 ? 'completed' : 'pending' }}">
+                    <div class="timeline-icon">
+                        @if($status == 5) <i class="bi bi-check-lg"></i> @else <i class="bi bi-file-earmark-text"></i> @endif
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-content-text">
+                            <h5 class="fw-bold">Sertifikat Diterbitkan</h5>
+                            @if($status == 5)
+                                <p class="text-muted small mb-1">{{ $application->updated_at->format('j F Y, H:i') }}</p>
+                                <p class="mb-0">Sertifikat sudah diterbitkan, silahkan unduh sertifikat pada tombol berikut ini.</p>
+                            @else
+                                <p class="mb-0">Sertifikat NCAGE akan diterbitkan setelah semua proses validasi selesai.</p>
+                            @endif
+                        </div>
+                        @if($status == 5)
+                            <a href="{{ route('certificate.download.record', $application->ncageRecord) }}" class="btn btn-custom-dark mt-2 mt-md-0">
+                                <i class="bi bi-download me-2"></i>Unduh Sertifikat
+                            </a>
+                        @endif
+                    </div>
+                </div>
+            @endif
+            @if ($status == 6)
+                <div class="timeline-step revision-needed">
+                    <div class="timeline-icon"><i class="bi bi-x-circle-fill"></i></div>
+                    <div class="timeline-content">
+                        <div class="timeline-content-text">
+                            <h5 class="fw-bold">Permohonan Ditolak</h5>
+                            <p class="text-muted small mb-1">{{ $application->updated_at->format('j F Y, H:i') }}</p>
+                            <p class="mb-0">{{ $application->revision_notes ?? 'Permohonan ditolak karena tidak memenuhi persyaratan.' }}</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </main>

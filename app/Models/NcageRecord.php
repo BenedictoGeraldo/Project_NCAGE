@@ -54,6 +54,8 @@ class NcageRecord extends Model
         'pcs',
         'rp1_5',
         'nmcrl_ref_count',
+        'domestic_certificate_path',
+        'international_certificate_path',
     ];
     /**
      * Mendefinisikan relasi "belongsTo" ke model NcageApplication.

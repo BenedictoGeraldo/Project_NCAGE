@@ -50,7 +50,7 @@
     <div class="empty-state-card">
         <h1 class="empty-state-title">Pantau Status</h1>
 
-        <img src="{{ asset('images/404-illustration.svg') }}" alt="Ilustrasi Belum Mendaftar" class="empty-state-image">
+        <img src="{{ asset('images/undraw_page-not-found_6wni 1.png') }}" alt="Ilustrasi Belum Mendaftar" class="empty-state-image">
 
         <p class="empty-state-text fs-5">Anda belum mendaftarkan perusahaan Anda</p>
 
