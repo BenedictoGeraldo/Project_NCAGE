@@ -13,6 +13,7 @@ use App\Http\Controllers\EntityCheckController;
 use App\Http\Controllers\CertificateController;
 use App\Models\NcageApplication;
 use Illuminate\Http\Request;
+use Filament\Http\Middleware\Authenticate as FilamentAuth;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -99,4 +100,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+});
+
+Route::middleware([
+    FilamentAuth::class,
+])
+->prefix('admin')
+->group(function () {
+    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])
+         ->name('admin.certificate.download');
 });
