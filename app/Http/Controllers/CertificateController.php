@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Models\NcageRecord;
@@ -10,15 +12,18 @@ use Illuminate\Support\Str;
 use PhpOffice\PhpWord\TemplateProcessor;
 use ZipArchive;
 use DOMDocument;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CertificateController extends Controller
 {
     /**
-     * Method utama untuk mengunduh bundel ZIP oleh admin.
-     * Ini adalah satu-satunya method yang perlu dipanggil dari route.
+     * Method utama untuk mengunduh bundel ZIP yang berisi sertifikat DOCX dan XML.
      */
-    public function downloadBundle(NcageRecord $record)
+    public function downloadBundle(NcageRecord $record): BinaryFileResponse
     {
+        // Pastikan direktori temporary ada, jika tidak, buat.
+        $this->ensureTempDirectoryExists();
+
         // Pastikan kedua file sertifikat sudah ada, jika belum, buat terlebih dahulu.
         $this->ensureCertificatesExist($record);
 
@@ -29,20 +34,28 @@ class CertificateController extends Controller
 
         $zip = new ZipArchive;
 
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-            // Tambahkan file DOCX dan XML ke dalam ZIP
-            $zip->addFile(Storage::disk('public')->path($record->domestic_certificate_path), basename($record->domestic_certificate_path));
-            $zip->addFile(Storage::disk('public')->path($record->domestic_certificate_xml_path), basename($record->domestic_certificate_xml_path));
-            $zip->close();
-        } else {
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
             abort(500, 'Gagal membuat file ZIP.');
         }
 
+        // ---- PERUBAHAN DI SINI ----
+        // Dapatkan path absolut menggunakan helper storage_path()
+        $docxPath = storage_path('app/public/' . $record->domestic_certificate_path);
+        $xmlPath = storage_path('app/public/' . $record->domestic_certificate_xml_path);
+
+        // Tambahkan file DOCX dan XML ke dalam ZIP
+        $zip->addFile($docxPath, basename($record->domestic_certificate_path));
+        $zip->addFile($xmlPath, basename($record->domestic_certificate_xml_path));
+        // ---- AKHIR PERUBAHAN ----
+        
+        $zip->close();
+
+        // Kirim file ZIP untuk diunduh dan hapus file tersebut setelah terkirim.
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 
     /**
-     * Helper utama untuk memeriksa dan membuat file jika belum ada.
+     * Memeriksa dan memastikan kedua sertifikat (DOCX dan XML) sudah ada.
      */
     private function ensureCertificatesExist(NcageRecord $record): void
     {
@@ -57,12 +70,12 @@ class CertificateController extends Controller
             $this->generateXml($record);
         }
 
-        // Muat ulang data record untuk mendapatkan path terbaru jika baru dibuat
+        // Muat ulang data record untuk mendapatkan path terbaru jika baru dibuat.
         $record->refresh();
     }
 
     /**
-     * Logika untuk membuat file DOCX saja.
+     * Membuat file sertifikat DOCX.
      */
     private function generateDocx(NcageRecord $record): void
     {
@@ -71,24 +84,30 @@ class CertificateController extends Controller
             abort(500, "File template DOCX tidak ditemukan.");
         }
 
-        $templateProcessor = new TemplateProcessor($templatePath);
-        $this->fillTemplatePlaceholders($templateProcessor, $record);
-
         $safeCompanyName = Str::slug($record->entity_name, '_');
         $fileName = 'Sertifikat_NCAGE_' . $safeCompanyName . '_' . $record->ncage_code . '.docx';
         $permanentPath = 'uploads/' . $safeCompanyName . '/sertifikat/' . $fileName;
-
         $tempFilePath = storage_path('app/temp/' . $fileName);
-        $templateProcessor->saveAs($tempFilePath);
-        Storage::disk('public')->put($permanentPath, file_get_contents($tempFilePath));
-        unlink($tempFilePath);
 
-        $record->domestic_certificate_path = $permanentPath;
-        $record->save();
+        try {
+            $templateProcessor = new TemplateProcessor($templatePath);
+            $this->fillTemplatePlaceholders($templateProcessor, $record);
+            $templateProcessor->saveAs($tempFilePath);
+
+            Storage::disk('public')->put($permanentPath, file_get_contents($tempFilePath));
+
+            $record->domestic_certificate_path = $permanentPath;
+            $record->save();
+        } finally {
+            // Pastikan file sementara selalu dihapus, bahkan jika terjadi error.
+            if (file_exists($tempFilePath)) {
+                unlink($tempFilePath);
+            }
+        }
     }
 
     /**
-     * Logika untuk membuat file XML saja.
+     * Membuat file sertifikat XML.
      */
     private function generateXml(NcageRecord $record): void
     {
@@ -98,7 +117,7 @@ class CertificateController extends Controller
         $dom->appendChild($root);
 
         foreach ($record->toArray() as $key => $value) {
-            $child = $dom->createElement($key, htmlspecialchars($value ?? ''));
+            $child = $dom->createElement($key, htmlspecialchars((string) ($value ?? '')));
             $root->appendChild($child);
         }
         $xmlContent = $dom->saveXML();
@@ -114,7 +133,7 @@ class CertificateController extends Controller
     }
 
     /**
-     * Helper untuk mengisi placeholder di template DOCX.
+     * Mengisi semua placeholder pada template DOCX dengan data dari record.
      */
     private function fillTemplatePlaceholders(TemplateProcessor $templateProcessor, NcageRecord $record): void
     {
@@ -133,5 +152,16 @@ class CertificateController extends Controller
         $templateProcessor->setValue('nomor_bulan_romawi', $bulanRomawi[$now->month - 1]);
         $templateProcessor->setValue('tahun_download', $now->year);
         $templateProcessor->setValue('bulan_download', $now->translatedFormat('F'));
+    }
+
+    /**
+     * Helper untuk memastikan direktori temporary ada.
+     */
+    private function ensureTempDirectoryExists(): void
+    {
+        $tempDirectory = storage_path('app/temp');
+        if (!is_dir($tempDirectory)) {
+            mkdir($tempDirectory, 0755, true);
+        }
     }
 }

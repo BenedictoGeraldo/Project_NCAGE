@@ -29,6 +29,7 @@
 <body class="antialiased">
     <div>
         @include('partials.navbar')
+        @include('partials.offcanvas-menu')
         @yield('content')
     </div>
     <div>

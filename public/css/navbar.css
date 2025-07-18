@@ -106,3 +106,43 @@
 .dropdown-item:hover {
     background-color: #f5f5f5;
 }
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/*off canvas below*/
+.offcanvas.bg-dark-custom {
+  background-color: #212529;
+}
+
+.offcanvas-body .nav-link {
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+  color: rgba(255, 255, 255, 0.75);
+  border-radius: 8px;
+  margin-bottom: 0.25rem;
+}
+
+.offcanvas-body .nav-link:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.offcanvas-body .nav-link.active-mobile {
+  background-color: #E8BD74;
+  color: #ffff;
+  font-weight: 600;
+}
+
+.offcanvas-header {
+  justify-content: flex-end;
+}
+
+.offcanvas-profile-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #E2B34B;
+}
