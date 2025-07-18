@@ -109,4 +109,8 @@ Route::middleware([
 ->group(function () {
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])
          ->name('admin.certificate.download');
+    Route::get('/sertifikat/record/{record}/unduh-xml', [CertificateController::class, 'downloadXml'])
+         ->name('admin.certificate.download.xml');
+    Route::get('/sertifikat/record/{record}/unduh-berkas', [CertificateController::class, 'downloadBundle'])
+         ->name('admin.certificate.download.bundle');
 });

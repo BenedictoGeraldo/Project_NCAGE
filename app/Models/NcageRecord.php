@@ -55,6 +55,7 @@ class NcageRecord extends Model
         'rp1_5',
         'nmcrl_ref_count',
         'domestic_certificate_path',
+        'domestic_certificate_xml_path',
         'international_certificate_path',
     ];
     /**

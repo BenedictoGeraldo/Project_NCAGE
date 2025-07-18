@@ -182,12 +182,12 @@ class NcageRecordResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Action::make('downloadCertificate')
-                    ->label('Unduh Sertifikat Indonesia')
-                    ->icon('heroicon-o-arrow-down-tray')
+                Action::make('downloadBundle')
+                    ->label('Unduh Berkas Sertifikat ID')
+                    ->icon('heroicon-o-archive-box-arrow-down')
                     ->color('success')
-                    ->url(fn (NcageRecord $record): string => route('admin.certificate.download', $record))
-                    ->openUrlInNewTab(),
+                    ->url(fn (NcageRecord $record): string => route('admin.certificate.download.bundle', $record))
+                    ->openUrlInNewTab()
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
