@@ -36,34 +36,43 @@
                 @endguest
 
                 @auth
-                <div class="dropdown mt-3 mt-lg-0 d-flex justify-content-center">
-                    <a href="#" class="profile-link">
-                        @if (Auth::user()->profile_photo_path)
-                            <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Foto Profil" class="profile-image">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8C1515&color=fff&rounded=true&size=40" alt="Foto Profil" class="profile-image">
-                        @endif
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li class="dropdown-header-custom text-center">
-                            <h6>Pengaturan</h6>
-                            <hr>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('profile.show') }}">
-                                <i class="fa-solid fa-user"></i> Akun
+                    <div class="d-flex align-items-center mt-3 mt-lg-0">
+                    {{-- 1. Ikon Notifikasi --}}
+                        <a href="#" class="text-secondary me-4">
+                            {{-- Menggunakan Font Awesome yang sudah Anda muat --}}
+                            <i class="fa-regular fa-bell fs-5"></i>
+                        </a>
+
+                        {{-- 2. Dropdown Profil (kode Anda yang sudah ada, dimasukkan ke sini) --}}
+                        <div class="dropdown">
+                            <a href="#" class="profile-link">
+                                @if (Auth::user()->profile_photo_path)
+                                    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Foto Profil" class="profile-image">
+                                @else
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=8C1515&color=fff&rounded=true&size=40" alt="Foto Profil" class="profile-image">
+                                @endif
                             </a>
-                        </li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                                @csrf
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    <i class="fa-solid fa-right-from-bracket"></i> Keluar
-                                </a>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header-custom text-center">
+                                    <h6>Pengaturan</h6>
+                                    <hr>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
+                                        <i class="fa-solid fa-user"></i> Akun
+                                    </a>
+                                </li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                                        @csrf
+                                        <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+                                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 @endauth
             </div>
         </div>
