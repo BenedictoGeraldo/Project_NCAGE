@@ -13,8 +13,10 @@
                 <h2 class="fw-bold">Unggah Dokumen Persyaratan</h2>
             @elseif($step == 2)
                 <h2 class="fw-bold">Lengkapi Formulir Permintaan</h2>       
-            @elseif($step == 3)
+            @elseif($step == 3 && !$revisi)
                 <h2 class="fw-bold">Konfirmasi & Kirim Permohonan</h2>         
+            @elseif($step == 3 && $revisi)
+                <h2 class="fw-bold">Revisi Data</h2>
             @endif
             
             <div class="line w-100 rounded-pill"></div>
@@ -88,39 +90,77 @@
                     @endif
 
                 @elseif($step == 3)
-                    @include('form_ncage.partials.pendaftaran_step1', ['disabled' => true])
-                    <div class="mt-5 mb-5 text-center">
-                        <h4 class="fw-bold">Ringkasan Data</h4>
-                    </div>
-                    
-                    <div class="mb-5 text-center">
-                        <h4 class="fw-bold">A. Identifikasi Entitas</h4>
-                    </div>
+                    @if(!$revisi)                        
+                        @include('form_ncage.partials.pendaftaran_step1', ['disabled' => true])
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">Ringkasan Data</h4>
+                        </div>
+                        
+                        <div class="mb-5 text-center">
+                            <h4 class="fw-bold">A. Identifikasi Entitas</h4>
+                        </div>
 
-                    @include('form_ncage.partials.pendaftaran_step2_1', ['disabled' => true])
+                        @include('form_ncage.partials.pendaftaran_step2_1', ['disabled' => true])
 
-                    <div class="mt-5 mb-5 text-center">
-                        <h4 class="fw-bold">B. Contact Person (Narahubung)</h4>
-                    </div>
-                    
-                    @include('form_ncage.partials.pendaftaran_step2_2', ['disabled' => true])
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">B. Contact Person (Narahubung)</h4>
+                        </div>
+                        
+                        @include('form_ncage.partials.pendaftaran_step2_2', ['disabled' => true])
 
-                    <div class="mt-5 mb-5 text-center">
-                        <h4 class="fw-bold">C. Detail Badan Usaha (Badan Usaha)</h4>
-                    </div>
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">C. Detail Badan Usaha (Badan Usaha)</h4>
+                        </div>
 
-                    @include('form_ncage.partials.pendaftaran_step2_3', ['disabled' => true])
+                        @include('form_ncage.partials.pendaftaran_step2_3', ['disabled' => true])
 
-                    <div class="mt-5 mb-5 text-center">
-                        <h4 class="fw-bold">D. Informasi Lainnya</h4>
-                    </div>
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">D. Informasi Lainnya</h4>
+                        </div>
 
-                    @include('form_ncage.partials.pendaftaran_step2_4', ['disabled' => true])
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
-                        <button id="btnOpenModal" type="button" class="btn btn-dark-red text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
+                        @include('form_ncage.partials.pendaftaran_step2_4', ['disabled' => true])
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                            <button id="btnOpenModal" type="button" class="btn btn-dark-red text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    @elseif($revisi)
+                        @include('form_ncage.partials.pendaftaran_step1')
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">Ringkasan Data</h4>
+                        </div>
+                        
+                        <div class="mb-5 text-center">
+                            <h4 class="fw-bold">A. Identifikasi Entitas</h4>
+                        </div>
+
+                        @include('form_ncage.partials.pendaftaran_step2_1')
+
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">B. Contact Person (Narahubung)</h4>
+                        </div>
+                        
+                        @include('form_ncage.partials.pendaftaran_step2_2')
+
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">C. Detail Badan Usaha (Badan Usaha)</h4>
+                        </div>
+
+                        @include('form_ncage.partials.pendaftaran_step2_3')
+
+                        <div class="mt-5 mb-5 text-center">
+                            <h4 class="fw-bold">D. Informasi Lainnya</h4>
+                        </div>
+
+                        @include('form_ncage.partials.pendaftaran_step2_4')
+
+                        <input type="hidden" name="revisi" value="1">
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 4]) }}" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+                            <button id="btnOpenModal" type="button" class="btn btn-dark-red text-white rounded-pill px-4 py-2">Lanjutkan <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    @endif
                 @endif
 
                 <!-- Modal Konfirmasi Submit -->
