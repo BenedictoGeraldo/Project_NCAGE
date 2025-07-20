@@ -293,8 +293,6 @@ class FormNCAGEController extends Controller
                 $data['nama_jalan_2'] = $request->nama_jalan_2;
                 $data['kota_2'] = $request->kota_2;
                 $data['kode_pos_2'] = $request->kode_pos_2;
-
-                dd($data);
             }
 
             // dd($request->all());
