@@ -57,7 +57,7 @@
 @endforeach
 
 {{-- Tombol Navigasi --}}
-@if(empty($disabled) || !$disabled)
+@if(empty($disabled) && !session('is_revision'))
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ route('pendaftaran-ncage.show', ['step' => 2, 'substep' => 2]) }}"
            class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2">

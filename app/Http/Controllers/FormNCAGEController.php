@@ -194,166 +194,35 @@ class FormNCAGEController extends Controller
         } elseif ($request->step == 2) {
             // substep
             if ($request->substep == 1) {
-                $wajibFields = [
-                    'jenis_permohonan',
-                    'jenis_permohonan_ncage',
-                    'tujuan_penerbitan',
-                    'tipe_entitas',
-                    'status_kepemilikan',
-                    'terdaftar_ahu',
-                    'koordinat_kantor',
-                    'nib',
-                    'npwp',
-                    'bidang_usaha',
-                ];
-
-                // Validasi rules
-                $rules = [
-                    'tanggal_pengajuan' => 'nullable|date',
-                    'jenis_permohonan' => 'required|string',
-                    'jenis_permohonan_ncage' => 'required|string',
-                    'tujuan_penerbitan' => 'required|in:1,2,3',
-                    'tipe_entitas' => 'required|in:E,F,G,H',
-                    'status_kepemilikan' => 'required|in:1,2,3',
-                    'terdaftar_ahu' => 'required|string',
-                    'koordinat_kantor' => 'required|string',
-                    'nib' => 'required|string',
-                    'npwp' => 'required|string',
-                    'bidang_usaha' => 'required|string',
-                ];
-
-                // Jika tujuan_penerbitan == 3 (lainnya), maka field tambahan harus diisi
-                if ($request->tujuan_penerbitan == '3') {
-                    $rules['tujuan_penerbitan_lainnya'] = 'required|string|max:255';
-                }
-
-                // Label alias
-                $attributes = [
-                    'tanggal_pengajuan' => 'Tanggal Pengajuan',
-                    'jenis_permohonan' => 'Jenis Permohonan',
-                    'jenis_permohonan_ncage' => 'Jenis Permohonan NCAGE',
-                    'tujuan_penerbitan' => 'Tujuan Penerbitan',
-                    'tujuan_penerbitan_lainnya' => 'Tujuan Penerbitan (Lainnya)',
-                    'tipe_entitas' => 'Tipe Entitas',
-                    'status_kepemilikan' => 'Status Kepemilikan Bangunan',
-                    'terdaftar_ahu' => 'Status AHU',
-                    'koordinat_kantor' => 'Koordinat Kantor',
-                    'nib' => 'NIB',
-                    'npwp' => 'NPWP',
-                    'bidang_usaha' => 'Bidang Usaha',
-                ];
-
-                // Pesan error custom
-                $messages = [
-                    'required' => ':attribute wajib diisi.',
-                    'in' => ':attribute tidak valid.',
-                    'string' => ':attribute harus berupa teks.',
-                    'max' => ':attribute tidak boleh lebih dari :max karakter.',
-                    'date' => ':attribute harus berupa tanggal yang valid.',
-                ];
-
-                // Jalankan validasi
+                [$rules, $messages, $attributes] = $this->getSubstep1Validation($request);
                 $request->validate($rules, $messages, $attributes);
 
-                // Simpan ke session jika valid
-                foreach ($wajibFields as $field) {
-                    $data[$field] = $request->$field;
-                }
-                $data['tanggal_pengajuan'] = $request->tanggal_pengajuan;
-
-                // Jika ada input tambahan untuk tujuan_penerbitan lainnya
-                if ($request->tujuan_penerbitan == '3') {
-                    $data['tujuan_penerbitan_lainnya'] = $request->tujuan_penerbitan_lainnya;
+                $fields = array_keys($rules);
+                foreach ($fields as $field) {
+                    if ($request->has($field)) {
+                        $data[$field] = $request->$field;
+                    }
                 }
 
                 Session::put('form_ncage_progress', ['step' => 2, 'substep' => 2]);
             } elseif ($request->substep == 2) {
-                $rules = [
-                    'nama_pemohon' => 'required|string|max:255',
-                    'no_identitas' => 'required|string|max:16',
-                    'alamat' => 'required|string|max:255',
-                    'no_tel' => 'required|string|max:20',
-                    'email' => 'required|email|max:255',
-                    'jabatan' => 'nullable|string|max:100',
-                ];
-
-                $attributes = [
-                    'nama_pemohon' => 'Nama Pemohon',
-                    'no_identitas' => 'Nomor Identitas',
-                    'alamat' => 'Alamat',
-                    'no_tel' => 'Nomor Telepon / HP',
-                    'email' => 'Email Pemohon',
-                    'jabatan' => 'Jabatan',
-                ];
-
-                $messages = [
-                    'required' => ':attribute wajib diisi.',
-                    'email' => ':attribute harus berupa alamat email yang valid.',
-                    'max' => ':attribute tidak boleh lebih dari :max karakter.',
-                ];
-
-                // Jalankan validasi
+                [$rules, $messages, $attributes] = $this->getSubstep2Validation();
                 $request->validate($rules, $messages, $attributes);
 
-                // Simpan ke session jika valid
-                $data['nama_pemohon'] = $request->nama_pemohon;
-                $data['no_identitas'] = $request->no_identitas;
-                $data['alamat'] = $request->alamat;
-                $data['no_tel'] = $request->no_tel;
-                $data['email'] = $request->email;
-                $data['jabatan'] = $request->jabatan;
+                foreach ($rules as $field => $rule) {
+                    $data[$field] = $request->$field;
+                }
 
                 Session::put('form_ncage_progress', ['step' => 2, 'substep' => 3]);
             } elseif ($request->substep == 3) {
-                $rules = [
-                    'nama_badan_usaha'     => 'required|string|max:255',
-                    'provinsi'             => 'required|string|max:100',
-                    'kota'                 => 'required|string|max:100',
-                    'alamat_kantor'        => 'required|string|max:500',
-                    'kode_pos'             => 'required|string|max:10',
-                    'po_box'               => 'nullable|string|max:50',
-                    'no_telp'              => 'required|string|max:20',
-                    'no_fax'               => 'required|string|max:20',
-                    'email_kantor'         => 'required|email|max:255',
-                    'website_kantor'       => 'nullable|string|max:255',
-                    'perusahaan_afiliasi'  => 'nullable|string|max:255',
-                ];
-
-                $attributes = [
-                    'nama_badan_usaha'     => 'Nama Badan Usaha',
-                    'provinsi'             => 'Provinsi',
-                    'kota'                 => 'Kota',
-                    'alamat_kantor'        => 'Alamat Kantor',
-                    'kode_pos'             => 'Kode Pos',
-                    'po_box'               => 'PO.Box',
-                    'no_telp'              => 'No. Telepon Kantor',
-                    'no_fax'               => 'No. Fax Kantor',
-                    'email_kantor'         => 'Email Kantor',
-                    'website_kantor'       => 'Website Kantor',
-                    'perusahaan_afiliasi'  => 'Perusahaan Afiliasi',
-                ];
-
-                $messages = [
-                    'required' => ':attribute wajib diisi.',
-                    'email' => ':attribute harus berupa alamat email yang valid.',
-                    'max' => ':attribute tidak boleh lebih dari :max karakter.',
-                ];
-
-                // Jalankan validasi
+                [$rules, $messages, $attributes] = $this->getSubstep3Validation();
                 $request->validate($rules, $messages, $attributes);
 
-                // Simpan ke session
-                $data['nama_badan_usaha']     = $request->nama_badan_usaha;
-                $data['provinsi']             = $request->provinsi;
-                $data['kota']                 = $request->kota;
-                $data['alamat_kantor']        = $request->alamat_kantor;
-                $data['kode_pos']             = $request->kode_pos;
-                $data['po_box']               = $request->po_box;
-                $data['no_telp']              = $request->no_telp;
-                $data['no_fax']               = $request->no_fax;
-                $data['email_kantor']         = $request->email_kantor;
-                $data['website_kantor']       = $request->website_kantor;
-                $data['perusahaan_afiliasi'] = $request->perusahaan_afiliasi;
+                foreach ($rules as $field => $rule) {
+                    $data[$field] = $request->$field;
+                }
+
+                Session::put('form_ncage_progress', ['step' => 2, 'substep' => 4]);
 
                 Session::put('form_ncage_progress', ['step' => 2, 'substep' => 4]);
             } elseif ($request->substep == 4) {
@@ -374,42 +243,43 @@ class FormNCAGEController extends Controller
         } elseif ($request->step == 3) {
 
             if (!empty($request->revisi)) {
-                // Substep 1
-                $data['tanggal_pengajuan'] = $request->tanggal_pengajuan;
-                $data['jenis_permohonan'] = $request->jenis_permohonan;
-                $data['jenis_permohonan_ncage'] = $request->jenis_permohonan_ncage;
-                $data['tujuan_penerbitan'] = $request->tujuan_penerbitan;
-                if ($request->tujuan_penerbitan == '3') {
-                    $data['tujuan_penerbitan_lainnya'] = $request->tujuan_penerbitan_lainnya;
+                // VALIDASI STEP 1 - Dokumen di session
+                $docs = Session::get('form_ncage.documents', []);
+                $requiredDocs = [
+                    'surat_permohonan',
+                    'surat_kebenaran',
+                    'foto_kantor',
+                    'akta_notaris',
+                    'sk_kemenkumham',
+                    'siup_nib',
+                    'company_profile',
+                    'NPWP',
+                ];
+                $missingDocs = [];
+
+                foreach ($requiredDocs as $doc) {
+                    if (empty($docs[$doc])) {
+                        $missingDocs[$doc] = ucfirst(str_replace('_', ' ', $doc)) . ' wajib diunggah.';
+                        Log::warning('Dokumen ' . $doc . ' belum diunggah.');
+                    }
                 }
-                $data['tipe_entitas'] = $request->tipe_entitas;
-                $data['status_kepemilikan'] = $request->status_kepemilikan;
-                $data['terdaftar_ahu'] = $request->terdaftar_ahu;
-                $data['koordinat_kantor'] = $request->koordinat_kantor;
-                $data['nib'] = $request->nib;
-                $data['npwp'] = $request->npwp;
-                $data['bidang_usaha'] = $request->bidang_usaha;
 
-                // Substep 2
-                $data['nama_pemohon'] = $request->nama_pemohon;
-                $data['no_identitas'] = $request->no_identitas;
-                $data['alamat'] = $request->alamat;
-                $data['no_tel'] = $request->no_tel;
-                $data['email'] = $request->email;
-                $data['jabatan'] = $request->jabatan;
+                if (!empty($missingDocs)) {
+                    return back()->withErrors($missingDocs)->withInput();
+                }
 
-                // Substep 3
-                $data['nama_badan_usaha'] = $request->nama_badan_usaha;
-                $data['provinsi'] = $request->provinsi;
-                $data['kota'] = $request->kota;
-                $data['alamat_kantor'] = $request->alamat_kantor;
-                $data['kode_pos'] = $request->kode_pos;
-                $data['po_box'] = $request->po_box;
-                $data['no_telp'] = $request->no_telp;
-                $data['no_fax'] = $request->no_fax;
-                $data['email_kantor'] = $request->email_kantor;
-                $data['website_kantor'] = $request->website_kantor;
-                $data['perusahaan_afiliasi'] = $request->perusahaan_afiliasi;
+                [$rules1, $messages1, $attributes1] = $this->getSubstep1Validation($request);
+                [$rules2, $messages2, $attributes2] = $this->getSubstep2Validation();
+                [$rules3, $messages3, $attributes3] = $this->getSubstep3Validation();
+
+                $request->validate($rules1 + $rules2 + $rules3, array_merge($messages1, $messages2, $messages3), array_merge($attributes1, $attributes2, $attributes3));
+
+                // Simpan semua kembali
+                foreach (array_keys($rules1 + $rules2 + $rules3) as $field) {
+                    if ($request->has($field)) {
+                        $data[$field] = $request->$field;
+                    }
+                }
 
                 // Substep 4
                 $data['produk_dihasilkan'] = $request->produk_dihasilkan;
@@ -423,6 +293,8 @@ class FormNCAGEController extends Controller
                 $data['nama_jalan_2'] = $request->nama_jalan_2;
                 $data['kota_2'] = $request->kota_2;
                 $data['kode_pos_2'] = $request->kode_pos_2;
+
+                dd($data);
             }
 
             // dd($request->all());
@@ -547,6 +419,120 @@ class FormNCAGEController extends Controller
         } else {
             return redirect()->route('pendaftaran-ncage.show', ['step' => $request->step + 1]);
         }
+    }
+
+    private function getSubstep1Validation(Request $request)
+    {
+        $rules = [
+            'tanggal_pengajuan' => 'nullable|date',
+            'jenis_permohonan' => 'required|string',
+            'jenis_permohonan_ncage' => 'required|string',
+            'tujuan_penerbitan' => 'required|in:1,2,3',
+            'tipe_entitas' => 'required|in:E,F,G,H',
+            'status_kepemilikan' => 'required|in:1,2,3',
+            'terdaftar_ahu' => 'required|string',
+            'koordinat_kantor' => 'required|string',
+            'nib' => 'required|string',
+            'npwp' => 'required|string',
+            'bidang_usaha' => 'required|string',
+        ];
+
+        if ($request->tujuan_penerbitan == '3') {
+            $rules['tujuan_penerbitan_lainnya'] = 'required|string|max:255';
+        }
+
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'in' => ':attribute tidak valid.',
+            'string' => ':attribute harus berupa teks.',
+            'max' => ':attribute tidak boleh lebih dari :max karakter.',
+            'date' => ':attribute harus berupa tanggal yang valid.',
+        ];
+
+        $attributes = [
+            'tanggal_pengajuan' => 'Tanggal Pengajuan',
+            'jenis_permohonan' => 'Jenis Permohonan',
+            'jenis_permohonan_ncage' => 'Jenis Permohonan NCAGE',
+            'tujuan_penerbitan' => 'Tujuan Penerbitan',
+            'tujuan_penerbitan_lainnya' => 'Tujuan Penerbitan (Lainnya)',
+            'tipe_entitas' => 'Tipe Entitas',
+            'status_kepemilikan' => 'Status Kepemilikan Bangunan',
+            'terdaftar_ahu' => 'Status AHU',
+            'koordinat_kantor' => 'Koordinat Kantor',
+            'nib' => 'NIB',
+            'npwp' => 'NPWP',
+            'bidang_usaha' => 'Bidang Usaha',
+        ];
+
+        return [$rules, $messages, $attributes];
+    }
+
+    private function getSubstep2Validation()
+    {
+        $rules = [
+            'nama_pemohon' => 'required|string|max:255',
+            'no_identitas' => 'required|string|max:16',
+            'alamat' => 'required|string|max:255',
+            'no_tel' => 'required|string|max:20',
+            'email' => 'required|email|max:255',
+            'jabatan' => 'nullable|string|max:100',
+        ];
+
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'email' => ':attribute harus berupa alamat email yang valid.',
+            'max' => ':attribute tidak boleh lebih dari :max karakter.',
+        ];
+
+        $attributes = [
+            'nama_pemohon' => 'Nama Pemohon',
+            'no_identitas' => 'Nomor Identitas',
+            'alamat' => 'Alamat',
+            'no_tel' => 'Nomor Telepon / HP',
+            'email' => 'Email Pemohon',
+            'jabatan' => 'Jabatan',
+        ];
+
+        return [$rules, $messages, $attributes];
+    }
+
+    private function getSubstep3Validation()
+    {
+        $rules = [
+            'nama_badan_usaha'     => 'required|string|max:255',
+            'provinsi'             => 'required|string|max:100',
+            'kota'                 => 'required|string|max:100',
+            'alamat_kantor'        => 'required|string|max:500',
+            'kode_pos'             => 'required|string|max:10',
+            'po_box'               => 'nullable|string|max:50',
+            'no_telp'              => 'required|string|max:20',
+            'no_fax'               => 'required|string|max:20',
+            'email_kantor'         => 'required|email|max:255',
+            'website_kantor'       => 'nullable|string|max:255',
+            'perusahaan_afiliasi'  => 'nullable|string|max:255',
+        ];
+
+        $messages = [
+            'required' => ':attribute wajib diisi.',
+            'email' => ':attribute harus berupa alamat email yang valid.',
+            'max' => ':attribute tidak boleh lebih dari :max karakter.',
+        ];
+
+        $attributes = [
+            'nama_badan_usaha'     => 'Nama Badan Usaha',
+            'provinsi'             => 'Provinsi',
+            'kota'                 => 'Kota',
+            'alamat_kantor'        => 'Alamat Kantor',
+            'kode_pos'             => 'Kode Pos',
+            'po_box'               => 'PO.Box',
+            'no_telp'              => 'No. Telepon Kantor',
+            'no_fax'               => 'No. Fax Kantor',
+            'email_kantor'         => 'Email Kantor',
+            'website_kantor'       => 'Website Kantor',
+            'perusahaan_afiliasi'  => 'Perusahaan Afiliasi',
+        ];
+
+        return [$rules, $messages, $attributes];
     }
 
     public function uploadTemp(Request $request)

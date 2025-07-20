@@ -89,7 +89,7 @@
     </div>
 @endforeach
 
-@if(empty($disabled))
+@if(empty($disabled) && !session('is_revision'))
     <div class="d-flex justify-content-between mt-4">
         <button type="submit" name="cancel" value="1" class="btn btn-outline-dark-red nav-text border-2 border-active rounded-pill px-4 py-2">
             <i class="fa-solid fa-arrow-left"></i> Kembali
