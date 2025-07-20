@@ -164,3 +164,62 @@ body {
     background-color: #5a191f;
     color: white;
 }
+
+/* --- Responsive Styles --- */
+
+/* Untuk Tablet dan di bawahnya (lebar maks 767.98px) */
+@media (max-width: 767.98px) {
+    .status-card {
+        padding: 20px;
+    }
+
+    .main-title {
+        font-size: 1.75rem;
+    }
+
+    .sub-title {
+        font-size: 1.1rem;
+    }
+
+    .detail-box .key {
+        font-weight: 600;
+        margin-bottom: -5px;
+    }
+
+    .detail-box .value {
+        padding-left: 25px;
+    }
+
+    .detail-box .value::before {
+        content: ": ";
+        position: absolute;
+        left: 15px;
+    }
+
+    .timeline-container {
+        padding-left: 25px;
+    }
+
+    .timeline-container::before {
+        left: 9px;
+    }
+
+    .timeline-icon {
+        width: 30px;
+        height: 30px;
+        left: -15px;
+        font-size: 1rem;
+    }
+
+    .timeline-content {
+        margin-left: 20px;
+        padding: 15px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .timeline-content .btn-custom-dark {
+        width: 100%;
+        text-align: center;
+    }
+}
