@@ -28,8 +28,7 @@ class CertificateController extends Controller
         $this->ensureCertificatesExist($record);
 
         // Buat dan unduh file ZIP.
-        $safeCompanyName = Str::slug($record->entity_name, '_');
-        $zipFileName = 'Berkas_Sertifikat_' . $safeCompanyName . '_' . $record->ncage_code . '.zip';
+        $zipFileName = 'Berkas_Sertifikat_' . $record->entity_name . '_' . $record->ncage_code . '.zip';
         $zipPath = storage_path('app/temp/' . $zipFileName);
 
         $zip = new ZipArchive;
@@ -38,7 +37,6 @@ class CertificateController extends Controller
             abort(500, 'Gagal membuat file ZIP.');
         }
 
-        // ---- PERUBAHAN DI SINI ----
         // Dapatkan path absolut menggunakan helper storage_path()
         $docxPath = storage_path('app/public/' . $record->domestic_certificate_path);
         $xmlPath = storage_path('app/public/' . $record->domestic_certificate_xml_path);
@@ -46,8 +44,7 @@ class CertificateController extends Controller
         // Tambahkan file DOCX dan XML ke dalam ZIP
         $zip->addFile($docxPath, basename($record->domestic_certificate_path));
         $zip->addFile($xmlPath, basename($record->domestic_certificate_xml_path));
-        // ---- AKHIR PERUBAHAN ----
-        
+
         $zip->close();
 
         // Kirim file ZIP untuk diunduh dan hapus file tersebut setelah terkirim.
@@ -84,9 +81,8 @@ class CertificateController extends Controller
             abort(500, "File template DOCX tidak ditemukan.");
         }
 
-        $safeCompanyName = Str::slug($record->entity_name, '_');
-        $fileName = 'Sertifikat_NCAGE_' . $safeCompanyName . '_' . $record->ncage_code . '.docx';
-        $permanentPath = 'uploads/' . $safeCompanyName . '/sertifikat/' . $fileName;
+        $fileName = 'Sertifikat_NCAGE_' . $record->entity_name . '_' . $record->ncage_code . '.docx';
+        $permanentPath = 'uploads/' . $record->entity_name . '/sertifikat/' . $fileName;
         $tempFilePath = storage_path('app/temp/' . $fileName);
 
         try {
@@ -122,9 +118,8 @@ class CertificateController extends Controller
         }
         $xmlContent = $dom->saveXML();
 
-        $safeCompanyName = Str::slug($record->entity_name, '_');
-        $fileName = 'Sertifikat_NCAGE_' . $safeCompanyName . '_' . $record->ncage_code . '.xml';
-        $permanentPath = 'uploads/' . $safeCompanyName . '/sertifikat/' . $fileName;
+        $fileName = 'Sertifikat_NCAGE_' . $record->entity_name . '_' . $record->ncage_code . '.xml';
+        $permanentPath = 'uploads/' . $record->entity_name . '/sertifikat/' . $fileName;
 
         Storage::disk('public')->put($permanentPath, $xmlContent);
 
@@ -163,5 +158,28 @@ class CertificateController extends Controller
         if (!is_dir($tempDirectory)) {
             mkdir($tempDirectory, 0755, true);
         }
+    }
+
+    /**
+     * Mengunduh file sertifikat DOCX dari sebuah record.
+     * Akan men-generate file jika belum ada.
+     */
+    public function downloadFromRecord(NcageRecord $record)
+    {
+        // Cek apakah path sertifikat sudah ada di database dan filenya benar-benar ada di storage.
+        if (!$record->domestic_certificate_path || !Storage::disk('public')->exists($record->domestic_certificate_path)) {
+            // Jika tidak ada, panggil fungsi untuk membuat file DOCX.
+            $this->generateDocx($record);
+            // Muat ulang data record untuk mendapatkan path file yang baru saja dibuat.
+            $record->refresh();
+        }
+
+        // Ambil path lengkap ke file sertifikat.
+        $filePath = $record->domestic_certificate_path;
+        // Dapatkan nama file yang aman untuk diunduh.
+        $fileName = basename($filePath);
+
+        // Kembalikan response untuk mengunduh file.
+        return Storage::disk('public')->download($filePath, $fileName);
     }
 }
