@@ -5,10 +5,10 @@ Project NCAGE merupakan project website berbasis Laravel yang dibuat sebagai bah
 🛠️ Teknologi yang Digunakan
 Berikut adalah tumpukan teknologi (tech stack) yang digunakan dalam proyek ini:
  - Laravel Framework 10.48.29
- - PHP 8.2.29
+ - PHP 8.3.23
  - MySQL v8.0.41
- - Bootstrap v5.3
- - filament v3
+ - Bootstrap v5.0.2
+ - filament v3.3
 
 🚀 Cara Instalasi & Setup
 Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal Anda.
