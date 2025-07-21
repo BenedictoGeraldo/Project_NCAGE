@@ -9,32 +9,39 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class ValidateRequest extends Page
 {
     protected static string $resource = NcageApplicationResource::class;
-
     protected static string $view = 'filament.resources.ncage-application-resource.pages.validate-request';
-
     protected static ?string $title = 'Validasi';
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected ?NcageApplication $record = null;
+    public ?int $recordId = null; // simpan ID saja
     public ?array $data = [];
 
     public function mount(int $record): void
     {
-        $this->record = NcageApplication::findOrFail($record);
+        $this->recordId = $record;
 
-        if ($this->record->status_id !== 4) { // Hanya untuk status "Proses Validasi/Input Sertifikat"
+        $application = NcageApplication::findOrFail($this->recordId);
+
+        if ($application->status_id !== 4) {
             Notification::make()
                 ->title('Permohonan tidak dalam status input sertifikat.')
                 ->danger()
                 ->send();
+
             redirect()->route('filament.resources.ncage-application-resource.pages.index');
         }
 
         $this->form->fill();
+    }
+
+    protected function getRecord(): NcageApplication
+    {
+        return NcageApplication::with('companyDetail')->findOrFail($this->recordId);
     }
 
     public function form(Form $form): Form
@@ -44,13 +51,13 @@ class ValidateRequest extends Page
                 FileUpload::make('certificate')
                     ->label('')
                     ->disk('public')
-                    ->directory(fn () => "uploads/{$this->record->user_id}")
+                    ->directory(fn () => "uploads/{$this->getRecord()->user_id}")
                     ->required()
                     ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
-                    ->maxSize(10240), // 10MB maksimum
+                    ->maxSize(10240),
             ])
             ->statePath('data')
-            ->model($this->record);
+            ->model($this->getRecord());
     }
 
     protected function getActions(): array
@@ -59,15 +66,42 @@ class ValidateRequest extends Page
             Action::make('save')
                 ->label('Simpan Sertifikat')
                 ->action(function () {
-                    // $this->record->update([
-                    //     'certificate_path' => $this->data['certificate'],
-                    //     'status_id' => 5, // Ubah status ke "Selesai"
-                    // ]);
+                    $record = $this->getRecord();
+
+                    // Ambil objek TemporaryUploadedFile
+                    $tempFile = collect($this->data['certificate'])->first();
+                    // dd($tempFile);
+
+                    if (!$tempFile) {
+                        Notification::make()
+                            ->title('File sertifikat tidak ditemukan.')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+
+                    // Tentukan direktori tujuan
+                    $targetDirectory = 'uploads/' . Str::slug($record->companyDetail->name, '_') . '/sertifikat';
+                    // dd($targetDirectory);
+
+                    // Simpan file ke disk 'public' dan ambil path-nya
+                    $storedPath = $tempFile->storeAs($targetDirectory, $tempFile->getClientOriginalName(), 'public');
+
+                    // Update data JSON
+                    $documents = $record->documents ? json_decode($record->documents, true) : [];
+                    $documents['sertifikat_nspa'] = $storedPath;
+
+                    $record->update([
+                        'documents' => json_encode($documents),
+                        'status_id' => 5,
+                    ]);
+
                     Notification::make()
                         ->title('Sertifikat berhasil disimpan.')
                         ->success()
                         ->send();
-                    redirect()->route('filament.resources.ncage-applications.index');
+
+                    redirect()->route('filament.admin.resources.ncage-applications.index');
                 })
                 ->requiresConfirmation()
                 ->modalHeading('Konfirmasi Penyimpanan')

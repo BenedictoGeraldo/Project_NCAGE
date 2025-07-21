@@ -136,7 +136,9 @@
                     <select id="documentSelect" class="form-select mb-3" onchange="showDocumentPreview()">
                         <option value="">Pilih Dokumen</option>
                         @foreach ($documents as $name => $path)
-                            <option value="{{ asset($path) }}">{{ ucfirst(str_replace('_', ' ', $name)) }}</option>
+                            <option value="{{ asset('storage/' . $path) }}">
+                                {{ ucfirst(str_replace('_', ' ', $name)) }}
+                            </option>
                         @endforeach
                     </select>
 

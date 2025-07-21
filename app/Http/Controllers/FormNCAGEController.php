@@ -12,6 +12,8 @@ use App\Models\OtherInformation;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FormNCAGEController extends Controller
 {
@@ -296,29 +298,32 @@ class FormNCAGEController extends Controller
             }
 
             // dd($request->all());
-            $finalPath = "uploads/{$userId}";
-            if (!file_exists(public_path($finalPath))) {
-                mkdir(public_path($finalPath), 0755, true);
-            }
+            $finalPath = "uploads/" . Str::slug($data['nama_badan_usaha'], '_'); // Misalnya $userId diambil dari $record->user_id
+            // dd($finalPath);
 
-            // Pindahkan file dari temp ke folder final
             foreach ($data['documents'] as $field => $path) {
-                // Cek apakah path mengandung '/temp/'
                 if (str_contains($path, '/temp/')) {
-                    $newPath = "{$finalPath}/" . basename($path);
-                    $from = public_path($path);
-                    $to = public_path($newPath);
+                    $filename = basename($path);
+                    $newPath = "{$finalPath}/{$filename}";
+
+                    $from = public_path($path); // Contoh: public/temp/nama_file.pdf
 
                     if (file_exists($from)) {
-                        rename($from, $to);
+                        // Baca isi file
+                        $fileContents = file_get_contents($from);
+
+                        // Simpan ke disk 'public' Laravel Filesystem
+                        Storage::disk('public')->put($newPath, $fileContents);
+
+                        // Hapus file asli dari folder temp (opsional)
+                        unlink($from);
+
+                        // Simpan path relatif di array
                         $data['documents'][$field] = $newPath;
                     } else {
-                        // Log agar bisa dicek saat pengembangan
                         Log::warning("File not found (expected in temp): $from");
-                        // Bisa juga throw error, tergantung kebutuhan
                     }
                 } else {
-                    // File tidak berada di temp, berarti sudah di final → biarkan
                     $data['documents'][$field] = $path;
                 }
             }
