@@ -2,7 +2,8 @@
     $fields = [
         'provinsi' => 'Provinsi',
         'kota' => 'Kota',
-        'alamat_kantor' => 'Alamat Kantor',
+        'jalan_1' => 'Jalan 1',
+        'jalan_2' => 'Jalan 2',
         'kode_pos' => 'Kode Pos',
         'po_box' => 'PO.Box',
         'no_telp' => 'No.Telp. (Kantor)',
@@ -12,7 +13,7 @@
         'perusahaan_afiliasi' => 'Perusahaan Afiliasi',
     ];
 
-    $opsional = ['po_box', 'website_kantor', 'perusahaan_afiliasi'];
+    $opsional = ['jalan_2', 'po_box', 'website_kantor', 'perusahaan_afiliasi'];
 @endphp
 
 {{-- Nama Badan Usaha --}}
@@ -42,15 +43,11 @@
                 {!! nl2br(e($data[$field] ?? '-')) !!}
             </div>
         @else
-            @if($field === 'alamat_kantor')
-                <textarea name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}">{{ old($field, $data[$field] ?? '') }}</textarea>
-            @else
-                <input type="{{ $field === 'email_kantor' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}"
-                       value="{{ old($field, $data[$field] ?? '') }}"
-                       @if($field === 'no_telp' || $field === 'no_fax' || $field === 'kode_pos')
-                           inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                       @endif>
-            @endif
+            <input type="{{ $field === 'email_kantor' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}"
+                    value="{{ old($field, $data[$field] ?? '') }}"
+                    @if($field === 'no_telp' || $field === 'no_fax' || $field === 'kode_pos')
+                        inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    @endif>
             @error($field) <small class="text-danger">{{ $message }}</small> @enderror
         @endif
     </div>

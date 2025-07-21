@@ -14,7 +14,7 @@ class CompanyDetail extends Model
         'name',
         'province',
         'city',
-        'address',
+        'street',
         'postal_code',
         'po_box',
         'phone',
