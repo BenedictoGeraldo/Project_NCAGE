@@ -78,11 +78,14 @@
                     <div class="timeline-content">
                         <div class="timeline-content-text">
                             <h5 class="fw-bold">Verifikasi Berkas & Data</h5>
+                            @if($status >= 2)
+                                <p class="text-muted small mb-1">{{ $application->updated_at->translatedFormat('j F Y, H:i') }}</p>
+                            @endif
                             @if($status == 2)
                                 <p class="text-primary small mb-1">Sedang Berlangsung...</p>
                                 <p class="mb-0">Tim Puskod sedang melakukan verifikasi data Anda.</p>
                             @elseif($status == 3)
-                                <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan.</p>
+                                <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan.</p>\
                                 <p class="mb-0">{{ $application->revision_notes ?? 'Silakan hubungi admin.' }}</p>
                             @else
                                 <p class="mb-0">Proses verifikasi berkas dan data.</p>
@@ -109,6 +112,9 @@
                             <h5 class="fw-bold">Proses Validasi & Unggah Sertifikat</h5>
                             @if($status == 4)
                                 <p class="text-primary small mb-1">Menunggu...</p>
+                            @endif
+                            @if($status >= 4)
+                                <p class="text-muted small mb-1">{{ $application->updated_at->translatedFormat('j F Y, H:i') }}</p>
                             @endif
                             <p class="mb-0">Setelah verifikasi selesai, data akan diproses lebih lanjut.</p>
                         </div>
