@@ -14,12 +14,14 @@ body {
 .main-title {
     font-weight: 600;
     color: #333;
+    font-weight: bold;
 }
 
 .sub-title {
     font-weight: 500;
     color: #555;
     font-size: 1.25rem;
+    font-weight: bold;
 }
 
 /* Detail Permohonan Box */
@@ -28,6 +30,7 @@ body {
     border: 1px solid #f0e6d2;
     border-radius: 8px;
     font-size: 0.95rem;
+    font-weight: bold;
 }
 
 .detail-box .row {
@@ -181,19 +184,14 @@ body {
         font-size: 1.1rem;
     }
 
-    .detail-box .key {
+    .detail-box dt {
         font-weight: 600;
-        margin-bottom: -5px;
+        color: #444;
     }
 
-    .detail-box .value {
-        padding-left: 25px;
-    }
-
-    .detail-box .value::before {
-        content: ": ";
-        position: absolute;
-        left: 15px;
+    .detail-box dd {
+        color: #666;
+        margin-bottom: 0.75rem;
     }
 
     .timeline-container {

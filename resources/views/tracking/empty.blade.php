@@ -3,7 +3,6 @@
 @section('title', 'Pantau Status')
 
 @section('styles')
-    {{-- Anda bisa menambahkan CSS khusus di sini jika perlu --}}
     <style>
         .empty-state-card {
             background-color: #ffffff;
@@ -20,6 +19,7 @@
             padding-bottom: 1rem;
             border-bottom: 2px solid #D1D5DB;
             margin-bottom: 3rem;
+            font-size: 1.75rem;
         }
         .empty-state-image {
             max-width: 300px;
@@ -37,10 +37,32 @@
             text-decoration: none;
             font-weight: 600;
             transition: background-color 0.2s;
+            display: inline-block;
         }
         .empty-state-button:hover {
             background-color: #701111;
             color: white;
+        }
+
+        /* --- Gaya Responsif untuk Mobile --- */
+        @media (max-width: 767.98px) {
+            .empty-state-card {
+                padding: 24px;
+            }
+            .empty-state-title {
+                font-size: 1.3rem;
+                margin-bottom: 2rem;
+            }
+            .empty-state-image {
+                max-width: 220px;
+            }
+            .empty-state-text {
+                font-size: 1rem;
+            }
+            .empty-state-button {
+                width: 100%;
+                padding: 14px;
+            }
         }
     </style>
 @endsection

@@ -17,40 +17,39 @@
 
 <main class="container my-4 my-md-5">
     <div class="status-card">
-        <h1 class="main-title text-center mb-4">Pantau Status Permohonan</h1>
+        <h1 class="main-title text-center mb-4">Pantau Status</h1>
 
         <div class="text-center mb-5">
-            <h2 class="sub-title mb-0">Detail Permohonan</h2>
-            <p class="text-muted">#{{ $applicationId }}</p>
+            <h2 class="sub-title mb-0">Detail Permohonan #{{ $applicationId }}</h2>
         </div>
 
         {{-- Kotak Detail Permohonan --}}
         <div class="detail-box p-3 p-md-4 mb-5">
-            <div class="row g-3">
-                <div class="col-12 col-md-4 key">ID Permohonan</div>
-                <div class="col-12 col-md-8 value">: #{{ $applicationId }}</div>
+            <dl class="row mb-0">
+                <dt class="col-sm-5 col-md-4">ID Permohonan</dt>
+                <dd class="col-sm-7 col-md-8">: #{{ $applicationId }}</dd>
 
-                <div class="col-12 col-md-4 key">Tanggal Pengajuan</div>
-                <div class="col-12 col-md-8 value">: {{ $application->created_at->translatedFormat('j F Y') }}</div>
+                <dt class="col-sm-5 col-md-4">Tanggal Pengajuan</dt>
+                <dd class="col-sm-7 col-md-8">: {{ $application->created_at->translatedFormat('j F Y') }}</dd>
 
-                <div class="col-12 col-md-4 key">Jenis Permohonan</div>
-                <div class="col-12 col-md-8 value">: {{ $application->identity->application_type ?? '-' }}</div>
+                <dt class="col-sm-5 col-md-4">Jenis Permohonan</dt>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->application_type ?? '-' }}</dd>
 
-                <div class="col-12 col-md-4 key">Jenis Permohonan NCAGE</div>
-                <div class="col-12 col-md-8 value">: {{ $application->identity->ncage_request_type ?? '-' }}</div>
+                <dt class="col-sm-5 col-md-4">Jenis Permohonan NCAGE</dt>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->ncage_request_type ?? '-' }}</dd>
 
-                <div class="col-12 col-md-4 key">Tujuan Penerbitan NCAGE</div>
-                <div class="col-12 col-md-8 value">: {{ $application->identity->purpose ?? '-' }}</div>
+                <dt class="col-sm-5 col-md-4">Tujuan Penerbitan NCAGE</dt>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->purpose ?? '-' }}</dd>
 
-                <div class="col-12 col-md-4 key">Tipe Entitas</div>
-                <div class="col-12 col-md-8 value">: {{ $application->identity->entity_type ?? '-' }}</div>
+                <dt class="col-sm-5 col-md-4">Tipe Entitas</dt>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->entity_type ?? '-' }}</dd>
 
-                <div class="col-12 col-md-4 key">Status Saat Ini</div>
-                <div class="col-12 col-md-8 value fw-bold">: {{ $application->status->name ?? 'Tidak diketahui' }}</div>
-            </div>
+                <dt class="col-sm-5 col-md-4">Status Saat Ini</dt>
+                <dd class="col-sm-7 col-md-8 fw-bold">: {{ $application->status->name ?? 'Tidak diketahui' }}</dd>
+            </dl>
         </div>
 
-        <h2 class="sub-title text-center mb-4">Riwayat Status</h2>
+        <h2 class="sub-title text-center mb-4">Detail Status</h2>
         <div class="timeline-container">
             {{-- Status 1: Permohonan Dikirim --}}
             <div class="timeline-step {{ $status >= 1 ? 'completed' : 'pending' }}">
