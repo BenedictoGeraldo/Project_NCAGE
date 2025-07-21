@@ -99,7 +99,7 @@ class FormNCAGEController extends Controller
         }
 
         // === CONTACTS ===
-        $contact = $revision->contacts->first(); // diasumsikan satu kontak utama
+        $contact = $revision->contacts; // diasumsikan satu kontak utama
         if ($contact) {
             $sessionData['nama_pemohon'] = $contact->name;
             $sessionData['no_identitas'] = $contact->identity_number;
