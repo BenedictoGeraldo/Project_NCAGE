@@ -8,3 +8,11 @@
 body {
     background: linear-gradient(to bottom, #f5f5f5 0%, #fdf8e4 100%);
 }
+
+.notification-dropdown .dropdown-menu {
+    display: none !important;
+}
+
+.notification-dropdown .dropdown-menu.show {
+    display: block !important;
+}

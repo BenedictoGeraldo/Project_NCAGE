@@ -14,6 +14,7 @@ use App\Http\Controllers\CertificateController;
 use App\Models\NcageApplication;
 use Illuminate\Http\Request;
 use Filament\Http\Middleware\Authenticate as FilamentAuth;
+use App\Http\Controllers\NotificationController;
 
 // =========================================================================
 // RUTE PUBLIK
@@ -100,6 +101,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
+    //notifikasi route
+    Route::get('/notifications', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
 Route::middleware([

@@ -404,6 +404,15 @@ class FormNCAGEController extends Controller
                 ]
             );
 
+            //Notifikasi form ncage telah dikirim
+            /** @var \App\Models\User $user */
+            $user = auth()->user();
+
+            //kirim notifikasi bahwa permohonan telah berhasil dikirim
+            if ($user){
+                $user->notify(new \App\Notifications\ApplicationSubmitted());
+            }
+
             Session::forget('form_ncage');
             Session::flash('submit_success', true);
             Session::flash('form_submitted', true);

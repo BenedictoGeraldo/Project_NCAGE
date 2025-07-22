@@ -146,3 +146,86 @@
   border-radius: 50%;
   border: 2px solid #E2B34B;
 }
+
+/* Styling untuk komponen notifikasi */
+
+/* Badge hitungan di pojok kanan atas ikon */
+.notification-badge {
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    font-size: 0.6rem;
+    padding: 0.25em 0.5em;
+}
+
+/* Kustomisasi menu dropdown */
+.notification-dropdown-menu {
+    width: 360px; /* Lebar dropdown */
+    padding: 0;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.notification-header, .notification-footer {
+    background-color: #f8f9fa;
+}
+
+.notification-header .dropdown-header {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+}
+
+/* Styling untuk setiap item notifikasi */
+.notification-item {
+    display: flex;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e9ecef;
+    text-decoration: none;
+    color: #212529;
+    transition: background-color 0.15s ease-in-out;
+}
+.notification-item:hover {
+    background-color: #f1f3f5;
+}
+
+.notification-item:last-child {
+    border-bottom: none;
+}
+
+.notification-item .icon-container {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    width: 30px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.notification-item .message-container {
+    flex-grow: 1;
+}
+
+.notification-item h6 {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.notification-item p, .notification-item small {
+    margin-bottom: 0.1rem;
+    font-size: 0.8rem;
+    color: #495057;
+}
+
+.notification-item small {
+    color: #6c757d;
+}
+
+/* Titik biru untuk notifikasi yang belum dibaca */
+.notification-item .unread-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border-radius: 50%;
+    margin-left: auto; /* Mendorong titik ke paling kanan */
+    align-self: center;
+}

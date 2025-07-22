@@ -3,8 +3,8 @@
 @section('title', 'Beranda')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('css/home.css') }}">
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    {{-- Meta CSRF Token sudah ada di main.blade.php, jadi tidak perlu di sini --}}
 @endsection
 
 @section('content')
@@ -32,6 +32,7 @@
     </div>
 </section>
 
+{{-- Modal dipindahkan ke dalam section content agar rapi --}}
 <div class="modal fade" id="entityCheckModal" tabindex="-1" aria-labelledby="entityCheckModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -40,6 +41,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="entityCheckModalBody">
+                {{-- Konten diisi oleh JavaScript --}}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -47,9 +49,10 @@
         </div>
     </div>
 </div>
+@endsection
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+{{-- Pindahkan script khusus halaman ke dalam @push('scripts') --}}
+@push('scripts')
 @auth
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -57,56 +60,57 @@
         const modalElement = document.getElementById('entityCheckModal');
         const modal = new bootstrap.Modal(modalElement);
         const modalBody = document.getElementById('entityCheckModalBody');
-        const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
+        
+        if(checkButton) {
+            checkButton.addEventListener('click', function () {
+                modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Mengecek data...</p></div>';
+                modal.show();
 
-        checkButton.addEventListener('click', function () {
-            modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Mengecek data...</p></div>';
-            modal.show();
+                fetch('/check-entity', {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+                    if (data.status === 'found') {
+                        let statusBadge = '';
+                        let downloadButton = '';
+                        
+                        if (data.data.ncagesd === 'A') {
+                            statusBadge = '<span class="badge bg-success">Aktif</span>';
+                            let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
+                            downloadButton = `<div class="d-grid mt-3">
+                                                <a href="${downloadUrl}" class="btn btn-primary" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
+                                            </div>`;
+                        } else if (data.data.ncagesd === 'H') {
+                            statusBadge = '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
+                        } else {
+                            statusBadge = '<span class="badge bg-secondary">Status Tidak Diketahui</span>';
+                        }
 
-            fetch('/check-entity', {
-                method: 'GET',
-                headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
-            })
-            .then(response => response.json())
-            .then(data => {
-                let html = '';
-                if (data.status === 'found') {
-                    let statusBadge = '';
-                    let downloadButton = '';
-                    // Logika untuk tombol unduh sekarang hanya bergantung pada status 'A'
-                    if (data.data.ncagesd === 'A') {
-                        statusBadge = '<span class="badge bg-success">Aktif</span>';
-                        let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
-                        downloadButton = `<div class="d-grid mt-3">
-                                            <a href="${downloadUrl}" class="btn btn-primary" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
-                                        </div>`;
-                    } else if (data.data.ncagesd === 'H') {
-                        statusBadge = '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
+                        html = `
+                            <div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i>Perusahaan Ditemukan!</div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between"><strong>Nama Perusahaan:</strong> <span>${data.data.entity_name}</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${data.data.ncage_code}</span></li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
+                            </ul>
+                            ${downloadButton}
+                        `;
                     } else {
-                        statusBadge = '<span class="badge bg-secondary">Status Tidak Diketahui</span>';
+                        const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
+                        html = `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perusahaan Anda dengan nama "${companyName}" belum terdaftar dalam sistem NCAGE.</div>`;
                     }
-
-                    html = `
-                        <div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i>Perusahaan Ditemukan!</div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between"><strong>Nama Perusahaan:</strong> <span>${data.data.entity_name}</span></li>
-                            <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${data.data.ncage_code}</span></li>
-                            <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
-                        </ul>
-                        ${downloadButton}
-                    `;
-                } else {
-                    const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
-                    html = `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perusahaan Anda dengan nama "${companyName}" belum terdaftar dalam sistem NCAGE.</div>`;
-                }
-                modalBody.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                modalBody.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat melakukan pengecekan. Silakan coba lagi nanti.</div>';
+                    modalBody.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    modalBody.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat melakukan pengecekan. Silakan coba lagi nanti.</div>';
+                });
             });
-        });
+        }
     });
 </script>
 @endauth
-@endsection
+@endpush

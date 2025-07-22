@@ -36,16 +36,22 @@
                 @endguest
 
                 @auth
-                    <div class="d-flex align-items-center mt-3 mt-lg-0">
-                    {{-- 1. Ikon Notifikasi --}}
-                        <a href="#" class="text-secondary me-4">
-                            {{-- Menggunakan Font Awesome yang sudah Anda muat --}}
-                            <i class="fa-regular fa-bell fs-5"></i>
-                        </a>
+                    {{-- Kita bungkus ikon notifikasi dan profil dalam sebuah list <ul> agar rapi --}}
+                    <ul class="navbar-nav d-flex flex-row align-items-center">
 
-                        {{-- 2. Dropdown Profil (kode Anda yang sudah ada, dimasukkan ke sini) --}}
-                        <div class="dropdown">
-                            <a href="#" class="profile-link">
+                        {{-- 1. IKON NOTIFIKASI ANDA YANG DIMODIFIKASI --}}
+                        <li class="nav-item dropdown notification-dropdown"> 
+                            <a href="#" class="nav-link text-secondary" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-regular fa-bell fs-5"></i>
+                                <span class="notification-badge badge bg-primary rounded-pill" id="notification-count" style="display: none;"></span>
+                            </a>
+
+                            @include('partials.notification-menu')
+                        </li>
+
+                        {{-- 2. DROPDOWN PROFIL PENGGUNA --}}
+                        <li class="nav-item dropdown ms-2">
+                            <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
                                 @if (Auth::user()->profile_photo_path)
                                     <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}" alt="Foto Profil" class="profile-image">
                                 @else
@@ -55,25 +61,26 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li class="dropdown-header-custom text-center">
                                     <h6>Pengaturan</h6>
-                                    <hr>
+                                    <hr class="my-1">
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('profile.show') }}">
-                                        <i class="fa-solid fa-user"></i> Akun
+                                        <i class="fa-solid fa-user me-2"></i>Akun
                                     </a>
                                 </li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}" class="d-inline">
                                         @csrf
                                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                                            <i class="fa-solid fa-right-from-bracket"></i> Keluar
+                                            <i class="fa-solid fa-right-from-bracket me-2"></i>Keluar
                                         </a>
                                     </form>
                                 </li>
                             </ul>
-                        </div>
-                    </div>
+                        </li>
+                    </ul>
                 @endauth
+
             </div>
         </div>
     </div>
