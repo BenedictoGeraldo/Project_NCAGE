@@ -15,6 +15,10 @@ use App\Models\NcageApplication;
 use Illuminate\Http\Request;
 use Filament\Http\Middleware\Authenticate as FilamentAuth;
 use App\Http\Controllers\NotificationController;
+use App\Notifications\ApplicationNeedsRevision;
+use App\Notifications\ApplicationRejected;
+use App\Notifications\FinalValidation;
+
 
 // =========================================================================
 // RUTE PUBLIK
@@ -52,6 +56,12 @@ Route::middleware('auth')->group(function () {
 
 Route::post('/ncage-applications/{record}/approve', function (NcageApplication $record) {
     $record->update(['status_id' => 4]);
+
+    // Kirim notifikasi ke pengguna
+    if ($user = $record->user) {
+        $user->notify(new FinalValidation());
+    }
+
     return redirect()->route('filament.admin.resources.ncage-applications.index')
         ->with('success', 'Permohonan disetujui.');
 })->name('ncage.approve');
@@ -61,6 +71,12 @@ Route::post('/ncage-applications/{record}/reject', function (NcageApplication $r
         'status_id' => 6,
         'revision_notes' => $request->input('reason'),
     ]);
+
+    // Kirim notifikasi ke pengguna
+    if ($user = $record->user) {
+        $user->notify(new ApplicationRejected());
+    }
+
     return redirect()->route('filament.admin.resources.ncage-applications.index')
         ->with('success', 'Permohonan ditolak.');
 })->name('ncage.reject');
@@ -70,6 +86,12 @@ Route::post('/ncage-applications/{record}/revision', function (NcageApplication 
         'status_id' => 3,
         'revision_notes' => $request->input('reason'),
     ]);
+
+    // Kirim notifikasi ke pengguna
+    if ($user = $record->user) {
+        $user->notify(new ApplicationNeedsRevision());
+    }
+
     return redirect()->route('filament.admin.resources.ncage-applications.index')
         ->with('success', 'Permohonan diminta revisi.');
 })->name('ncage.revision');
