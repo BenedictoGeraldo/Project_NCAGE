@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Str;
+use App\Notifications\CertificateIssued;
 
 class ValidateRequest extends Page
 {
@@ -131,6 +132,11 @@ class ValidateRequest extends Page
                         'www' => $record->companyDetail->website,
                         'pob' => $record->companyDetail->po_box,
                     ]);
+
+                    //trigger notifikasi sertifikat telah muncul
+                    if ($user = $record->user) {
+                        $user->notify(new CertificateIssued());
+                    }
 
                     Notification::make()
                         ->title('Sertifikat berhasil disimpan.')

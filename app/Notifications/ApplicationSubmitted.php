@@ -38,7 +38,7 @@ class ApplicationSubmitted extends Notification
     {
         return[
             'title' => 'Permohonan Terkirim',
-            'message' => 'Permohonan NCAGE Anda telah kami terima. Tim kami akan segera melakukan verifikasi.',
+            'message' => 'Permohonan NCAGE Anda sukses terkirim. Tim kami akan segera melakukan verifikasi.',
             'icon' => 'fa-solid fa-paper-plane',
         ];
     }
