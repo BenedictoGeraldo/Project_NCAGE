@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\DB;
 
 class NcageRecordsChart extends ChartWidget
 {
-    // Judul baru yang lebih sesuai
-    protected static ?string $heading = 'Pertumbuhan Data NCAGE (15 Tahun Terakhir)';
+    // 1. Kosongkan heading default agar tidak ada judul di kiri
+    protected static ?string $heading = null;
 
     // Atur tinggi maksimum chart agar tidak terlalu besar
-    protected static ?string $maxHeight = '200px';
+    protected static ?string $maxHeight = '250px';
 
     // Atur agar chart ini memakan lebar penuh
     protected int | string | array $columnSpan = 'full';
@@ -58,6 +58,29 @@ class NcageRecordsChart extends ChartWidget
                 ],
             ],
             'labels' => $labels,
+        ];
+    }
+
+    /**
+     * Menambahkan opsi kustom ke Chart.js
+     */
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'title' => [
+                    'display' => true,
+                    'text' => 'Pertumbuhan Data NCAGE (15 Tahun Terakhir)',
+                    'align' => 'center', // Mengatur judul ke tengah
+                    'font' => [
+                        'size' => 16, // Atur ukuran font jika perlu
+                        'weight' => 'bold', //atur tebal font
+                    ],
+                ],
+                'legend' => [
+                    'display' => true, // Pastikan legenda tetap tampil
+                ],
+            ],
         ];
     }
 }
