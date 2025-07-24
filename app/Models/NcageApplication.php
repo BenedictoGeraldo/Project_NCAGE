@@ -17,6 +17,7 @@ class NcageApplication extends Model
         'status_id',
         'revision_notes',
         'documents',
+        'international_certificate_path'
     ];
 
     /**

@@ -65,7 +65,7 @@ class ValidateRequest extends Page
     {
         return [
             Action::make('save')
-                ->label('Simpan Sertifikat')
+                ->label('Upload Sertifikat')
                 ->action(function () {
                     $record = $this->getRecord();
 
@@ -88,13 +88,9 @@ class ValidateRequest extends Page
                     // Simpan file ke disk 'public' dan ambil path-nya
                     $storedPath = $tempFile->storeAs($targetDirectory, $tempFile->getClientOriginalName(), 'public');
 
-                    // Update data JSON
-                    $documents = $record->documents ? json_decode($record->documents, true) : [];
-                    $documents['sertifikat_nspa'] = $storedPath;
-
                     $record->update([
-                        'documents' => json_encode($documents),
                         'status_id' => 5,
+                        'international_certificate_path' => $storedPath
                     ]);
 
                     // Hapus file sementara
