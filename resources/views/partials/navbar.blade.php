@@ -17,7 +17,20 @@
         <div class="position-absolute top-50 start-50 translate-middle d-none d-lg-block">
             <ul class="d-flex list-unstyled gap-4 mb-0">
                 <li><a class="btn fw-bold fs-7 {{ Request::is('/', 'beranda') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
-                <li><a class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}" href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
+                <li>
+                    @if ($hasPendingNcage)
+                        <a href="#" class="btn rounded-4 fw-bold fs-7"
+                        data-bs-toggle="modal"
+                        data-bs-target="#sudahDaftarModal">
+                        Pendaftaran NCAGE
+                        </a>
+                    @else
+                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}"
+                        class="btn rounded-4 fw-bold fs-7">
+                        Pendaftaran NCAGE
+                        </a>
+                    @endif
+                </li>
                 <li>
                     <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}" href="{{ route('tracking.index') }}">
                         Pantau Status

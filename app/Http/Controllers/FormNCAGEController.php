@@ -115,7 +115,13 @@ class FormNCAGEController extends Controller
             $sessionData['nama_badan_usaha'] = $company->name;
             $sessionData['provinsi'] = $company->province;
             $sessionData['kota'] = $company->city;
-            $sessionData['alamat_kantor'] = $company->address;
+
+            $streets = explode('/', $company->street);
+
+            // Ambil dan trim jalan_1 dan jalan_2
+            $sessionData['jalan_1'] = trim($streets[0]); // Selalu ada
+            $sessionData['jalan_2'] = isset($streets[1]) ? trim($streets[1]) : null;
+
             $sessionData['kode_pos'] = $company->postal_code;
             $sessionData['po_box'] = $company->po_box;
             $sessionData['no_telp'] = $company->phone;
@@ -436,7 +442,7 @@ class FormNCAGEController extends Controller
     private function getSubstep1Validation(Request $request)
     {
         $rules = [
-            'tanggal_pengajuan' => 'nullable|date',
+            'tanggal_pengajuan' => 'nullable|date|after_or_equal:today',
             'jenis_permohonan' => 'required|string',
             'jenis_permohonan_ncage' => 'required|string',
             'tujuan_penerbitan' => 'required|in:1,2,3',
@@ -459,6 +465,7 @@ class FormNCAGEController extends Controller
             'string' => ':attribute harus berupa teks.',
             'max' => ':attribute tidak boleh lebih dari :max karakter.',
             'date' => ':attribute harus berupa tanggal yang valid.',
+            'after_or_equal' => ':attribute harus berisi hari ini atau setelah hari ini.',
         ];
 
         $attributes = [
