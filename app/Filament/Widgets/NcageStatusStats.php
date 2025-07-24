@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\NcageRecord;
+use App\Models\NcageApplication; // Tambahkan use statement untuk model permohonan
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -10,17 +11,15 @@ class NcageStatusStats extends BaseWidget
 {
     protected function getStats(): array
     {
-        //menghitung jumlah NCAGE yang aktif (kode 'A')
+        // 1. Logika dari NcageStatusStats (sudah ada)
         $activeCount = NcageRecord::where('ncagesd', 'A')->count();
-
-        //menghitung jumlah NCAGE yang invalid
         $invalidCount = NcageRecord::where('ncagesd', 'H')->count();
 
-        //menghitung jumlah status ncage lainnya
-        $otherCount = NcageRecord::whereNotIn('ncagesd', ['A', 'H'])->count();
+        // 2. Logika dari PermohonanStats (kita pindahkan ke sini)
+        $perluVerifikasiCount = NcageApplication::where('status_id', 2)->count();
 
-        //membuat tampilan data dalam bentuk teks
-        return[
+        // 3. Gabungkan semuanya dalam satu array
+        return [
             Stat::make('NCAGE AKTIF', $activeCount)
                 ->description('Total Kode NCAGE Yang Aktif')
                 ->descriptionIcon('heroicon-m-check-circle')
@@ -30,11 +29,12 @@ class NcageStatusStats extends BaseWidget
                 ->description('Total Kode NCAGE Invalid')
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
-
-            Stat::make('Status NCAGE Lainnya', $otherCount)
-                ->description('Total kode NCAGE status lain')
-                ->descriptionIcon('heroicon-m-tag')
-                ->color('gray'),
+            
+            // Tambahkan stat "Perlu Verifikasi" di sini
+            Stat::make('Perlu Verifikasi', $perluVerifikasiCount)
+                ->description('Jumlah permohonan menunggu verifikasi')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('warning'),
         ];
     }
 }
