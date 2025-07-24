@@ -15,6 +15,7 @@ class ApplicationIdentity extends Model
         'application_type',
         'ncage_request_type',
         'purpose',
+        'other_purpose',
         'entity_type',
         'building_ownership_status',
         'is_ahu_registered',

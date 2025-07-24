@@ -169,7 +169,6 @@ class FormNCAGEController extends Controller
         }
 
         $userId = auth()->user()->id;
-        $cname = auth()->user()->company_name;
 
         $data = Session::get('form_ncage', []);
 
@@ -220,6 +219,9 @@ class FormNCAGEController extends Controller
                 foreach ($rules as $field => $rule) {
                     $data[$field] = $request->$field;
                 }
+
+                $cname = auth()->user()->company_name;
+                $data['nama_badan_usaha'] = $cname;
 
                 Session::put('form_ncage_progress', ['step' => 2, 'substep' => 3]);
             } elseif ($request->substep == 3) {
@@ -361,6 +363,7 @@ class FormNCAGEController extends Controller
                     'nib' => $data['nib'],
                     'npwp' => $data['npwp'],
                     'business_field' => $data['bidang_usaha'],
+                    'other_purpose' => $data['tujuan_penerbitan'] == 3 ? $data['tujuan_penerbitan_lainnya'] : null,
                 ]
             );
 
@@ -521,14 +524,14 @@ class FormNCAGEController extends Controller
             'nama_badan_usaha'     => 'required|string|max:255',
             'provinsi'             => 'required|string|max:100',
             'kota'                 => 'required|string|max:100',
-            'jalan_1'              => 'required|string|max:255',
-            'jalan_2'              => 'nullable|string|max:255',
+            'jalan_1'              => 'required|string|max:78',
+            'jalan_2'              => 'nullable|string|max:78',
             'kode_pos'             => 'required|string|max:10',
             'po_box'               => 'nullable|string|max:50',
             'no_telp'              => 'required|string|max:20',
             'no_fax'               => 'required|string|max:20',
             'email_kantor'         => 'required|email|max:255',
-            'website_kantor'       => 'nullable|string|max:255',
+            'website_kantor'       => 'nullable|url|max:255',
             'perusahaan_afiliasi'  => 'nullable|string|max:255',
         ];
 
@@ -536,6 +539,7 @@ class FormNCAGEController extends Controller
             'required' => ':attribute wajib diisi.',
             'email' => ':attribute harus berupa alamat email yang valid.',
             'max' => ':attribute tidak boleh lebih dari :max karakter.',
+            'url' => ':attribute harus berupa alamat URL yang valid.',
         ];
 
         $attributes = [

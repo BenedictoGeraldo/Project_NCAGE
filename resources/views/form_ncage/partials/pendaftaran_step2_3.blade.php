@@ -23,7 +23,7 @@
         <div class="form-control bg-light">{{ $data['nama_badan_usaha'] ?? '-' }}</div>
     @else
         <input type="text" name="nama_badan_usaha" class="form-control" placeholder="Masukkan Nama Badan Usaha"
-               value="{{ old('nama_badan_usaha', $data['nama_badan_usaha'] ?? '') }}">
+               value="{{ old('nama_badan_usaha', $data['nama_badan_usaha'] ?? '') }}" readonly>
         @error('nama_badan_usaha') <small class="text-danger">{{ $message }}</small> @enderror
     @endif
 </div>

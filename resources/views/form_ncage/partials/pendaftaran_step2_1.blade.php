@@ -4,9 +4,9 @@
     @if(!empty($disabled) && $disabled)
         <div class="form-control bg-light">{{ $data['tanggal_pengajuan'] ?? '-' }}</div>
     @else
-        <input type="date" name="tanggal_pengajuan" class="form-control"
-               value="{{ old('tanggal_pengajuan', $data['tanggal_pengajuan'] ?? '') }}">
-        @error('tanggal_pengajuan') <small class="text-danger">{{ $message }}</small> @enderror
+        <input type="date" name="tanggal_pengajuan" class="form-control" 
+           value="{{ old('tanggal_pengajuan', $data['tanggal_pengajuan'] ?? \Carbon\Carbon::now()->toDateString()) }}"
+           readonly>
     @endif
 </div>
 
@@ -122,6 +122,10 @@
                         placeholder="Isi tujuan penerbitan lainnya..."
                         value="{{ old('tujuan_penerbitan_lainnya', $data['tujuan_penerbitan_lainnya'] ?? '') }}"
                         style="display: {{ old('tujuan_penerbitan', $data['tujuan_penerbitan'] ?? '') == '3' ? 'block' : 'none' }};">
+
+                    @error('tujuan_penerbitan_lainnya')
+                        <small class="text-danger">{{ $message }}</small>
+                    @enderror
                 @endif
             @else
                 <input type="text" name="{{ $field }}" class="form-control"

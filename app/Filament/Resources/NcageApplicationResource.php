@@ -28,6 +28,7 @@ class NcageApplicationResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('user.name')->label('Nama Pemohon')->toggleable(),
+                Tables\Columns\TextColumn::make('companyDetail.name')->label('Nama Perusahaan')->toggleable(),
                 Tables\Columns\TextColumn::make('status_id')
                     ->label('Status')
                     ->badge()
