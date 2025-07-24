@@ -63,7 +63,10 @@ Route::post('/ncage-applications/{record}/approve', function (NcageApplication $
     }
 
     return redirect()->route('filament.admin.resources.ncage-applications.index')
-        ->with('success', 'Permohonan disetujui.');
+        ->with([
+            'success' => 'Permohonan disetujui.',
+            'warning' => 'Harap lanjutkan ke proses validasi.',
+        ]);
 })->name('ncage.approve');
 
 Route::post('/ncage-applications/{record}/reject', function (NcageApplication $record, Request $request) {
