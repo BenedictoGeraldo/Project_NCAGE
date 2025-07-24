@@ -120,6 +120,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rute lainnya yang butuh login & verifikasi
     Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])->name('certificate.download.record');
+    Route::get('/sertifikat/international/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])->name('certificate.download.international');
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');

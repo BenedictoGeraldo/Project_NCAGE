@@ -52,7 +52,7 @@ body {
     padding-left: 40px;
 }
 
-.timeline-container::before {
+/* .timeline-container::before {
     content: '';
     position: absolute;
     left: 19px;
@@ -60,7 +60,7 @@ body {
     bottom: 10px;
     width: 2px;
     background-color: #e9ecef;
-}
+} */
 
 .timeline-step {
     position: relative;

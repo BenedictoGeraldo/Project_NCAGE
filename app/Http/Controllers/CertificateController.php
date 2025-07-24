@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\NcageRecord;
+use App\Models\NcageApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
@@ -181,5 +182,28 @@ class CertificateController extends Controller
 
         // Kembalikan response untuk mengunduh file.
         return Storage::disk('public')->download($filePath, $fileName);
+    }
+
+    /**
+     * Menangani unduhan sertifikat internasional yang diunggah oleh admin.
+     *
+     * @param \App\Models\NcageApplication $application
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function downloadInternationalCertificate(NcageApplication $application)
+    {
+        // 1. Ambil data dokumen dan decode dari JSON
+        $documents = json_decode($application->documents, true);
+
+        // 2. Cek apakah path sertifikat internasional ada dan filenya tersedia
+        $filePath = $documents['sertifikat_nspa'] ?? null;
+
+        if (!$filePath || !Storage::disk('public')->exists($filePath)) {
+            // Jika file tidak ditemukan, hentikan proses.
+            abort(404, 'File sertifikat tidak ditemukan.');
+        }
+
+        // 3. Kembalikan response untuk mengunduh file.
+        return Storage::disk('public')->download($filePath);
     }
 }

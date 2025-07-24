@@ -136,11 +136,23 @@
                                 <p class="mb-0">Sertifikat akan tersedia setelah semua proses validasi selesai.</p>
                             @endif
                         </div>
-                        @if($status == 5 && $application->ncageRecord)
-                            <a href="{{ route('certificate.download.record', $application->ncageRecord) }}" class="btn btn-custom-dark mt-3 mt-md-0">
-                                <i class="bi bi-download me-2"></i>Unduh Sertifikat
-                            </a>
-                        @endif
+                        <div class="d-flex flex-column flex-md-row mt-3 mt-md-0">
+                            @php
+                                $docs = json_decode($application->documents, true);
+                            @endphp
+
+                            @if($status == 5 && $application->ncageRecord)
+                                <a href="{{ route('certificate.download.record', $application->ncageRecord) }}" class="btn btn-custom-dark">
+                                    <i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia
+                                </a>
+                            @endif
+
+                            @if($status == 5 && !empty($docs['sertifikat_nspa']))
+                                <a href="{{ route('certificate.download.international', $application) }}" class="btn btn-custom-dark mt-2 mt-md-0 ms-md-2">
+                                    <i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional
+                                </a>
+                            @endif
+                        </div>
                     </div>
                 </div>
             @endif
