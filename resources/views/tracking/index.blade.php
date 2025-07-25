@@ -33,16 +33,16 @@
                 <dd class="col-sm-7 col-md-8">: {{ $application->created_at->translatedFormat('j F Y') }}</dd>
 
                 <dt class="col-sm-5 col-md-4">Jenis Permohonan</dt>
-                <dd class="col-sm-7 col-md-8">: {{ $application->identity->application_type ?? '-' }}</dd>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->application_type_label ?? '-' }}</dd>
 
                 <dt class="col-sm-5 col-md-4">Jenis Permohonan NCAGE</dt>
-                <dd class="col-sm-7 col-md-8">: {{ $application->identity->ncage_request_type ?? '-' }}</dd>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->ncage_request_type_label ?? '-' }}</dd>
 
                 <dt class="col-sm-5 col-md-4">Tujuan Penerbitan NCAGE</dt>
-                <dd class="col-sm-7 col-md-8">: {{ $application->identity->purpose ?? '-' }}</dd>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->purpose_label ?? '-' }}</dd>
 
                 <dt class="col-sm-5 col-md-4">Tipe Entitas</dt>
-                <dd class="col-sm-7 col-md-8">: {{ $application->identity->entity_type ?? '-' }}</dd>
+                <dd class="col-sm-7 col-md-8">: {{ $application->identity->entity_type_label ?? '-' }}</dd>
 
                 <dt class="col-sm-5 col-md-4">Status Saat Ini</dt>
                 <dd class="col-sm-7 col-md-8 fw-bold">: {{ $application->status->name ?? 'Tidak diketahui' }}</dd>

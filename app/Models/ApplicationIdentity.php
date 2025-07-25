@@ -27,21 +27,42 @@ class ApplicationIdentity extends Model
         'updated_at'
     ];
 
-    public function getApplicationTypeLabel(): string
+    public function getApplicationTypeLabelAttribute(): string
     {
         return match ((int) $this->application_type) {
             1 => 'Perorangan',
             2 => 'Perusahaan / Kelompok',
-            default => 'Jenis Permohonan Tidak Diketahui',
+            default => '-',
         };
     }
 
-    public function getNcageRequestTypeLabel(): string
+    public function getNcageRequestTypeLabelAttribute(): string
     {
         return match ((int) $this->ncage_request_type) {
-            1 => 'Baru',
-            2 => 'Perpanjangan',
-            default => 'Jenis Permohonan Tidak Diketahui',
+            1 => 'Permohonan Baru',
+            2 => 'Perbarui Data / Update',
+            default => '-',
+        };
+    }
+
+    public function getPurposeLabelAttribute(): string
+    {
+        return match ((int) $this->purpose) {
+            1 => 'SAM.GOV',
+            2 => 'Pengadaan',
+            3 => $this->other_purpose ?? 'Lainnya',
+            default => '-',
+        };
+    }
+
+    public function getEntityTypeLabelAttribute(): string
+    {
+        return match ($this->entity_type) {
+            'E' => 'Pabrikan',
+            'F' => 'Suplier/Distributor/Sales/Ritel',
+            'G' => 'Jasa Layanan/Organisasi Profesional',
+            'H' => 'Pemerintah, Kementerian, Lembaga',
+            default => '-',
         };
     }
 }

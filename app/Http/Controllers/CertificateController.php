@@ -192,10 +192,10 @@ class CertificateController extends Controller
      */
     public function downloadInternationalCertificate(NcageApplication $application)
     {
-        // 1. Ambil data dokumen dan decode dari JSON
+        // Ambil data dokumen dan decode dari JSON
         $documents = json_decode($application->documents, true);
 
-        // 2. Cek apakah path sertifikat internasional ada dan filenya tersedia
+        // Cek apakah path sertifikat internasional ada dan filenya tersedia
         $filePath = $documents['sertifikat_nspa'] ?? null;
 
         if (!$filePath || !Storage::disk('public')->exists($filePath)) {
@@ -203,7 +203,7 @@ class CertificateController extends Controller
             abort(404, 'File sertifikat tidak ditemukan.');
         }
 
-        // 3. Kembalikan response untuk mengunduh file.
+        // Kembalikan response untuk mengunduh file.
         return Storage::disk('public')->download($filePath);
     }
 }
