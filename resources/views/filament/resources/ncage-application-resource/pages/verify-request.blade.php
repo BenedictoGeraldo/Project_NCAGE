@@ -38,12 +38,12 @@
                     @php
                         $identityFields = [
                             'Tanggal Pengajuan' => $applicationIdentity->submission_date ?? '-',
-                            'Jenis Permohonan' => $applicationIdentity->getApplicationTypeLabel() ?? '-',
-                            'Jenis Permohonan NCAGE' => $applicationIdentity->getNcageRequestTypeLabel() ?? '-',
-                            'Tujuan Penerbitan NCAGE' => $applicationIdentity->getPurposeLabel() ?? '-',
+                            'Jenis Permohonan' => $applicationIdentity->getApplicationTypeLabelAttribute() ?? '-',
+                            'Jenis Permohonan NCAGE' => $applicationIdentity->getNcageRequestTypeLabelAttribute() ?? '-',
+                            'Tujuan Penerbitan NCAGE' => $applicationIdentity->getPurposeLabelAttribute() ?? '-',
                             'Tipe Entitas' => $applicationIdentity->entity_type ?? '-',
-                            'Status Kepemilikan Bangunan' => $applicationIdentity->getBuildingOwnershipStatusLabel() ?? '-',
-                            'Terdafar (AHU.Online)' => $applicationIdentity->getIsAhuRegisteredLabel() ?? '-',
+                            'Status Kepemilikan Bangunan' => $applicationIdentity->getBuildingOwnershipStatusLabelAttribute() ?? '-',
+                            'Terdafar (AHU.Online)' => $applicationIdentity->getIsAhuRegisteredLabelAttribute() ?? '-',
                             'Koordinat Kantor (GPS Map)' => $applicationIdentity->office_coordinate ?? '-',
                             'NIB' => $applicationIdentity->nib ?? '-',
                             'NPWP' => $applicationIdentity->npwp ?? '-',

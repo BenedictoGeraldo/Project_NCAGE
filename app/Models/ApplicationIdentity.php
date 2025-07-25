@@ -66,7 +66,7 @@ class ApplicationIdentity extends Model
         };
     }
 
-    public function getBuildingOwnershipStatusLabel(): string
+    public function getBuildingOwnershipStatusLabelAttribute(): string
     {
         return match ((int) $this->building_ownership_status) {
             1 => 'Sendiri',
@@ -76,22 +76,12 @@ class ApplicationIdentity extends Model
         };
     }
 
-    public function getIsAhuRegisteredLabel(): string
+    public function getIsAhuRegisteredLabelAttribute(): string
     {
         return match ((int) $this->is_ahu_registered) {
             1 => 'Terdaftar',
             2 => 'Tidak Terdaftar',
             default => 'Status AHU Tidak Diketahui',
-        };
-    }
-
-    public function getPurposeLabel(): string
-    {
-        return match ((int) $this->purpose) {
-            1 => 'SAM.GOV',
-            2 => 'Pengadaan',
-            3 => $this->other_purpose ?: 'Tujuan Tidak Diketahui', // ambil dari field other_purpose jika tidak kosong
-            default => 'Tujuan Tidak Diketahui',
         };
     }
 }
