@@ -60,7 +60,7 @@
         const modalElement = document.getElementById('entityCheckModal');
         const modal = new bootstrap.Modal(modalElement);
         const modalBody = document.getElementById('entityCheckModalBody');
-        
+
         if(checkButton) {
             checkButton.addEventListener('click', function () {
                 modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Mengecek data...</p></div>';
@@ -76,17 +76,24 @@
                     if (data.status === 'found') {
                         let statusBadge = '';
                         let downloadButton = '';
-                        
+                        let internationalDownloadButton = '';
+
                         if (data.data.ncagesd === 'A') {
                             statusBadge = '<span class="badge bg-success">Aktif</span>';
                             let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
                             downloadButton = `<div class="d-grid mt-3">
-                                                <a href="${downloadUrl}" class="btn btn-primary" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat</a>
+                                                <a href="${downloadUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia</a>
                                             </div>`;
                         } else if (data.data.ncagesd === 'H') {
                             statusBadge = '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
                         } else {
                             statusBadge = '<span class="badge bg-secondary">Status Tidak Diketahui</span>';
+                        }
+                        if (data.data.international_certificate_path) {
+                            let internationalUrl = `/sertifikat/international/${data.data.application_id}/unduh`;
+                            internationalDownloadButton = `<div class="d-grid mt-3">
+                                                <a href="${internationalUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional</a>
+                                            </div>`;
                         }
 
                         html = `
@@ -97,6 +104,7 @@
                                 <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
                             </ul>
                             ${downloadButton}
+                            ${internationalDownloadButton}
                         `;
                     } else {
                         const companyName = "{{ strtoupper(Auth::user()->company_name) }}";

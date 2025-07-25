@@ -14,19 +14,24 @@ class EntityCheckController extends Controller
         $user = Auth::user();
         $companyName = strtoupper(trim($user->company_name));
 
-        $record = NcageRecord::select(
-                'id',
-                'entity_name',
-                'ncage_code',
-                DB::raw('TRIM(ncagesd) as ncagesd')
-            )
+        // Ambil record dan muat relasi ke NcageApplication
+        $record = NcageRecord::with('ncageApplication')
             ->where(DB::raw('TRIM(entity_name)'), $companyName)
             ->first();
 
-        if ($record) {
+        if ($record && $record->ncageApplication) {
+            // Bangun respons JSON dengan semua data yang dibutuhkan
             return response()->json([
                 'status' => 'found',
-                'data' => $record
+                'data' => [
+                    'id' => $record->id,
+                    'entity_name' => $record->entity_name,
+                    'ncage_code' => $record->ncage_code,
+                    'ncagesd' => trim($record->ncagesd),
+                    'application_id' => $record->ncageApplication->id,
+                    'domestic_certificate_path' => $record->domestic_certificate_path,
+                    'international_certificate_path' => $record->ncageApplication->international_certificate_path,
+                ]
             ]);
         } else {
             return response()->json([
