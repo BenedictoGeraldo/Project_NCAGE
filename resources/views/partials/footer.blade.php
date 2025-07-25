@@ -4,8 +4,8 @@
             <div class="col-lg-5 col-md-12 mb-4 mb-lg-0">
                 <div class="footer-left-column">
                     <div class="footer-brand">
-                        <div class="img fs-4 position-relative z-1 d-flex">
-                            <img class="w-75" src="{{ asset('images/logo.png') }}" alt="Logo Puskod">
+                        <div class="img fs-4 position-relative z-1 d-flex me-2" style="width: 70px;">
+                            <img class="w-100" src="{{ asset('images/logo.png') }}" alt="Logo Puskod">
                         </div>
                         <div>
                             <h5 class="footer-title">Pelayanan NCAGE</h5>
@@ -49,6 +49,11 @@
                                 </div>
                             </li>
                         </ul>
+                    </div>
+
+                    <div class="footer-column w-25">
+                        <h5 class="footer-heading">QR Code</h5>
+                        <img class="w-50 ms-2" src="{{ asset('images/qr_code_whatsapp.jpg') }}" alt="">
                     </div>
 
                 </div>
