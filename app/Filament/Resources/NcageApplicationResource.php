@@ -9,6 +9,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
 
 class NcageApplicationResource extends Resource
 {
@@ -19,7 +22,28 @@ class NcageApplicationResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form;
+        return $form->schema([
+            Placeholder::make('user_name')
+                ->label('Nama Pemohon')
+                ->content(fn ($record) => $record?->user?->name ?? '-'),
+
+            TextInput::make('status_id')
+                ->label('Status')
+                ->default(fn ($record) => $record?->getStatusLabel())
+                ->disabled(),
+
+            DatePicker::make('created_at')
+                ->label('Tanggal Pengajuan')
+                ->disabled(),
+
+            Placeholder::make('application_type')
+                ->label('Jenis Permohonan')
+                ->content(fn ($record) => $record?->identity?->getApplicationTypeLabel()),
+            
+            Placeholder::make('ncage_request_type')
+                ->label('Jenis Permohonan NCAGE')
+                ->content(fn ($record) => $record?->identity?->getNcageRequestTypeLabel()),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -47,6 +71,7 @@ class NcageApplicationResource extends Resource
                     ->label('Tanggal Pengajuan')
                     ->toggleable(),
             ])
+            ->recordUrl(fn ($record) => route('filament.admin.resources.ncage-applications.view', ['record' => $record->id]))
             ->actions([
                 // Tombol ini akan mengarahkan admin ke halaman verifikasi kustom Anda
                 Tables\Actions\Action::make('verify')
@@ -82,6 +107,7 @@ class NcageApplicationResource extends Resource
             'index' => Pages\ListNcageApplications::route('/'),
             'verify-request' => Pages\VerifyRequest::route('/{record}/verify-request'),
             'validate-request' => Pages\ValidateRequest::route('/{record}/validate-request'),
+            'view' => Pages\ViewNcageApplication::route('/{record}'),
         ];
     }
 }

@@ -26,4 +26,22 @@ class ApplicationIdentity extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function getApplicationTypeLabel(): string
+    {
+        return match ((int) $this->application_type) {
+            1 => 'Perorangan',
+            2 => 'Perusahaan / Kelompok',
+            default => 'Jenis Permohonan Tidak Diketahui',
+        };
+    }
+
+    public function getNcageRequestTypeLabel(): string
+    {
+        return match ((int) $this->ncage_request_type) {
+            1 => 'Baru',
+            2 => 'Perpanjangan',
+            default => 'Jenis Permohonan Tidak Diketahui',
+        };
+    }
 }
