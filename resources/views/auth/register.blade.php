@@ -71,6 +71,16 @@
                 </div>
             </div>
 
+            <!--Opsi kirim Kode verifikasi-->
+            <div class="mb-3">
+                <label for="otp_delivery_method" class="form-label">Metode Pengiriman Kode Verifikasi</label>
+                <select class="form-select" id="otp_delivery_method" name="otp_delivery_method" required>
+                    <option value="email" {{ old('otp_delivery_method') == 'email' ? 'selected' : '' }}>Email</option>
+                    <option value="whatsapp" {{ old('otp_delivery_method') == 'whatsapp' ? 'selected' : '' }}>WhatsApp</option>
+                </select>
+            </div>
+            <!--Akhir opsi kirim Kode verifikasi-->
+            
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" value="1" id="terms" name="terms" required>
                 <label class="form-check-label" for="terms">
