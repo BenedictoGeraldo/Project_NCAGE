@@ -39,9 +39,9 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
             <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Masukkan Email" value="{{ old('email') }}" required autofocus>
-                @error('email')
+                <label for="login" class="form-label">Email atau Nomor Telepon</label>
+                <input type="text" class="form-control @error('login') is-invalid @enderror" id="login" name="login" placeholder="Masukkan Email atau Nomor Telepon" value="{{ old('login') }}" required autofocus>
+                @error('login')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>

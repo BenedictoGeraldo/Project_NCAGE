@@ -17,7 +17,7 @@
     <div class="card-container" style="max-width: 500px;">
         <h2 class="card-title d-flex justify-content-center text-center">Masukkan Kode OTP</h2>
         <p class="text-center text-muted mb-4">
-            Kami telah mengirimkan kode 6 digit ke alamat email Anda.
+            Kami telah mengirimkan kode 6 digit ke Nomor WhatsApp atau Email Anda.
         </p>
 
         @if (session('status'))
