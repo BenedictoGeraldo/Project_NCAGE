@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // <-- Tambahkan ini untuk mempermudah
+use App\Models\User; 
 
 class NotificationController extends Controller
 {
@@ -13,7 +13,7 @@ class NotificationController extends Controller
      */
     public function fetch()
     {
-        /** @var \App\Models\User $user */ // <--- TAMBAHKAN INI
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Ambil 10 notifikasi terbaru
@@ -33,7 +33,6 @@ class NotificationController extends Controller
      */
     public function markAsRead(Request $request)
     {
-        // Validasi request, pastikan 'ids' adalah array
         $request->validate([
             'ids' => 'required|array'
         ]);

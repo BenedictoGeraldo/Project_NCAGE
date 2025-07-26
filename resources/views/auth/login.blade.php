@@ -78,6 +78,7 @@
         </p>
     </div>
 
+    <!-- Script untuk hide n show pasword -->
     <script>
         function setupPasswordToggle(inputId, toggleButtonId, showIconId, hideIconId) {
             const togglePassword = document.getElementById(toggleButtonId);
