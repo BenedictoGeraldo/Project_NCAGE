@@ -3,45 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password</title>
-    {{-- Sesuaikan path CSS dengan proyek Anda --}}
+    <title>Buat Password Baru</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Buat Password Baru</div>
-                    <div class="card-body">
+    <div class="header-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo Kemhan">
+        <h1>Buat Password Baru</h1>
+    </div>
 
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+    <div class="card-container" style="max-width: 500px;">
+        <p class="text-center text-muted mb-4">
+            Silakan masukkan password baru Anda. Pastikan password kuat dan mudah diingat.
+        </p>
 
-                        <form method="POST" action="{{ route('password.update.new') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password Baru</label>
-                                <input type="password" class="form-control" id="password" name="password" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Reset Password</button>
-                        </form>
-
-                    </div>
-                </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-        </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.update.new') }}">
+            @csrf
+            <div class="mb-3">
+                <label for="password" class="form-label">Password Baru</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Konfirmasi Password Baru</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Simpan Password Baru</button>
+        </form>
     </div>
 </body>
 </html>

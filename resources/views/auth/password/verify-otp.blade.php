@@ -3,45 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Kode OTP</title>
-    {{-- Sesuaikan path CSS dengan proyek Anda --}}
+    <title>Verifikasi Kode</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth/login.css') }}">
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header">Masukkan Kode Verifikasi</div>
-                    <div class="card-body">
+    <div class="header-logo">
+        <img src="{{ asset('images/logo.png') }}" alt="Logo Kemhan">
+        <h1>Verifikasi Akun</h1>
+    </div>
 
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-
-                        @error('otp')
-                            <div class="alert alert-danger" role="alert">
-                                {{ $message }}
-                            </div>
-                        @enderror
-
-                        <p class="mb-3">Kami telah mengirimkan kode verifikasi 6 digit. Silakan masukkan kode di bawah ini.</p>
-
-                        <form method="POST" action="{{ route('password.otp.verify') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="otp" class="form-label">Kode OTP</label>
-                                <input type="text" class="form-control" id="otp" name="otp" required autofocus>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Verifikasi</button>
-                        </form>
-
-                    </div>
-                </div>
+    <div class="card-container" style="max-width: 500px;">
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
             </div>
-        </div>
+        @endif
+
+        <p class="text-center text-muted mb-4">
+            Kami telah mengirimkan kode verifikasi 6 digit. Silakan masukkan kode di bawah ini.
+        </p>
+
+        @error('otp')
+            <div class="alert alert-danger text-center">
+                {{ $message }}
+            </div>
+        @enderror
+
+        <form method="POST" action="{{ route('password.otp.verify') }}">
+            @csrf
+            <div class="mb-3">
+                <label for="otp" class="form-label">Kode OTP</label>
+                <input type="text" class="form-control" id="otp" name="otp" required autofocus>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Verifikasi Kode</button>
+        </form>
+
+        <p class="text-center mt-3">
+            <a href="{{ route('password.request') }}">Kirim ulang kode?</a>
+        </p>
     </div>
 </body>
 </html>
