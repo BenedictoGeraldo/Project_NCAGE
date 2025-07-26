@@ -18,6 +18,7 @@ use App\Http\Controllers\NotificationController;
 use App\Notifications\ApplicationNeedsRevision;
 use App\Notifications\ApplicationRejected;
 use App\Notifications\FinalValidation;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 
 // =========================================================================
@@ -39,12 +40,25 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    // Rute Lupa Password
-    Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
-    Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+    // Tahap 1: Menampilkan form untuk memasukkan email/nomor telepon
+    Route::get('forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+
+    // Tahap 2: Mengirim OTP ke email atau WhatsApp
+    Route::post('forgot-password', [PasswordResetController::class, 'sendResetOtp'])->name('password.send.otp');
+
+    // Tahap 3: Menampilkan form untuk memasukkan OTP
+    Route::get('verify-reset-otp', [PasswordResetController::class, 'showOtpForm'])->name('password.otp.form');
+
+    // Tahap 4: Memverifikasi OTP yang dimasukkan pengguna
+    Route::post('verify-reset-otp', [PasswordResetController::class, 'verifyOtp'])->name('password.otp.verify');
+
+    // Tahap 5: Menampilkan form untuk membuat password baru (setelah OTP benar)
+    Route::get('reset-password', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
+
+    // Tahap 6: Menyimpan password baru ke database
+    Route::post('reset-password', [PasswordResetController::class, 'updatePassword'])->name('password.update.new');
 });
+
 
 // =========================================================================
 // RUTE OTENTIKASI (Sudah login, tapi belum tentu terverifikasi)
