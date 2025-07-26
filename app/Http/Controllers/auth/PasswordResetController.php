@@ -52,7 +52,7 @@ class PasswordResetController extends Controller
         // 4. Generate & simpan OTP ke database
         $otp = random_int(100000, 999999);
         $user->otp_code = $otp;
-        $user->otp_expires_at = now()->addMinutes(10); // OTP berlaku 10 menit
+        $user->otp_expires_at = now()->addMinutes(5); // OTP berlaku 5 menit
         $user->save();
         
         // 5. Simpan identifier (email/telepon) ke session untuk tahap verifikasi
@@ -137,7 +137,7 @@ class PasswordResetController extends Controller
         }
 
         $twilio = new Client($sid, $token);
-        $message = "Kode verifikasi reset password Anda adalah {$otp}.";
+        $message = "Kode verifikasi reset password Anda adalah {$otp}. Kode ini hanya berlaku selama 5 menit.";
 
         $twilio->messages->create("whatsapp:{$recipientPhoneNumber}", [
             "from" => "whatsapp:{$from}",

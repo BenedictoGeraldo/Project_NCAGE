@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
         //buat dan simpan otp ke dalam session
         $otp = random_int(100000, 999999);
         $request->session()->put('otp_code', $otp);
-        $request->session()->put('otp_expires_at', now()->addMinutes(10));
+        $request->session()->put('otp_expires_at', now()->addMinutes(5)); // OTP berlaku 5 menit
 
         // BARU: Percabangan logika untuk mengirim OTP
         if ($validatedData['otp_delivery_method'] === 'whatsapp') {
