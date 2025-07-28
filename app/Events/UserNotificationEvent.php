@@ -25,10 +25,28 @@ class UserNotificationEvent implements ShouldBroadcast
         $this->message = $message;
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return array<int, \Illuminate\Broadcasting\Channel>
+     */
     public function broadcastOn(): array
     {
+        // PERBAIKAN: Gunakan nama channel default Laravel yang lengkap.
+        // Nama ini harus cocok dengan yang ada di routes/channels.php
         return [
-            new PrivateChannel('user.' . $this->user->id),
+            new PrivateChannel('App.Models.User.' . $this->user->id),
         ];
+    }
+
+    /**
+     * The event's broadcast name.
+     *
+     * @return string
+     */
+    public function broadcastAs(): string
+    {
+        // REKOMENDASI: Gunakan nama alias agar lebih pendek di JavaScript.
+        return 'user-notification';
     }
 }

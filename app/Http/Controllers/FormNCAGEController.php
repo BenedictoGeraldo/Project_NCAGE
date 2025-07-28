@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Event;
 
 class FormNCAGEController extends Controller
 {
@@ -425,7 +426,7 @@ class FormNCAGEController extends Controller
                 // 2. Notifikasi untuk REAL-TIME (dikirim via Pusher)
                 $title = 'Permohonan Terkirim';
                 $message = 'Permohonan NCAGE Anda telah berhasil kami terima.';
-                event(new \App\Events\UserNotificationEvent($user, $title, $message));
+                Event::dispatch(new \App\Events\UserNotificationEvent($user, $title, $message));
             }
 
             Session::forget('form_ncage');
@@ -436,6 +437,8 @@ class FormNCAGEController extends Controller
 
         // Simpan session sementara
         Session::put('form_ncage', $data);
+
+        Log::info('Session Data: ' . json_encode(session()->all()));
 
         // Redirect ke view sesuai step dan sub_step selanjutnya
         if ($request->step == 2 && $request->substep < 4) {

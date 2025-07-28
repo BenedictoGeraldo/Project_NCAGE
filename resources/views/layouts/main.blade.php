@@ -26,6 +26,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     @yield('styles')
+
+    <!-- Memuat js dan css dari vite -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="antialiased">
@@ -68,23 +71,6 @@
     </div>
 
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-
-    {{-- --- BLOK SCRIPT NOTIFIKASI (Disesuaikan) --- --}}
-    @auth
-        {{-- 1. Muat library PusherJS dan Laravel Echo dari CDN --}}
-        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
-
-        {{-- 2. Script Jembatan Data --}}
-        <script>
-            window.PUSHER_APP_KEY = '{{ config('broadcasting.connections.pusher.key') }}';
-            window.PUSHER_APP_CLUSTER = 'ap1'; // <-- Diatur langsung sesuai permintaan
-            window.USER_ID = {{ Auth::user()->id }};
-        </script>
-        
-        {{-- 3. Memanggil file JavaScript eksternal Anda --}}
-        <script src="{{ asset('js/notification.js') }}" defer></script>
-    @endauth
 
     @stack('scripts')
 </body>

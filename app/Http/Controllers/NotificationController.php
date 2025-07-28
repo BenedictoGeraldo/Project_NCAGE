@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; 
 
 class NotificationController extends Controller
 {
     /**
-     * Mengambil notifikasi terbaru dan menandainya sebagai sudah dibaca.
+     * Mengambil notifikasi terbaru untuk ditampilkan.
+     * Method diganti dari fetch() menjadi index() agar sesuai standar.
      */
-    public function fetch()
+    public function index()
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
@@ -22,10 +22,6 @@ class NotificationController extends Controller
         // Hitung notifikasi yang belum dibaca
         $unreadCount = $user->unreadNotifications()->count();
 
-        // --- PERUBAHAN UTAMA ADA DI SINI ---
-        // Tandai semua notifikasi yang belum dibaca sebagai sudah dibaca
-        $user->unreadNotifications->markAsRead();
-
         return response()->json([
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
@@ -33,22 +29,14 @@ class NotificationController extends Controller
     }
 
     /**
-     * Menandai notifikasi spesifik sebagai sudah dibaca.
+     * Menandai notifikasi sebagai sudah dibaca saat dropdown dibuka.
+     * Method ini akan kita panggil secara terpisah.
      */
-    public function markAsRead(Request $request)
+    public function markAsRead()
     {
-        $request->validate([
-            'ids' => 'required|array'
-        ]);
-
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
-        // Cari notifikasi yang belum dibaca berdasarkan ID yang dikirim
-        // dan tandai sebagai sudah dibaca.
-        $user->unreadNotifications
-             ->whereIn('id', $request->ids)
-             ->markAsRead();
+        $user->unreadNotifications->markAsRead();
 
         return response()->json(['status' => 'success']);
     }

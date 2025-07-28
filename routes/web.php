@@ -148,7 +148,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
     //notifikasi route
-    Route::get('/notifications', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
 });
 
@@ -158,9 +159,9 @@ Route::middleware([
 ->prefix('admin')
 ->group(function () {
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])
-         ->name('admin.certificate.download');
+        ->name('admin.certificate.download');
     Route::get('/sertifikat/record/{record}/unduh-xml', [CertificateController::class, 'downloadXml'])
-         ->name('admin.certificate.download.xml');
+        ->name('admin.certificate.download.xml');
     Route::get('/sertifikat/record/{record}/unduh-berkas', [CertificateController::class, 'downloadBundle'])
-         ->name('admin.certificate.download.bundle');
+        ->name('admin.certificate.download.bundle');
 });
