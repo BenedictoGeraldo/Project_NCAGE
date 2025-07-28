@@ -14,7 +14,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\View;
 use App\Models\Admin;
+use Twilio\TwiML\Voice\Play;
 
 class NcageApplicationResource extends Resource implements HasShieldPermissions
 {
@@ -68,22 +70,217 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
                         ->columnSpan(1),
                 ])->columns(3),
             
-            Forms\Components\Section::make('Status Permohonan')
+            Forms\Components\Section::make('Dokumen Terlampir')
+                ->schema([
+                    View::make('filament.components.ncage-documents')
+                        ->columnSpan(3),
+                ])->columns(3),
+
+            Forms\Components\Section::make('A. Identifikasi Entitas')
                 ->schema([
                     DatePicker::make('created_at')
                     ->label('Tanggal Pengajuan')
                     ->disabled()
-                    ->columnSpan(1),
+                    ->columnSpan(2),
 
-                Placeholder::make('application_type')
-                    ->label('Jenis Permohonan')
-                    ->content(fn ($record) => $record?->identity?->getApplicationTypeLabelAttribute())
-                    ->columnSpan(1),
-                
-                Placeholder::make('ncage_request_type')
-                    ->label('Jenis Permohonan NCAGE')
-                    ->content(fn ($record) => $record?->identity?->getNcageRequestTypeLabelAttribute())
-                    ->columnSpan(1),
+                    Placeholder::make('application_type')
+                        ->label('Jenis Permohonan')
+                        ->content(fn ($record) => $record?->identity?->getApplicationTypeLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('ncage_request_type')
+                        ->label('Jenis Permohonan NCAGE')
+                        ->content(fn ($record) => $record?->identity?->getNcageRequestTypeLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('purpose')
+                        ->label('Tujuan')
+                        ->content(fn ($record) => $record?->identity?->getPurposeLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('entity_type')
+                        ->label('Tipe Entitas')
+                        ->content(fn ($record) => $record?->identity?->getEntityTypeLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('building_ownership_status')
+                        ->label('Status Pemilik Bangunan')
+                        ->content(fn ($record) => $record?->identity?->getBuildingOwnershipStatusLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('is_ahu_registered')
+                        ->label('AHU Terdaftar')
+                        ->content(fn ($record) => $record?->identity?->getIsAhuRegisteredLabelAttribute())
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('office_coordinate')
+                        ->label('Koordinat Kantor')
+                        ->content(fn ($record) => $record?->identity?->office_coordinate)
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('nib')
+                        ->label('NIB')
+                        ->content(fn ($record) => $record?->identity?->nib)
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('npwp')
+                        ->label('NPWP')
+                        ->content(fn ($record) => $record?->identity?->npwp)
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('bussiness_field')
+                        ->label('Bidang Usaha')
+                        ->content(fn ($record) => $record?->identity?->bussiness_field ?? '-')
+                        ->columnSpan(1),
+                ])->columns(3),
+
+            Forms\Components\Section::make('B. Narahubung')
+                ->schema([
+                    Placeholder::make('name')
+                        ->label('Nama')
+                        ->content(fn ($record) => $record?->contacts?->name ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('identity_number')
+                        ->label('Nomor Identitas')
+                        ->content(fn ($record) => $record?->contacts?->identity_number ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('address')
+                        ->label('Alamat')
+                        ->content(fn ($record) => $record?->contacts?->address ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('phone_number')
+                        ->label('Nomor Telepon')
+                        ->content(fn ($record) => $record?->contacts?->phone_number ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('email')
+                        ->label('Email')
+                        ->content(fn ($record) => $record?->contacts?->email ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('position')
+                        ->label('Jabatan')
+                        ->content(fn ($record) => $record?->contacts?->position ?? '-')
+                        ->columnSpan(1),
+                ])->columns(3),
+
+                Forms\Components\Section::make('C. Detail Badan Usaha')
+                ->schema([
+                    Placeholder::make('name')
+                        ->label('Nama Perusahaan')
+                        ->content(fn ($record) => $record?->companyDetail?->name ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('province')
+                        ->label('Provinsi')
+                        ->content(fn ($record) => $record?->companyDetail?->province ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('city')
+                        ->label('Kota')
+                        ->content(fn ($record) => $record?->companyDetail?->city ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('street')
+                        ->label('Jalan')
+                        ->content(fn ($record) => $record?->companyDetail?->street ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('postal_code')
+                        ->label('Kode Pos')
+                        ->content(fn ($record) => $record?->companyDetail?->postal_code ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('po_box')
+                        ->label('PO Box')
+                        ->content(fn ($record) => $record?->companyDetail?->po_box ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('phone')
+                        ->label('Nomor Telepon')
+                        ->content(fn ($record) => $record?->companyDetail?->phone ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('fax')
+                        ->label('Fax')
+                        ->content(fn ($record) => $record?->companyDetail?->fax ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('email')
+                        ->label('Email')
+                        ->content(fn ($record) => $record?->companyDetail?->email ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('website')
+                        ->label('Website')
+                        ->content(fn ($record) => $record?->companyDetail?->website ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('affiliate')
+                        ->label('Perusahaan Affiliasi')
+                        ->content(fn ($record) => $record?->companyDetail?->affiliate ?? '-')
+                        ->columnSpan(1),
+                ])->columns(3),
+
+                Forms\Components\Section::make('D. Informasi Lainnya')
+                ->schema([
+                    Placeholder::make('products')
+                        ->label('Produk')
+                        ->content(fn ($record) => $record?->otherInformation?->products ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('production_capacity')
+                        ->label('Kapasitas Produksi')
+                        ->content(fn ($record) => $record?->otherInformation?->production_capacity ?? '-')
+                        ->columnSpan(1),
+                    
+                    Placeholder::make('number_of_employees')
+                        ->label('Jumlah Karyawan')
+                        ->content(fn ($record) => $record?->otherInformation?->number_of_employees ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('branch_office_name')
+                        ->label('Nama Cabang')
+                        ->content(fn ($record) => $record?->otherInformation?->branch_office_name ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('branch_office_street')
+                        ->label('Jalan Cabang')
+                        ->content(fn ($record) => $record?->otherInformation?->branch_office_street ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('branch_office_city')
+                        ->label('Kota Cabang')
+                        ->content(fn ($record) => $record?->otherInformation?->branch_office_city ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('branch_office_postal_code')
+                        ->label('Kode Pos Cabang')
+                        ->content(fn ($record) => $record?->otherInformation?->branch_office_postal_code ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('affiliate_company')
+                        ->label('Perusahaan Affiliasi')
+                        ->content(fn ($record) => $record?->otherInformation?->affiliate_company ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('affiliate_company_street')
+                        ->label('Jalan Perusahaan Affiliasi')
+                        ->content(fn ($record) => $record?->otherInformation?->affiliate_company_street ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('affiliate_company_city')
+                        ->label('Kota Perusahaan Affiliasi')
+                        ->content(fn ($record) => $record?->otherInformation?->affiliate_company_city ?? '-')
+                        ->columnSpan(1),
+
+                    Placeholder::make('affiliate_company_postal_code')
+                        ->label('Kode Pos Perusahaan Affiliasi')
+                        ->content(fn ($record) => $record?->otherInformation?->affiliate_company_postal_code ?? '-')
+                        ->columnSpan(1),
                 ])->columns(3),
         ]);
     }
