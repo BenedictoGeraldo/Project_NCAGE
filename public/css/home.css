@@ -94,3 +94,62 @@
     width: auto;
     z-index: 2;
 }
+
+/* Kustomisasi warna untuk Nav Tabs */
+.nav-tabs .nav-link {
+    color: #6c757d; /* Warna teks tab tidak aktif */
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #6A040F; /* Warna teks tab aktif (Marun) */
+    background-color: transparent; 
+    border-bottom: 3px solid #6A040F; /* Garis bawah aktif (Marun) */
+}
+
+/* Kustomisasi Accordion FAQ */
+.accordion {
+    --bs-accordion-border-width: 0; /* Menghilangkan border luar accordion */
+}
+
+.accordion-item {
+    /* 4. Background warna accordion */
+    background-color: #F5F5F5;
+    border: 1px solid #E0E0E0; /* Memberi garis pemisah tipis */
+    margin-bottom: 0.5rem;
+    border-radius: .25rem;
+}
+
+.accordion-button {
+    background-color: #F5F5F5;
+    font-weight: 600;
+}
+
+/* Styling saat accordion terbuka */
+.accordion-button:not(.collapsed) {
+    color: #6A040F;
+    background-color: #EFEBE4; /* Warna sedikit kontras saat terbuka */
+    box-shadow: none;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.25rem rgba(106, 4, 15, 0.25);
+}
+
+#panduan .tab-pane p.lead {
+    text-align: justify;
+}
+
+#faq .accordion-body {
+    text-align: justify;
+}
+
+/* 2. Background untuk Section Panduan Penggunaan */
+#panduan {
+    background: linear-gradient(to bottom, #FDF8E4 0%, #F5F5F5 100%);
+}
+
+/* 3. Background untuk Section FAQ */
+#faq {
+    background: linear-gradient(to bottom, #F5F5F5 0%, #FDF8E4 100%);
+}
