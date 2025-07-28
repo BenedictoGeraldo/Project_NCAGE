@@ -4,42 +4,65 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\NcageApplication;
 
-class ApplicationSubmitted extends Notification
+class ApplicationSubmitted extends Notification implements ShouldQueue
 {
     use Queueable;
+
+    protected $application;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(NcageApplication $application)
     {
-        //
+        $this->application = $application;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @return array<int, string>
+     * @param  mixed  $notifiable
+     * @return array
      */
-    public function via(object $notifiable): array
+    public function via($notifiable)
     {
-        return ['database'];
+        // Kirim ke database untuk riwayat DAN broadcast untuk real-time
+        return ['database', 'broadcast'];
     }
 
     /**
-     * Get the mail representation of the notification for database.
-     * 
-     * @return array<string, mixed>
+     * Get the array representation of the notification for the database.
+     *
+     * @param  mixed  $notifiable
+     * @return array
      */
-    public function toDatabase(object $notifiable): array
+    public function toArray($notifiable)
     {
-        return[
+        return [
             'title' => 'Permohonan Terkirim',
             'message' => 'Permohonan NCAGE Anda sukses terkirim. Tim kami akan segera melakukan verifikasi.',
             'icon' => 'fa-solid fa-paper-plane',
+            'application_id' => $this->application->id,
         ];
+    }
+
+    /**
+     * Get the broadcastable representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\BroadcastMessage
+     */
+    public function toBroadcast($notifiable)
+    {
+        // Data ini yang akan diterima oleh JavaScript secara real-time
+        return new BroadcastMessage([
+            'title' => 'Permohonan Terkirim',
+            'message' => 'Permohonan NCAGE Anda sukses terkirim. Tim kami akan segera melakukan verifikasi.',
+            'icon' => 'fa-solid fa-paper-plane',
+        ]);
     }
 }

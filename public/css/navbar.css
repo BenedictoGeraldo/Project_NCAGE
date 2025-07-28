@@ -61,7 +61,7 @@
 
 /* Membuat segitiga kecil (caret) yang menunjuk ke atas */
 .dropdown-menu::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -10px; /* Posisikan di atas menu */
     right: 15px; /* Sejajarkan dengan ikon profil */
@@ -83,7 +83,7 @@
     margin: 0.5rem 0 0 0;
     border: none; /* Hapus border default */
     height: 2px; /* Atur ketebalan garis */
-    background-color: #6A040F; /* Atur warna garis */
+    background-color: #6a040f; /* Atur warna garis */
     opacity: 1; /* Pastikan garis tidak transparan */
 }
 /* Styling untuk setiap item di dropdown */
@@ -108,43 +108,43 @@
 }
 
 .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /*off canvas below*/
 .offcanvas.bg-dark-custom {
-  background-color: #212529;
+    background-color: #212529;
 }
 
 .offcanvas-body .nav-link {
-  font-size: 1.1rem;
-  padding: 0.75rem 1rem;
-  color: rgba(255, 255, 255, 0.75);
-  border-radius: 8px;
-  margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.75);
+    border-radius: 8px;
+    margin-bottom: 0.25rem;
 }
 
 .offcanvas-body .nav-link:hover {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .offcanvas-body .nav-link.active-mobile {
-  background-color: #E8BD74;
-  color: #ffff;
-  font-weight: 600;
+    background-color: #e8bd74;
+    color: #ffff;
+    font-weight: 600;
 }
 
 .offcanvas-header {
-  justify-content: flex-end;
+    justify-content: flex-end;
 }
 
 .offcanvas-profile-img {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid #E2B34B;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #e2b34b;
 }
 
 /* Styling untuk komponen notifikasi */
@@ -163,10 +163,11 @@
     width: 360px; /* Lebar dropdown */
     padding: 0;
     border: 1px solid #e9ecef;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
-.notification-header, .notification-footer {
+.notification-header,
+.notification-footer {
     background-color: #f8f9fa;
 }
 
@@ -175,57 +176,134 @@
     font-weight: 600;
 }
 
-/* Styling untuk setiap item notifikasi */
+/* Di dalam file public/css/navbar.css */
+
+/* Aturan baru untuk membuat ikon tebal (bold) */
+.notification-item .me-3 i {
+    font-weight: 900;
+}
+
+/* Aturan baru untuk mengatur teks tanggal */
+.notification-time {
+    font-size: 0.75rem; /* Lebih kecil dari deskripsi */
+    display: block; /* Memastikannya di baris baru */
+}
+
+/* Sedikit penyesuaian pada pesan agar ada jarak dari tanggal */
+.notification-message {
+    white-space: normal;
+    word-wrap: break-word;
+    color: #6c757d;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 0.5rem !important; /* Memberi jarak dari tanggal */
+}
+
+/* ========================================================================= */
+/* STYLING DROPDOWN NOTIFIKASI UTAMA
+/* ========================================================================= */
+
+.notification-dropdown .dropdown-menu {
+    width: 380px; /* Lebar dropdown */
+    padding: 0;
+    border-radius: 0.75rem;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.notification-header {
+    padding: 1rem;
+    text-align: center;
+}
+
+.notification-header h6 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Garis merah di bawah header "Notifikasi" */
+.notification-header::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #8c1515; /* Warna merah Kemenhan */
+    margin-top: 0.75rem;
+}
+
+.notification-footer {
+    padding: 0.5rem 1rem;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-bottom-left-radius: 0.75rem;
+    border-bottom-right-radius: 0.75rem;
+}
+
+.notification-footer a {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* ========================================================================= */
+/* STYLING SETIAP ITEM NOTIFIKASI
+/* ========================================================================= */
+
 .notification-item {
-    display: flex;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #e9ecef;
+    padding: 1rem;
     text-decoration: none;
     color: #212529;
     transition: background-color 0.15s ease-in-out;
 }
+
 .notification-item:hover {
     background-color: #f1f3f5;
 }
 
-.notification-item:last-child {
-    border-bottom: none;
-}
-
-.notification-item .icon-container {
-    font-size: 1.5rem;
-    margin-right: 1rem;
-    width: 30px;
-    text-align: center;
-    color: #6c757d;
-}
-
-.notification-item .message-container {
-    flex-grow: 1;
-}
-
-.notification-item h6 {
-    margin-bottom: 0.25rem;
+/* Styling untuk judul agar sejajar dengan tanggal */
+.notification-title {
     font-size: 0.9rem;
     font-weight: 600;
+    color: #343a40;
 }
 
-.notification-item p, .notification-item small {
-    margin-bottom: 0.1rem;
-    font-size: 0.8rem;
-    color: #495057;
-}
-
-.notification-item small {
+/* Styling untuk pesan agar bisa turun ke bawah (wrap) */
+.notification-message {
+    white-space: normal;
+    word-wrap: break-word;
     color: #6c757d;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin-top: 0.25rem;
+}
+
+/* Garis pemisah antar notifikasi */
+.dropdown-divider {
+    margin: 0;
+    border-top: 1px solid #e9ecef;
 }
 
 /* Titik biru untuk notifikasi yang belum dibaca */
-.notification-item .unread-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #0d6efd; /* Bootstrap primary blue */
+.notification-unread-dot {
+    background-color: #0d6efd; /* Warna biru primer Bootstrap */
+    min-width: 9px;
+    height: 9px;
     border-radius: 50%;
-    margin-left: auto; /* Mendorong titik ke paling kanan */
-    align-self: center;
+    margin-left: 10px;
+    align-self: center; /* Posisikan di tengah secara vertikal */
+}
+
+/* ========================================================================= */
+/* STYLING BADGE ANGKA DI ATAS IKON LONCENG
+/* ========================================================================= */
+
+.notification-dropdown .nav-link {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    font-size: 0.65em;
+    padding: 0.3em 0.5em;
 }

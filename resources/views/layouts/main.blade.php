@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    {{-- META TAG UNTUK USER ID (DITAMBAHKAN) --}}
+    @auth
+        <meta name="user-id" content="{{ Auth::user()->id }}">
+    @endauth
+
     <title>
         @yield('title', 'Pelayanan NCAGE')
     </title>
@@ -39,24 +44,17 @@
             <div class="modal fade" id="sudahDaftarModal" tabindex="-1" aria-labelledby="sudahDaftarModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content p-4 rounded-4 shadow-sm border-0 text-center">
-
                         <h5 class="fw-bold fs-4 mb-2" id="sudahDaftarModalLabel">Anda Sudah Memiliki Permohonan</h5>
                         <div class="border-top border-3 w-100 mx-auto mb-3"></div>
-
-                        <!-- Ikon -->
                         <div class="my-3">
                             <img src="{{ asset('images/icons/icon-info.png') }}" alt="Icon Keluar" style="height: 80px;">
                         </div>
-
                         <p class="text-muted mb-4">Perusahaan Anda telah mengajukan permohonan NCAGE. Untuk melihat progress pengajuan Anda, silahkan kunjungi halaman "Pantau Status".</p>
-
                         <div class="d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-dark-red border-2 rounded-pill px-4 py-2 fw-semibold"
-                                    data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-outline-dark-red border-2 rounded-pill px-4 py-2 fw-semibold" data-bs-dismiss="modal">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Kembali
                             </button>
-                            <a href="{{ route('tracking.index') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2"
-                            id="confirm-exit-btn">
+                            <a href="{{ route('tracking.index') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2">
                                 Pantau Status <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
@@ -70,7 +68,23 @@
     </div>
 
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('js/notification.js') }}" defer></script>
+
+    {{-- --- BLOK SCRIPT NOTIFIKASI (Disesuaikan) --- --}}
+    @auth
+        {{-- 1. Muat library PusherJS dan Laravel Echo dari CDN --}}
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.2/dist/echo.iife.js"></script>
+
+        {{-- 2. Script Jembatan Data --}}
+        <script>
+            window.PUSHER_APP_KEY = '{{ config('broadcasting.connections.pusher.key') }}';
+            window.PUSHER_APP_CLUSTER = 'ap1'; // <-- Diatur langsung sesuai permintaan
+            window.USER_ID = {{ Auth::user()->id }};
+        </script>
+        
+        {{-- 3. Memanggil file JavaScript eksternal Anda --}}
+        <script src="{{ asset('js/notification.js') }}" defer></script>
+    @endauth
 
     @stack('scripts')
 </body>

@@ -9,7 +9,7 @@ use App\Models\User;
 class NotificationController extends Controller
 {
     /**
-     * Mengambil notifikasi terbaru untuk pengguna yang sedang login.
+     * Mengambil notifikasi terbaru dan menandainya sebagai sudah dibaca.
      */
     public function fetch()
     {
@@ -22,6 +22,10 @@ class NotificationController extends Controller
         // Hitung notifikasi yang belum dibaca
         $unreadCount = $user->unreadNotifications()->count();
 
+        // --- PERUBAHAN UTAMA ADA DI SINI ---
+        // Tandai semua notifikasi yang belum dibaca sebagai sudah dibaca
+        $user->unreadNotifications->markAsRead();
+
         return response()->json([
             'notifications' => $notifications,
             'unreadCount' => $unreadCount
@@ -29,7 +33,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Menandai notifikasi sebagai sudah dibaca.
+     * Menandai notifikasi spesifik sebagai sudah dibaca.
      */
     public function markAsRead(Request $request)
     {
@@ -37,7 +41,7 @@ class NotificationController extends Controller
             'ids' => 'required|array'
         ]);
 
-        /** @var \App\Models\User $user */ // <--- TAMBAHKAN INI JUGA
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         
         // Cari notifikasi yang belum dibaca berdasarkan ID yang dikirim
