@@ -418,8 +418,14 @@ class FormNCAGEController extends Controller
             $user = auth()->user();
 
             //kirim notifikasi bahwa permohonan telah berhasil dikirim
-            if ($user){
-                $user->notify(new \App\Notifications\ApplicationSubmitted());
+            if ($user) {
+                // 1. Notifikasi untuk RIWAYAT (disimpan ke database)
+                $user->notify(new \App\Notifications\ApplicationSubmitted($ncageApplication));
+
+                // 2. Notifikasi untuk REAL-TIME (dikirim via Pusher)
+                $title = 'Permohonan Terkirim';
+                $message = 'Permohonan NCAGE Anda telah berhasil kami terima.';
+                event(new \App\Events\UserNotificationEvent($user, $title, $message));
             }
 
             Session::forget('form_ncage');
