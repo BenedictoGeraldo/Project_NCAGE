@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\NcageApplicationResource\Pages;
 use App\Models\NcageApplication;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
+use App\Models\Admin;
 
 class NcageApplicationResource extends Resource implements HasShieldPermissions
 {
@@ -51,26 +53,38 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Placeholder::make('user_name')
-                ->label('Nama Pemohon')
-                ->content(fn ($record) => $record?->user?->name ?? '-'),
 
-            TextInput::make('status_id')
-                ->label('Status')
-                ->default(fn ($record) => $record?->getStatusLabel())
-                ->disabled(),
-
-            DatePicker::make('created_at')
-                ->label('Tanggal Pengajuan')
-                ->disabled(),
-
-            Placeholder::make('application_type')
-                ->label('Jenis Permohonan')
-                ->content(fn ($record) => $record?->identity?->getApplicationTypeLabel()),
+            Forms\Components\Section::make('Status Permohonan')
+                ->schema([
+                    Placeholder::make('user_name')
+                        ->label('Nama Pemohon')
+                        ->content(fn ($record) => $record?->user?->name ?? '-')
+                        ->columnSpan(2),
+        
+                    TextInput::make('status_id')
+                        ->label('Status')
+                        ->default(fn ($record) => $record?->getStatusLabel())
+                        ->disabled()
+                        ->columnSpan(1),
+                ])->columns(3),
             
-            Placeholder::make('ncage_request_type')
-                ->label('Jenis Permohonan NCAGE')
-                ->content(fn ($record) => $record?->identity?->getNcageRequestTypeLabel()),
+            Forms\Components\Section::make('Status Permohonan')
+                ->schema([
+                    DatePicker::make('created_at')
+                    ->label('Tanggal Pengajuan')
+                    ->disabled()
+                    ->columnSpan(1),
+
+                Placeholder::make('application_type')
+                    ->label('Jenis Permohonan')
+                    ->content(fn ($record) => $record?->identity?->getApplicationTypeLabelAttribute())
+                    ->columnSpan(1),
+                
+                Placeholder::make('ncage_request_type')
+                    ->label('Jenis Permohonan NCAGE')
+                    ->content(fn ($record) => $record?->identity?->getNcageRequestTypeLabelAttribute())
+                    ->columnSpan(1),
+                ])->columns(3),
         ]);
     }
 
@@ -98,6 +112,30 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
                     ->date()
                     ->label('Tanggal Pengajuan')
                     ->toggleable(),
+                Tables\Columns\TextColumn::make('verified_by')
+                    ->label('Diverifikasi Oleh')
+                    ->formatStateUsing(function ($state) {
+                        return Admin::find($state)?->name ?? '-';
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('validated_by')
+                    ->label('Divalidasi Oleh')
+                    ->formatStateUsing(function ($state) {
+                        return Admin::find($state)?->name ?? '-';
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('revision_by')
+                    ->label('Diminta Revisi Oleh')
+                    ->formatStateUsing(function ($state) {
+                        return Admin::find($state)?->name ?? '-';
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('rejected_by')
+                    ->label('Ditolak Oleh')
+                    ->formatStateUsing(function ($state) {
+                        return Admin::find($state)?->name ?? '-';
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordUrl(fn ($record) => route('filament.admin.resources.ncage-applications.view', ['record' => $record->id]))
             ->actions([
@@ -107,7 +145,7 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
                     ->icon('heroicon-o-document-magnifying-glass')
                     // Tampilkan tombol ini untuk status yang relevan
                     ->visible(function ($record) {
-                        return in_array($record->status_id, [1, 2, 3])
+                        return in_array($record->status_id, [1, 2])
                             && auth()->user()->can('verify_ncage::application');
                     })
                     ->url(fn ($record) => route('filament.admin.resources.ncage-applications.verify-request', ['record' => $record->id])),

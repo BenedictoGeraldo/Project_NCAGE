@@ -95,7 +95,8 @@ class ValidateRequest extends Page
 
                     $record->update([
                         'status_id' => 5,
-                        'international_certificate_path' => $storedPath
+                        'international_certificate_path' => $storedPath,
+                        'validated_by' => auth('admin')->user()->id
                     ]);
 
                     // Hapus file sementara

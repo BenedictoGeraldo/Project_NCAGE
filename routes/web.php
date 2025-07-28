@@ -69,7 +69,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::post('/ncage-applications/{record}/approve', function (NcageApplication $record) {
-    $record->update(['status_id' => 4]);
+    $record->update([
+        'status_id' => 4,
+        'verified_by' => auth('admin')->user()->id
+    ]);
 
     // Kirim notifikasi ke pengguna
     if ($user = $record->user) {
@@ -87,6 +90,7 @@ Route::post('/ncage-applications/{record}/reject', function (NcageApplication $r
     $record->update([
         'status_id' => 6,
         'revision_notes' => $request->input('reason'),
+        'rejected_by' => auth('admin')->user()->id
     ]);
 
     // Kirim notifikasi ke pengguna
@@ -102,6 +106,7 @@ Route::post('/ncage-applications/{record}/revision', function (NcageApplication 
     $record->update([
         'status_id' => 3,
         'revision_notes' => $request->input('reason'),
+        'revision_by' => auth('admin')->user()->id
     ]);
 
     // Kirim notifikasi ke pengguna
