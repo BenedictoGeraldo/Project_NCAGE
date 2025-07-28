@@ -21,8 +21,9 @@ class OtpVerificationController extends Controller
 
     public function verify(Request $request)
     {
+        // DIUBAH: Validasi field 'otp' bukan 'otp_code'
         $request->validate([
-            'otp_code' => 'required|numeric|digits:6',
+            'otp' => 'required|numeric|digits:6',
         ]);
 
         // Ambil data dari session
@@ -31,24 +32,24 @@ class OtpVerificationController extends Controller
         $otp_expires_at = $request->session()->get('otp_expires_at');
 
         // Jika session tidak ada, atau OTP salah, atau kedaluwarsa
-        if (!$registrationData || $otp_code != $request->otp_code || now()->isAfter($otp_expires_at)) {
-            return back()->withErrors(['otp_code' => 'Kode OTP tidak valid atau sudah kedaluwarsa.']);
+        // DIUBAH: Bandingkan dengan $request->otp
+        if (!$registrationData || $otp_code != $request->otp || now()->isAfter($otp_expires_at)) {
+            // DIUBAH: Tampilkan error untuk field 'otp'
+            return back()->withErrors(['otp' => 'Kode OTP tidak valid atau sudah kedaluwarsa.']);
         }
 
-        // 1. Buat instance User baru (jangan simpan dulu)
+        // Buat instance User baru
         $user = new User();
         
-        // 2. Isi semua data dari session
+        // Isi semua data dari session
         $user->fill($registrationData);
         
-        // 3. Tetapkan waktu verifikasi secara eksplisit
+        // Tetapkan waktu verifikasi secara eksplisit
         $user->email_verified_at = now();
         
-        // 4. Baru simpan user ke database
+        // Baru simpan user ke database
         $user->save();
         
-        // ======================================================
-
         // Hapus semua data sementara dari session
         $request->session()->forget(['registration_data', 'otp_code', 'otp_expires_at']);
 

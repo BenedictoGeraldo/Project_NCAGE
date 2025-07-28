@@ -58,6 +58,7 @@ class RegisteredUserController extends Controller
             try {
                 Mail::to($validatedData['email'])->send(new SendOtpMail($otp));
             } catch (\Exception $e) {
+                // dd($e); //untuk tes error
                 Log::error('Gagal mengirim email OTP ke: ' . $validatedData['email'] . '. Error: ' . $e->getMessage());
                 return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Silakan coba lagi.']);
             }

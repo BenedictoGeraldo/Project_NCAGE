@@ -1,4 +1,4 @@
-<!-- Verify OTP untuk lupa password -->
+<!-- Verify OTP untuk Regis dengan email -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +33,7 @@
             </div>
         @enderror
 
-        <form method="POST" action="{{ route('password.otp.verify') }}">
+        <form method="POST" action="{{ route('otp.verify') }}">
             @csrf
             <div class="mb-3">
                 <label for="otp" class="form-label">Kode OTP</label>
@@ -42,10 +42,6 @@
 
             <button type="submit" class="btn btn-primary w-100">Verifikasi Kode</button>
         </form>
-
-        <p class="text-center mt-3">
-            <a href="{{ route('password.request') }}">Kirim ulang kode?</a>
-        </p>
     </div>
 </body>
 </html>
