@@ -10,14 +10,30 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 
-class NcageRecordResource extends Resource
+class NcageRecordResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = NcageRecord::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-table-cells';
 
     protected static ?string $navigationLabel = 'NCAGE Records';
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'import_data',
+            'edit',
+            'unduh_sertifikat',
+        ];
+    }
+
+    public static function canAccess(): bool
+    {
+        return auth()->check() && auth()->user()->can('view_any_ncage::record');
+    }
 
     public static function form(Form $form): Form
     {
@@ -181,11 +197,13 @@ class NcageRecordResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn () => auth()->user()?->can('edit_ncage::record')),
                 Action::make('downloadBundle')
                     ->label('Unduh Berkas Sertifikat ID')
                     ->icon('heroicon-o-archive-box-arrow-down')
                     ->color('success')
+                    ->visible(fn () => auth()->user()?->can('unduh_sertifikat_ncage::record'))
                     ->url(fn (NcageRecord $record): string => route('admin.certificate.download.bundle', $record))
                     ->openUrlInNewTab()
             ])

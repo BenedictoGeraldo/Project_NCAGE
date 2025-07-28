@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\NcageApplicationResource\Pages;
 use App\Models\NcageApplication;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,12 +14,39 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 
-class NcageApplicationResource extends Resource
+class NcageApplicationResource extends Resource implements HasShieldPermissions
 {
     protected static ?string $model = NcageApplication::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Data Permohonan NCAGE';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'verify',
+            'validate',
+        ];
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        $permissions = [
+            'view_any_ncage::application',
+            'verify_ncage::application',
+            'validate_ncage::application',
+        ];
+
+        return collect($permissions)->contains(fn ($permission) => $user->can($permission));
+    }
 
     public static function form(Form $form): Form
     {
@@ -78,7 +106,10 @@ class NcageApplicationResource extends Resource
                     ->label('Lihat & Verifikasi')
                     ->icon('heroicon-o-document-magnifying-glass')
                     // Tampilkan tombol ini untuk status yang relevan
-                    ->visible(fn ($record) => in_array($record->status_id, [1, 2, 3]))
+                    ->visible(function ($record) {
+                        return in_array($record->status_id, [1, 2, 3])
+                            && auth()->user()->can('verify_ncage::application');
+                    })
                     ->url(fn ($record) => route('filament.admin.resources.ncage-applications.verify-request', ['record' => $record->id])),
 
                 // Tombol ini akan mengarahkan admin ke halaman validasi kustom Anda
@@ -86,7 +117,10 @@ class NcageApplicationResource extends Resource
                     ->label('Lihat & Validasi')
                     ->icon('heroicon-o-check-badge')
                      // Tampilkan tombol ini hanya saat statusnya 'Proses Validasi'
-                    ->visible(fn ($record) => $record->status_id === 4)
+                    ->visible(function ($record) {
+                        return $record->status_id === 4
+                            && auth()->user()->can('validate_ncage::application');
+                    })
                     ->url(fn ($record) => route('filament.admin.resources.ncage-applications.validate-request', ['record' => $record->id])),
             ]);
     }

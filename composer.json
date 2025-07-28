@@ -2,17 +2,22 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.1",
         "filament/filament": "3.3",
+        "bezhansalleh/filament-shield": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "konnco/filament-import": "^3.0",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "spatie/laravel-permission": "^6.21",
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpword": "^1.4",
         "pusher/pusher-php-server": "^7.2",

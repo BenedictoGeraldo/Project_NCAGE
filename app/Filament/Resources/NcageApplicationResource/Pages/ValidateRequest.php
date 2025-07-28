@@ -22,6 +22,10 @@ class ValidateRequest extends Page
 
     public ?int $recordId = null; // simpan ID saja
     public ?array $data = [];
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->check() && auth()->user()->can('validate_ncage::application');
+    }
 
     public function mount(int $record): void
     {

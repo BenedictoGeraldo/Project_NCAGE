@@ -22,6 +22,11 @@ class VerifyRequest extends Page
     public $applicationOtherInformation;
     public $documents;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        return auth()->check() && auth()->user()->can('verify_ncage::application');
+    }
+
     public function mount($record): void
     {
         $this->recordId = $record;

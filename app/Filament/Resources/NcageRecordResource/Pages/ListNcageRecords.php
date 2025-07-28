@@ -27,6 +27,7 @@ class ListNcageRecords extends ListRecords
                         ->disk('local') // Arahkan ke disk local
                         ->directory('livewire-tmp'), // Direktori temporary
                 ])
+                ->visible(fn () => auth()->user()?->can('import_data_ncage::record'))
                 ->action(function (array $data) {
 
                     // 1. Ambil HANYA nama filenya saja dari path yang diberikan Filament
