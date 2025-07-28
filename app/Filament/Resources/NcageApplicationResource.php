@@ -61,14 +61,58 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
                     Placeholder::make('user_name')
                         ->label('Nama Pemohon')
                         ->content(fn ($record) => $record?->user?->name ?? '-')
-                        ->columnSpan(2),
+                        ->columnSpan(1),
         
                     TextInput::make('status_id')
                         ->label('Status')
                         ->default(fn ($record) => $record?->getStatusLabel())
                         ->disabled()
                         ->columnSpan(1),
-                ])->columns(3),
+
+                    Placeholder::make('verified_by_name')
+                        ->label('Diverifikasi Oleh')
+                        ->content(function ($record) {
+                            if ($record?->verified_by) {
+                                $admin = Admin::find($record->verified_by);
+                                return $admin?->name ?? '-';
+                            }
+                            return '-';
+                        })
+                        ->columnSpan(1),
+
+                    Placeholder::make('validated_by_name')
+                        ->label('Divalidasi Oleh')
+                        ->content(function ($record) {
+                            if ($record?->validated_by) {
+                                $admin = Admin::find($record->validated_by);
+                                return $admin?->name ?? '-';
+                            }
+                            return '-';
+                        })
+                        ->columnSpan(1),
+
+                    Placeholder::make('revision_by')
+                        ->label('Diminta Revisi Oleh')
+                        ->content(function ($record) {
+                            if ($record?->revision_by) {
+                                $admin = Admin::find($record->revision_by);
+                                return $admin?->name ?? '-';
+                            }
+                            return '-';
+                        })
+                        ->columnSpan(1),
+
+                    Placeholder::make('rejected_by')
+                        ->label('Ditolak Oleh')
+                        ->content(function ($record) {
+                            if ($record?->rejected_by) {
+                                $admin = Admin::find($record->rejected_by);
+                                return $admin?->name ?? '-';
+                            }
+                            return '-';
+                        })
+                        ->columnSpan(1),
+                ])->columns(2),
             
             Forms\Components\Section::make('Dokumen Terlampir')
                 ->schema([
