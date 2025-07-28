@@ -3,36 +3,11 @@ import "./bootstrap";
 document.addEventListener("DOMContentLoaded", function () {
     /**
      * =================================================================
-     * BAGIAN AWAL: FUNGSI UNTUK UPDATE BADGE SAAT HALAMAN DIMUAT
-     * =================================================================
-     */
-    function updateInitialUnreadCount() {
-        const notificationBadge = document.getElementById("notification-count");
-        if (!notificationBadge) return;
-
-        fetch("/notifications")
-            .then((response) => response.json())
-            .then((data) => {
-                if (data.unread_count > 0) {
-                    notificationBadge.innerText = data.unread_count;
-                    notificationBadge.style.display = "block";
-                } else {
-                    notificationBadge.style.display = "none";
-                }
-            })
-            .catch((error) =>
-                console.error("Gagal mengambil jumlah notifikasi awal:", error)
-            );
-    }
-
-    // Panggil fungsi ini sekali saat halaman selesai dimuat
-    updateInitialUnreadCount();
-
-    /**
-     * =================================================================
      * BAGIAN 1: FUNGSI-FUNGSI BANTUAN
      * =================================================================
      */
+
+    // Fungsi untuk membuat HTML dari satu notifikasi
     function createNotificationHtml(notification) {
         const date = new Date(notification.created_at);
         const time = date.toLocaleDateString("id-ID", {
@@ -77,17 +52,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const userIdMeta = document.querySelector('meta[name="user-id"]');
     if (userIdMeta) {
         const userId = userIdMeta.getAttribute("content");
-        window.Echo.private("App.Models.User." + userId).listen(
-            ".user-notification",
-            (e) => {
-                console.log("Real-time event received!", e);
-                // Refresh badge dengan jumlah terbaru dari server
-                updateInitialUnreadCount();
+        console.log(
+            "Real-time notification listener is active for User ID:",
+            userId
+        );
 
-                // Tambahkan notifikasi baru ke daftar jika dropdown sedang terbuka
+        window.Echo.private("App.Models.User." + userId)
+            // PERBAIKAN FINAL: Tambahkan titik (.) di depan nama event
+            // Ini memberitahu Echo untuk mendengarkan nama alias (dari broadcastAs)
+            // tanpa menambahkan namespace aplikasi secara otomatis.
+            .listen(".user-notification", (e) => {
+                console.log("Real-time event received!", e);
+
+                const notificationBadge =
+                    document.getElementById("notification-count");
                 const notificationList = document.querySelector(
                     "#notification-list-container"
                 );
+
+                if (notificationBadge) {
+                    let currentCount =
+                        parseInt(notificationBadge.innerText) || 0;
+                    notificationBadge.innerText = currentCount + 1;
+                    notificationBadge.style.display = "block";
+                }
+
                 if (notificationList) {
                     const noNotifMessage = document.getElementById(
                         "no-notification-message"
@@ -108,8 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         createNotificationHtml(newNotificationData)
                     );
                 }
-            }
-        );
+            });
     }
 
     /**
@@ -123,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (notificationDropdown) {
         let hasBeenClicked = false;
 
+        // Fungsi untuk mengambil notifikasi lama dari server
         function fetchNotifications() {
             const notificationList = document.querySelector(
                 "#notification-list-container"
@@ -133,7 +122,15 @@ document.addEventListener("DOMContentLoaded", function () {
             notificationList.innerHTML = "";
 
             fetch("/notifications")
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(
+                            "Network response was not ok: " +
+                                response.statusText
+                        );
+                    }
+                    return response.json();
+                })
                 .then((data) => {
                     if (loader) loader.style.display = "none";
                     if (data.notifications && data.notifications.length > 0) {
@@ -154,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
         }
 
+        // Event listener saat ikon lonceng diklik
         notificationDropdown.addEventListener("click", function () {
             const notificationBadge =
                 document.getElementById("notification-count");
@@ -162,22 +160,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 notificationBadge.style.display = "none";
             }
 
-            // Tandai notifikasi sebagai sudah dibaca di server
-            fetch("/notifications/mark-as-read", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
-                },
-            });
-
             if (!hasBeenClicked) {
                 fetchNotifications();
                 hasBeenClicked = true;
             }
         });
 
+        // Reset status klik saat dropdown ditutup
         const dropdownEl = document.querySelector(".notification-dropdown");
         if (dropdownEl) {
             dropdownEl.addEventListener("hidden.bs.dropdown", function () {
