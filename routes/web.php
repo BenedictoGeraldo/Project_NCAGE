@@ -19,6 +19,7 @@ use App\Notifications\ApplicationNeedsRevision;
 use App\Notifications\ApplicationRejected;
 use App\Notifications\FinalValidation;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\EntityCheckController;
 
 
 // =========================================================================
@@ -152,6 +153,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
+
+    //Cek Entitas Route
+    Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
+    
 });
 
 Route::middleware([

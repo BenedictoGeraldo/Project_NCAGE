@@ -16,7 +16,11 @@
         
         <div class="position-absolute top-50 start-50 translate-middle d-none d-lg-block">
             <ul class="d-flex list-unstyled gap-4 mb-0">
-                <li><a class="btn fw-bold fs-7 {{ Request::is('/', 'beranda') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">Beranda</a></li>
+                <li>
+                    <a class="btn fw-bold fs-7 {{ Request::is('/', 'beranda') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">
+                        Beranda
+                    </a>
+                </li>
                 <li>
                     @if ($hasPendingNcage)
                         <a href="#" class="btn rounded-4 fw-bold fs-7"
@@ -34,6 +38,11 @@
                 <li>
                     <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}" href="{{ route('tracking.index') }}">
                         Pantau Status
+                    </a>
+                </li>
+                <li>
+                    <a class="btn fw-bold fs-7 {{ Request::is('cek-entitas*') ? 'text-white bg-active' : '' }}" href="{{ route('entity-check.index') }}">
+                        Cek Entitas
                     </a>
                 </li>
             </ul>
