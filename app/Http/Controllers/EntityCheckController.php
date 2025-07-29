@@ -14,8 +14,7 @@ class EntityCheckController extends Controller
         // Ambil data dari tabel ncage_records
         // Anda bisa memfilter berdasarkan user login jika hanya ingin menampilkan entitas yang didaftarkan oleh user tersebut.
         // Contoh untuk mengambil semua record (sesuaikan jika ada filter):
-        $ncageRecords = NcageRecord::select('ncage_code', 'entity_name', 'ncagesd') // Pilih kolom yang ingin ditampilkan
-                                 ->latest() // Urutkan berdasarkan yang terbaru
+        $ncageRecords = NcageRecord::select('ncage_code', 'entity_name', 'ncagesd') // Pilih kolom yang ingin ditampilkan // Urutkan berdasarkan yang terbaru
                                  ->paginate(10); // Tambahkan pagination untuk performa lebih baik
 
         // Jika Anda ingin memfilter berdasarkan pengguna yang login:

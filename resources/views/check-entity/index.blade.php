@@ -28,8 +28,8 @@
                             <tr>
                                 <td>{{ $ncageRecords->firstItem() + $index }}</td>
                                 <td>{{ $record->ncage_code }}</td>
-                                <td>{{ $record->company_name }}</td>
-                                <td>{{ $record->status }}</td> {{-- Tampilkan status --}}
+                                <td>{{ $record->entity_name }}</td>
+                                <td>{{ $record->ncagesd }}</td> {{-- Tampilkan status --}}
                                 {{-- Tampilkan data lain --}}
                             </tr>
                             @endforeach
