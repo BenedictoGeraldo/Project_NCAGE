@@ -151,6 +151,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
 });
 
 Route::middleware([

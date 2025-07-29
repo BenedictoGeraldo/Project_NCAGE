@@ -43,6 +43,40 @@ document.addEventListener("DOMContentLoaded", function () {
             <li><hr class="dropdown-divider"></li>
         `;
     }
+    // <<< TAMBAHAN BARU >>>
+    // Fungsi untuk memuat jumlah notifikasi yang belum dibaca dari server
+    function loadUnreadNotificationCount() {
+        const notificationBadge = document.getElementById("notification-count");
+        if (notificationBadge) {
+            fetch("/notifications/unread-count") // Memanggil endpoint baru
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok.");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.count > 0) {
+                        notificationBadge.innerText = data.count;
+                        notificationBadge.style.display = "block";
+                    } else {
+                        notificationBadge.innerText = "0";
+                        notificationBadge.style.display = "none";
+                    }
+                })
+                .catch((error) => {
+                    console.error(
+                        "Gagal memuat jumlah notifikasi belum dibaca:",
+                        error
+                    );
+                    notificationBadge.innerText = "0"; // Pastikan tetap 0 jika gagal
+                    notificationBadge.style.display = "none";
+                });
+        }
+    }
+
+    // <<< PANGGIL FUNGSI INI SAAT HALAMAN DIMUAT >>>
+    loadUnreadNotificationCount();
 
     /**
      * =================================================================
@@ -73,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (notificationBadge) {
                     let currentCount =
                         parseInt(notificationBadge.innerText) || 0;
-                    notificationBadge.innerText = currentCount + 1;
+                    notificationBadge.innerText = currentCount + 1; // Notifikasi baru: INKREMEN jumlah yang sudah ada
                     notificationBadge.style.display = "block";
                 }
 
@@ -90,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             icon: "fa-solid fa-paper-plane",
                         },
                         created_at: new Date().toISOString(),
-                        read_at: null,
+                        read_at: null, // Asumsi notifikasi baru selalu belum dibaca
                     };
                     notificationList.insertAdjacentHTML(
                         "afterbegin",
@@ -153,12 +187,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Event listener saat ikon lonceng diklik
         notificationDropdown.addEventListener("click", function () {
+            // <<< MODIFIKASI: Tandai notifikasi sebagai sudah dibaca dan reset badge >>>
             const notificationBadge =
                 document.getElementById("notification-count");
-            if (notificationBadge) {
-                notificationBadge.innerText = "0";
-                notificationBadge.style.display = "none";
+
+            // Panggil API untuk menandai notifikasi sebagai sudah dibaca
+            // Pastikan `axios` sudah diimpor dan tersedia (seperti di bootstrap.js)
+            if (window.axios) {
+                window.axios
+                    .post("/notifications/mark-as-read") // Memanggil endpoint baru
+                    .then((response) => {
+                        if (response.data.success) {
+                            // Setelah berhasil ditandai sebagai dibaca di backend,
+                            // reset badge di frontend
+                            if (notificationBadge) {
+                                notificationBadge.innerText = "0";
+                                notificationBadge.style.display = "none";
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(
+                            "Gagal menandai notifikasi sebagai sudah dibaca:",
+                            error
+                        );
+                        // Optional: Beri tahu pengguna jika ada masalah
+                    });
+            } else {
+                console.warn(
+                    "Axios tidak ditemukan. Tidak dapat menandai notifikasi sebagai sudah dibaca."
+                );
             }
+            // <<< AKHIR MODIFIKASI >>>
 
             if (!hasBeenClicked) {
                 fetchNotifications();
