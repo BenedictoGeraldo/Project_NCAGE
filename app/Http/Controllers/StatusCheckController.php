@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-class EntityCheckController extends Controller
+class StatusCheckController extends Controller
 {
     public function check(Request $request)
     {

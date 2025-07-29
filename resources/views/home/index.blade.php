@@ -204,7 +204,7 @@
                 modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Mengecek data...</p></div>';
                 modal.show();
 
-                fetch('/check-entity', {
+                fetch('/check-status', {
                     method: 'GET',
                     headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
                 })

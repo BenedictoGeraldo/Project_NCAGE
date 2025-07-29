@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\FormNCAGEController;
-use App\Http\Controllers\EntityCheckController;
+use App\Http\Controllers\StatusCheckController;
 use App\Http\Controllers\CertificateController;
 use App\Models\NcageApplication;
 use Illuminate\Http\Request;
@@ -140,8 +140,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
 
     // Rute lainnya yang butuh login & verifikasi
-    Route::get('/check-entity', [EntityCheckController::class, 'check'])->name('entity.check.api');
-    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])->name('certificate.download.record');
+    Route::get('/check-status', [StatusCheckController::class, 'check'])->name('status.check.api');
+    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])->name('certificate.download.record');
     Route::get('/sertifikat/international/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])->name('certificate.download.international');
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
@@ -159,10 +159,12 @@ Route::middleware([
 ])
 ->prefix('admin')
 ->group(function () {
-    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadFromRecord'])
-        ->name('admin.certificate.download');
+    Route::get('/sertifikatIndonesia/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])
+        ->name('admin.Indonesia.certificate.download');
+    Route::get('/sertifikatInternasional/record/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])
+        ->name('admin.Internasional.certificate.download');
     Route::get('/sertifikat/record/{record}/unduh-xml', [CertificateController::class, 'downloadXml'])
-        ->name('admin.certificate.download.xml');
+        ->name('admin.download.xml');
     Route::get('/sertifikat/record/{record}/unduh-berkas', [CertificateController::class, 'downloadBundle'])
         ->name('admin.certificate.download.bundle');
 });
