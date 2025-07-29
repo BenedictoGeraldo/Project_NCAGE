@@ -20,4 +20,14 @@ class ViewNcageApplication extends ViewRecord
         return 'Detail NCAGE - ' . ($this->record->companyDetail->name ?? 'Tidak Diketahui');
     }
 
+    protected function getActions(): array
+    {
+        return [
+            Action::make('back')
+                ->label('Kembali')
+                ->url(route('filament.admin.resources.ncage-applications.index')) // sesuaikan route index kamu
+                ->icon('heroicon-o-arrow-left'),
+        ];
+    }
+
 }
