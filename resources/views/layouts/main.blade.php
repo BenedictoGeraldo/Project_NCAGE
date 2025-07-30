@@ -70,8 +70,13 @@
         @include('partials.footer')
     </div>
 
+    {{-- Script JavaScript --}}
+    {{-- jQuery HARUS DIMUAT PERTAMA, sebelum script lain yang menggunakannya --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> {{-- <--- BARIS INI DITAMBAHKAN --}}
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 
+    {{-- Ini tempat di mana script dari @push('scripts') akan dimuat --}}
+    {{-- Pastikan @stack('scripts') ADA dan berada SETELAH jQuery dan Bootstrap JS --}}
     @stack('scripts')
 </body>
 </html>

@@ -156,8 +156,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
 
-    //Cek Entitas Route
+    //rute untuk cek entitas
     Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
+    // --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
+    // Route baru untuk mengambil data Datatables secara AJAX
+    // Menggunakan prefix nama 'entity-check' agar konsisten
+    Route::get('/get-ncagerecords-data', [EntityCheckController::class, 'getNcageRecordsData'])->name('entity-check.get-data');
 
 });
 
