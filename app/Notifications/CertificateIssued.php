@@ -38,7 +38,7 @@ class CertificateIssued extends Notification
     {
         return [
             'title'   => 'Sertifikat Anda Telah Diterbitkan!',
-            'message' => 'Selamat! Sertifikat NCAGE untuk permohonan Anda telah terbit dan siap diunduh pada halaman "Pantau Status".',
+            'message' => 'Selamat! Sertifikat NCAGE untuk permohonan Anda telah terbit dan siap diunduh pada halaman "Pantau Status". Sebelum mengunduh sertifikat, anda perlu mengisi kuisioner terlebih dahulu!',
             'icon'    => 'fa-solid fa-wand-magic-sparkles',
         ];
     }
