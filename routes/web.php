@@ -156,7 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //Cek Entitas Route
     Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
-    
+
 });
 
 Route::middleware([
@@ -166,10 +166,10 @@ Route::middleware([
 ->group(function () {
     Route::get('/sertifikatIndonesia/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])
         ->name('admin.Indonesia.certificate.download');
-    Route::get('/sertifikatInternasional/record/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])
+    Route::get('/sertifikatInternasional/application/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])
         ->name('admin.Internasional.certificate.download');
-    Route::get('/sertifikat/record/{record}/unduh-xml', [CertificateController::class, 'downloadXml'])
-        ->name('admin.download.xml');
-    Route::get('/sertifikat/record/{record}/unduh-berkas', [CertificateController::class, 'downloadBundle'])
-        ->name('admin.certificate.download.bundle');
+    Route::get('/xml/export/batch', [CertificateController::class, 'downloadInternationalXml'])
+        ->name('admin.export.batch.xml');
+    Route::get('/xml/application/{application}/download', [CertificateController::class, 'downloadIndividualXml'])
+        ->name('admin.download.individual.xml');
 });

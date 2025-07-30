@@ -199,12 +199,19 @@ class NcageRecordResource extends Resource implements HasShieldPermissions
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->visible(fn () => auth()->user()?->can('edit_ncage::record')),
-                Action::make('downloadBundle')
-                    ->label('Unduh Berkas Sertifikat ID')
+                Action::make('downloadDomesticCertificate')
+                    ->label('Unduh Sertifikat Indonesia')
                     ->icon('heroicon-o-archive-box-arrow-down')
                     ->color('success')
                     ->visible(fn () => auth()->user()?->can('unduh_sertifikat_ncage::record'))
-                    ->url(fn (NcageRecord $record): string => route('admin.certificate.download.bundle', $record))
+                    ->url(fn (NcageRecord $record): string => route('admin.Indonesia.certificate.download', $record))
+                    ->openUrlInNewTab(),
+                Action::make('downloadInternationalCertificate')
+                    ->label('Unduh Sertifikat Internasional')
+                    ->icon('heroicon-o-archive-box-arrow-down')
+                    ->color('success')
+                    ->visible(fn () => auth()->user()?->can('unduh_sertifikat_ncage::record'))
+                    ->url(fn (NcageRecord $record): string => route('admin.Internasional.certificate.download', $record))
                     ->openUrlInNewTab()
             ])
             ->bulkActions([

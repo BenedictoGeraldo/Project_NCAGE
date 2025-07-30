@@ -18,114 +18,244 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class CertificateController extends Controller
 {
     /**
-     * Method utama untuk mengunduh bundel ZIP yang berisi sertifikat DOCX dan XML.
+     * Mengunduh file sertifikat XML untuk impor internasional.
+     * Method ini mengambil semua aplikasi yang telah divalidasi.
      */
-    public function downloadBundle(NcageRecord $record): BinaryFileResponse
+    public function downloadInternationalXml()
     {
-        // Pastikan direktori temporary ada, jika tidak, buat.
-        $this->ensureTempDirectoryExists();
+        // Ambil semua pendaftaran yang statusnya sudah 'validated' (status_id = 4)
+        // Sesuaikan query ini dengan logika status di aplikasi Anda.
+        $applications = NcageApplication::with(['identity', 'companyDetail'])
+            ->where('status_id', 4)
+            ->whereNotNull('ncage_code')
+            ->get();
 
-        // Pastikan kedua file sertifikat sudah ada, jika belum, buat terlebih dahulu.
-        $this->ensureCertificatesExist($record);
-
-        // Buat dan unduh file ZIP.
-        $zipFileName = 'Berkas_Sertifikat_' . $record->entity_name . '_' . $record->ncage_code . '.zip';
-        $zipPath = storage_path('app/temp/' . $zipFileName);
-
-        $zip = new ZipArchive;
-
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
-            abort(500, 'Gagal membuat file ZIP.');
+        if ($applications->isEmpty()) {
+            abort(404, 'Tidak ada data aplikasi tervalidasi yang siap untuk diekspor.');
         }
 
-        // Dapatkan path absolut menggunakan helper storage_path()
-        $docxPath = storage_path('app/public/' . $record->domestic_certificate_path);
-        $xmlPath = storage_path('app/public/' . $record->domestic_certificate_xml_path);
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->standalone = true;
+        $dom->formatOutput = true;
 
-        // Tambahkan file DOCX dan XML ke dalam ZIP
-        $zip->addFile($docxPath, basename($record->domestic_certificate_path));
-        $zip->addFile($xmlPath, basename($record->domestic_certificate_xml_path));
+        // --- ROOT ELEMENT & NAMESPACES ---
+        $root = $dom->createElementNS('http://eportal.nspa.nato.int/Message', 'ncs:MESSAGE');
+        $dom->appendChild($root);
+        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $root->setAttributeNS(
+            'http://www.w3.org/2001/XMLSchema-instance',
+            'xsi:schemaLocation',
+            'http://eportal.nspa.nato.int/Message https://eportal.nspa.nato.int/AC135Public/Schema/v2.0/Message.xsd'
+        );
 
-        $zip->close();
+        // --- HEADER ---
+        $header = $dom->createElement('HEADER');
+        $root->appendChild($header);
+        $header->appendChild($dom->createElement('MESSAGE_SERIAL_NUMBER_8722', (string)time()));
+        $header->appendChild($dom->createElement('MESSAGE_DATE_TIME_8711', Carbon::now()->toIso8601ZuluString()));
+        $header->appendChild($dom->createElement('SOURCE_CODE_8709', 'IDN'));
 
-        // Kirim file ZIP untuk diunduh dan hapus file tersebut setelah terkirim.
-        return response()->download($zipPath)->deleteFileAfterSend(true);
-    }
+        // --- BODY ---
+        $body = $dom->createElement('BODY');
+        $root->appendChild($body);
 
-    /**
-     * Memeriksa dan memastikan kedua sertifikat (DOCX dan XML) sudah ada.
-     */
-    private function ensureCertificatesExist(NcageRecord $record): void
-    {
-        $docxExists = $record->domestic_certificate_path && Storage::disk('public')->exists($record->domestic_certificate_path);
-        $xmlExists = $record->domestic_certificate_xml_path && Storage::disk('public')->exists($record->domestic_certificate_xml_path);
+        foreach ($applications as $app) {
+            $ncage = $dom->createElement('NCAGE');
+            $body->appendChild($ncage);
 
-        if (!$docxExists) {
-            $this->generateDocx($record);
-        }
+            // Data Level 1: Info NCAGE
+            $ncage->appendChild($dom->createElement('NCAGE_CODE_4140', $app->ncage_code));
+            $ncage->appendChild($dom->createElement('DATE_NCAGE_ESTABLISHED_2262', Carbon::parse($app->created_at)->toIso8601ZuluString()));
+            $ncage->appendChild($dom->createElement('DATE_LAST_CHANGE_NCAGE_RECORD_9567', Carbon::parse($app->updated_at)->toIso8601ZuluString()));
 
-        if (!$xmlExists) {
-            $this->generateXml($record);
-        }
+            // --- NCAGE_DATA ---
+            $ncageData = $dom->createElement('NCAGE_DATA');
+            $ncage->appendChild($ncageData);
 
-        // Muat ulang data record untuk mendapatkan path terbaru jika baru dibuat.
-        $record->refresh();
-    }
+            $company = $app->companyDetail;
+            $identity = $app->identity;
 
-    /**
-     * Membuat file sertifikat DOCX.
-     */
-    private function generateDocx(NcageRecord $record): void
-    {
-        $templatePath = storage_path('Indonesia Certificate Template.docx');
-        if (!file_exists($templatePath)) {
-            abort(500, "File template DOCX tidak ditemukan.");
-        }
+            $ncageData->appendChild($dom->createElement('NCAGE_NAME_8972', $company->name));
+            $ncageData->appendChild($dom->createElement('NCAGE_STATUS_CODE_2694', 'A')); // 'A' untuk Active
 
-        $fileName = 'Sertifikat_NCAGE_' . $record->entity_name . '_' . $record->ncage_code . '.docx';
-        $permanentPath = 'uploads/' . $record->entity_name . '/sertifikat/' . $fileName;
-        $tempFilePath = storage_path('app/temp/' . $fileName);
+            $ncageData->appendChild($dom->createElement('NCAGE_TYPE_CODE_4238', $identity->entity_type));
 
-        try {
-            $templateProcessor = new TemplateProcessor($templatePath);
-            $this->fillTemplatePlaceholders($templateProcessor, $record);
-            $templateProcessor->saveAs($tempFilePath);
+            $ncageData->appendChild($dom->createElement('COUNTRY_CODE_3408', 'IDN'));
 
-            Storage::disk('public')->put($permanentPath, file_get_contents($tempFilePath));
+            // --- STATE (PROVINCE) ---
+            if ($company->province) {
+                $state = $dom->createElement('STATE');
+                $ncageData->appendChild($state);
+                $state->appendChild($dom->createElement('PROVINCE_NAME_8978', $company->province));
+            }
 
-            $record->domestic_certificate_path = $permanentPath;
-            $record->save();
-        } finally {
-            // Pastikan file sementara selalu dihapus, bahkan jika terjadi error.
-            if (file_exists($tempFilePath)) {
-                unlink($tempFilePath);
+            // --- PHYSICAL_ADDRESS ---
+            $physicalAddress = $dom->createElement('PHYSICAL_ADDRESS');
+            $ncageData->appendChild($physicalAddress);
+
+            // Memecah alamat menjadi 2 baris
+            $streetParts = explode("\n", $company->street, 2);
+            $streetLine1 = trim($streetParts[0] ?? '');
+            $streetLine2 = trim($streetParts[1] ?? '');
+
+            $physicalAddress->appendChild($dom->createElement('STREET_ADDRESS_LINE_1_1082', $streetLine1));
+            if (!empty($streetLine2)) {
+                $physicalAddress->appendChild($dom->createElement('STREET_ADDRESS_LINE_2_1083', $streetLine2));
+            }
+
+            $physicalAddress->appendChild($dom->createElement('GEO_ADDRESS_POSTAL_ZONE_2549', $company->postal_code));
+            $physicalAddress->appendChild($dom->createElement('GEO_ADDRESS_CITY_1084', $company->city));
+
+            // --- COMMUNICATION ---
+            $communication = $dom->createElement('COMMUNICATION');
+            $ncageData->appendChild($communication);
+
+            if ($company->phone) {
+                $telephones = $dom->createElement('TELEPHONES');
+                $communication->appendChild($telephones);
+                $telephones->appendChild($dom->createElement('TELEPHONE_NUMBER_8974', $company->phone));
+            }
+            if ($company->email) {
+                $emails = $dom->createElement('EMAILS');
+                $communication->appendChild($emails);
+                $emails->appendChild($dom->createElement('EMAIL_ADDRESS_3375', $company->email));
+            }
+            if ($company->website) {
+                $websites = $dom->createElement('WEBSITES');
+                $communication->appendChild($websites);
+                $websites->appendChild($dom->createElement('WEB_URL_8021', $company->website));
             }
         }
+
+        $xmlContent = $dom->saveXML();
+        $fileName = 'NCAGE_IDN_EXPORT_' . Carbon::now()->format('Ymd_His') . '.xml';
+
+        return response($xmlContent, 200, [
+            'Content-Type' => 'application/xml',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 
     /**
-     * Membuat file sertifikat XML.
+     * Mengunduh file XML untuk satu aplikasi individual.
+     * Menerima model NcageApplication dari route.
+     *
+     * @param \App\Models\NcageApplication $application Model yang di-inject dari route.
+     * @return \Illuminate\Http\Response
      */
-    private function generateXml(NcageRecord $record): void
+    public function downloadIndividualXml(NcageApplication $application)
     {
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
-        $root = $dom->createElement('sertifikat');
-        $dom->appendChild($root);
-
-        foreach ($record->toArray() as $key => $value) {
-            $child = $dom->createElement($key, htmlspecialchars((string) ($value ?? '')));
-            $root->appendChild($child);
+        // Validasi data yang masuk.
+        // Pastikan hanya status yang benar (validated) yang bisa diunduh.
+        if ($application->status_id != 4 || empty($application->ncage_code)) {
+            abort(403, 'XML hanya bisa dibuat untuk aplikasi yang sertifikatnya sudah terbit dan memiliki NCAGE Code.');
         }
+
+        // Buat objek DOMDocument untuk membangun XML.
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->standalone = true;
+        $dom->formatOutput = true;
+
+        // Setup root element <ncs:MESSAGE> beserta namespace-nya.
+        $root = $dom->createElementNS('http://eportal.nspa.nato.int/Message', 'ncs:MESSAGE');
+        $dom->appendChild($root);
+        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $root->setAttributeNS(
+            'http://www.w3.org/2001/XMLSchema-instance',
+            'xsi:schemaLocation',
+            'http://eportal.nspa.nato.int/Message https://eportal.nspa.nato.int/AC135Public/Schema/v2.0/Message.xsd'
+        );
+
+        // Buat elemen <HEADER>.
+        $header = $dom->createElement('HEADER');
+        $root->appendChild($header);
+        $header->appendChild($dom->createElement('MESSAGE_SERIAL_NUMBER_8722', (string)time()));
+        $header->appendChild($dom->createElement('MESSAGE_DATE_TIME_8711', Carbon::now()->toIso8601ZuluString()));
+        $header->appendChild($dom->createElement('SOURCE_CODE_8709', 'IDN'));
+
+        // Buat elemen <BODY> dan proses satu aplikasi.
+        $body = $dom->createElement('BODY');
+        $root->appendChild($body);
+
+        // Langsung gunakan variabel $application yang diterima dari route.
+        // Alias ke $app agar sisa kode sama dengan versi batch.
+        $app = $application;
+        // Pastikan relasi sudah di-load untuk efisiensi.
+        $app->load(['identity', 'companyDetail']);
+
+        $ncage = $dom->createElement('NCAGE');
+        $body->appendChild($ncage);
+
+        // --- Data Level 1: Info NCAGE ---
+        $ncage->appendChild($dom->createElement('NCAGE_CODE_4140', $app->ncage_code));
+        $ncage->appendChild($dom->createElement('DATE_NCAGE_ESTABLISHED_2262', Carbon::parse($app->created_at)->toIso8601ZuluString()));
+        $ncage->appendChild($dom->createElement('DATE_LAST_CHANGE_NCAGE_RECORD_9567', Carbon::parse($app->updated_at)->toIso8601ZuluString()));
+
+        // --- NCAGE_DATA ---
+        $ncageData = $dom->createElement('NCAGE_DATA');
+        $ncage->appendChild($ncageData);
+
+        $company = $app->companyDetail;
+        $identity = $app->identity;
+
+        $ncageData->appendChild($dom->createElement('NCAGE_NAME_8972', $company->name));
+        $ncageData->appendChild($dom->createElement('NCAGE_STATUS_CODE_2694', 'A')); // 'A' untuk Active
+        $ncageData->appendChild($dom->createElement('NCAGE_TYPE_CODE_4238', $identity->entity_type));
+        $ncageData->appendChild($dom->createElement('COUNTRY_CODE_3408', 'IDN'));
+
+        // --- STATE (PROVINCE) ---
+        if ($company->province) {
+            $state = $dom->createElement('STATE');
+            $ncageData->appendChild($state);
+            $state->appendChild($dom->createElement('PROVINCE_NAME_8978', $company->province));
+        }
+
+        // --- PHYSICAL_ADDRESS ---
+        $physicalAddress = $dom->createElement('PHYSICAL_ADDRESS');
+        $ncageData->appendChild($physicalAddress);
+
+        $streetParts = explode("\n", $company->street, 2);
+        $streetLine1 = trim($streetParts[0] ?? '');
+        $streetLine2 = trim($streetParts[1] ?? '');
+
+        $physicalAddress->appendChild($dom->createElement('STREET_ADDRESS_LINE_1_1082', $streetLine1));
+        if (!empty($streetLine2)) {
+            $physicalAddress->appendChild($dom->createElement('STREET_ADDRESS_LINE_2_1083', $streetLine2));
+        }
+
+        $physicalAddress->appendChild($dom->createElement('GEO_ADDRESS_POSTAL_ZONE_2549', $company->postal_code));
+        $physicalAddress->appendChild($dom->createElement('GEO_ADDRESS_CITY_1084', $company->city));
+
+        // --- COMMUNICATION ---
+        $communication = $dom->createElement('COMMUNICATION');
+        $ncageData->appendChild($communication);
+
+        if ($company->phone) {
+            $telephones = $dom->createElement('TELEPHONES');
+            $communication->appendChild($telephones);
+            $telephones->appendChild($dom->createElement('TELEPHONE_NUMBER_8974', $company->phone));
+        }
+        if ($company->email) {
+            $emails = $dom->createElement('EMAILS');
+            $communication->appendChild($emails);
+            $emails->appendChild($dom->createElement('EMAIL_ADDRESS_3375', $company->email));
+        }
+        if ($company->website) {
+            $websites = $dom->createElement('WEBSITES');
+            $communication->appendChild($websites);
+            $websites->appendChild($dom->createElement('WEB_URL_8021', $company->website));
+        }
+
+        // Simpan XML dan kirim sebagai response untuk diunduh.
         $xmlContent = $dom->saveXML();
 
-        $fileName = 'Sertifikat_NCAGE_' . $record->entity_name . '_' . $record->ncage_code . '.xml';
-        $permanentPath = 'uploads/' . $record->entity_name . '/sertifikat/' . $fileName;
+        // Gunakan nama file yang spesifik untuk record ini.
+        $fileName = 'NCAGE_' . $app->ncage_code . '.xml';
 
-        Storage::disk('public')->put($permanentPath, $xmlContent);
-
-        $record->domestic_certificate_xml_path = $permanentPath;
-        $record->save();
+        return response($xmlContent, 200, [
+            'Content-Type' => 'application/xml',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ]);
     }
 
     /**
@@ -165,7 +295,7 @@ class CertificateController extends Controller
      * Mengunduh file sertifikat DOCX dari sebuah record.
      * Akan men-generate file jika belum ada.
      */
-    public function downloadFromRecord(NcageRecord $record)
+    public function downloadDomesticCertificate(NcageRecord $record)
     {
         // Cek apakah path sertifikat sudah ada di database dan filenya benar-benar ada di storage.
         if (!$record->domestic_certificate_path || !Storage::disk('public')->exists($record->domestic_certificate_path)) {
