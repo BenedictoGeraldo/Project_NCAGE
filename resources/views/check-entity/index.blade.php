@@ -4,15 +4,50 @@
 
 @section('styles')
 <style>
-    font-family: 'poppins' !important;
+    body{
+        font-family: 'poppins' !important;
+    }
+    /* Mengubah warna font untuk angka halaman yang tidak aktif */
+    .dataTables_wrapper .pagination .page-item .page-link {
+        color: #000000; /* Warna hitam murni sesuai permintaan */
+    }
+
+    /* Mengubah warna font untuk angka halaman yang aktif */
+    .dataTables_wrapper .pagination .page-item.active .page-link {
+        color: #ffffff; /* Warna putih */
+        background-color: #6A040F;
+        border: none; 
+    }
+
+    /* Mengubah warna font untuk tombol Previous/Next saat hover */
+    .dataTables_wrapper .pagination .page-item .page-link:hover {
+        color: #364350; /* Warna biru gelap saat hover */
+    }
+
+    /* Mengubah warna font untuk tombol Previous/Next saat disabled */
+    .dataTables_wrapper .pagination .page-item.disabled .page-link {
+        color: #adb5bd; /* Warna abu-abu lebih terang */
+    }
+
+    /* Mengubah warna font untuk teks "Showing X to Y of Z entries" */
+    .dataTables_info {
+        color: #343a40; /* Warna hitam gelap */
+    }
+
+    .line{
+        color: #6A040F;
+        height: 5px !important;
+        border-radius: 10px;
+    }
 </style>
+@endsection
 
 @section('content')
 <div class="container py-4">
     <div class="card shadow-sm p-4 rounded-4 border-0">
         <div class="card-body">
-            <h4 class="fw-bold mb-3 text-center">Cek Entitas</h4>
-            <hr class="border-2 border-dark-red opacity-100 mb-4" />
+            <h4 class="fw-bolder text-center">Cek Entitas</h4>
+            <hr class="border-5 opacity-100 mb-4 line" />
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover" id="ncagerecords-table">
@@ -42,10 +77,6 @@
 
 {{-- CSS Datatables untuk styling Bootstrap 5 --}}
 <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
-{{-- CATATAN PENTING: jQuery HARUS dimuat di layouts.main.blade.php Anda, SEBELUM @stack('scripts'). --}}
-{{-- Baris di bawah ini dikomentari karena seharusnya sudah di-load di layout utama. --}}
-{{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
 
 {{-- Script utama Datatables --}}
 <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
