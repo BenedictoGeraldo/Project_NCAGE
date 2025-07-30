@@ -70,7 +70,7 @@ class NcageApplication extends Model
         return $this->hasOne(NcageRecord::class);
     }
 
-    
+
     public function getStatusLabel(): string
     {
         return match ($this->status_id) {
@@ -82,5 +82,10 @@ class NcageApplication extends Model
             6 => 'Permohonan Ditolak',
             default => 'Status Tidak Dikenal',
         };
+    }
+
+    public function survey(): HasOne
+    {
+        return $this->hasOne(Survey::class);
     }
 }

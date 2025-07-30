@@ -20,6 +20,7 @@ use App\Notifications\ApplicationRejected;
 use App\Notifications\FinalValidation;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\EntityCheckController;
+use App\Http\Controllers\SurveyController;
 
 
 // =========================================================================
@@ -144,6 +145,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/check-status', [StatusCheckController::class, 'check'])->name('status.check.api');
     Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])->name('certificate.download.record');
     Route::get('/sertifikat/international/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])->name('certificate.download.international');
+    Route::post('/survey/{application}', [SurveyController::class, 'store'])->name('survey.store');
 
     Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');

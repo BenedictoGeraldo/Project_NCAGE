@@ -131,30 +131,146 @@
                             <h5 class="fw-bold">Sertifikat Diterbitkan</h5>
                             @if($status == 5)
                                 <p class="text-muted small mb-1">{{ $application->updated_at->translatedFormat('j F Y, H:i') }}</p>
-                                <p class="mb-0">Sertifikat sudah diterbitkan dan dapat diunduh.</p>
+                                <p class="mb-0">Sertifikat sudah diterbitkan. Silakan isi kuesioner untuk mengunduh.</p>
                             @else
                                 <p class="mb-0">Sertifikat akan tersedia setelah semua proses validasi selesai.</p>
                             @endif
                         </div>
-                        <div class="d-flex flex-column flex-md-row mt-3 mt-md-0">
-                            @php
-                                $docs = json_decode($application->documents, true);
-                            @endphp
 
-                            @if($status == 5 && $application->ncageRecord)
-                                <a href="{{ route('certificate.download.record', $application->ncageRecord) }}" class="btn btn-custom-dark">
-                                    <i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia
-                                </a>
-                            @endif
+                        @if($status == 5)
+                            {{-- Tombol-tombol ini akan muncul setelah survei diisi --}}
+                            <div id="download-buttons" style="display: {{ $application->survey ? 'block' : 'none' }};">
+                                <div class="d-flex flex-column flex-md-row mt-3">
+                                    @if($application->ncageRecord)
+                                        <a href="{{ route('certificate.download.record', $application->ncageRecord) }}" class="btn btn-custom-dark">
+                                            <i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia
+                                        </a>
+                                    @endif
+                                    @php $docs = json_decode($application->documents, true); @endphp
+                                    @if(!empty($docs['sertifikat_nspa']))
+                                        <a href="{{ route('certificate.download.international', $application) }}" class="btn btn-custom-dark mt-2 mt-md-0 ms-md-2">
+                                            <i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional
+                                        </a>
+                                    @endif
+                                </div>
+                            </div>
 
-                            @if($status == 5 && !empty($docs['sertifikat_nspa']))
-                                <a href="{{ route('certificate.download.international', $application) }}" class="btn btn-custom-dark mt-2 mt-md-0 ms-md-2">
-                                    <i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional
-                                </a>
+                            {{-- Tombol untuk membuka modal survei, hanya muncul jika survei belum diisi --}}
+                            @if(!$application->survey)
+                            <div id="survey-button-container" class="mt-3">
+                                <button type="button" class="btn btn-custom-dark" data-bs-toggle="modal" data-bs-target="#surveyModal">
+                                    <i class="bi bi-pencil-square me-2"></i> Isi Kuesioner Kepuasan
+                                </button>
+                            </div>
                             @endif
+                        @endif
+                    </div>
+                </div>
+
+
+                @if($status == 5 && !$application->survey)
+                <div class="modal fade" id="surveyModal" tabindex="-1" aria-labelledby="surveyModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content survey-modal-content">
+                            <div class="modal-header border-0">
+                                <h4 class="modal-title w-100 text-center fw-bold" id="surveyModalLabel">Survey Kepuasan Pelayanan NCAGE</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-progress-bar"></div>
+                            <div class="modal-body">
+                                <form id="surveyForm" class="px-3">
+                                    @csrf
+                                    <p class="small">Catatan: <br>• (<span class="text-danger">*</span>) Menunjukkan pertanyaan yang wajib diisi</p>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">1. Bagaimana pendapat Saudara tentang kesesuaian persyaratan pelayanan dengan jenis pelayanan di Puskod: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q1_kesesuaian_persyaratan" value="1" required><label class="form-check-label">Tidak Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q1_kesesuaian_persyaratan" value="2"><label class="form-check-label">Kurang Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q1_kesesuaian_persyaratan" value="3"><label class="form-check-label">Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q1_kesesuaian_persyaratan" value="4"><label class="form-check-label">Sangat Sesuai</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">2. Bagaimana pendapat Saudara tentang kemudahan prosedur pelayanan di Puskod: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q2_kemudahan_prosedur" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q2_kemudahan_prosedur" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q2_kemudahan_prosedur" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q2_kemudahan_prosedur" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">3. Bagaimana pendapat Saudara tentang kecepatan Pelayanan di Puskod: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">4. Bagaimana pendapat Saudara tentang kewajaran biaya/tarif dalam pelayanan: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">5. Bagaimana pendapat Saudara tentang kesesuaian produk pelayanan antara yang tercantum dalam standar pelayanan dengan hasil yang diberikan: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">6. Bagaimana pendapat Saudara tentang kompetensi/kemampuan petugas dalam pelayanan: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">7. Bagaimana pendapat Saudara tentang perilaku petugas dalam pelayanan terkait kesopanan dan keramahan: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">8. Bagaimana pendapat Saudara tentang kualitas sarana dan prasarana: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="2"><label class="form-check-label">Kurang Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="3"><label class="form-check-label">Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label fw-bold">9. Bagaimana pendapat Saudara tentang penanganan pengaduan pengguna layanan: <span class="text-danger">*</span></label>
+                                        <div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q9_penanganan_pengaduan" value="1" required><label class="form-check-label">Tidak Ada</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q9_penanganan_pengaduan" value="2"><label class="form-check-label">Ada Tetapi Tidak Berfungsi</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q9_penanganan_pengaduan" value="3"><label class="form-check-label">Berfungsi Kurang Maksimal</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q9_penanganan_pengaduan" value="4"><label class="form-check-label">Dikelola Dengan Baik</label></div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-0 p-0 pt-3">
+                                        <button type="submit" class="btn btn-survey-submit w-100 fw-bold">Kirim <i class="bi bi-send-fill ms-2"></i></button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
+                @endif
             @endif
 
             {{-- Status 6: Ditolak --}}
@@ -174,3 +290,81 @@
     </div>
 </main>
 @endsection
+@push('scripts')
+    @if($status == 5 && !$application->survey)
+    <script>
+        console.log('Blok script survei dimuat.'); // Tes 1: Apakah skrip ini ada di halaman?
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM Content Loaded. Mencari elemen form...'); // Tes 2: Apakah event listener utama berjalan?
+
+            const surveyForm = document.getElementById('surveyForm');
+            const surveyModalElement = document.getElementById('surveyModal');
+
+            // Cek apakah elemen ditemukan
+            if (!surveyForm) {
+                console.error('Elemen dengan ID "surveyForm" tidak ditemukan!');
+                return; // Hentikan eksekusi jika form tidak ada
+            }
+            if (!surveyModalElement) {
+                console.error('Elemen dengan ID "surveyModal" tidak ditemukan!');
+                return; // Hentikan eksekusi jika modal tidak ada
+            }
+
+            console.log('Elemen form dan modal ditemukan. Menambahkan event listener ke form.');
+
+            const surveyModal = new bootstrap.Modal(surveyModalElement);
+
+            surveyForm.addEventListener('submit', function (event) {
+                console.log('Tombol Kirim diklik! Proses submit dimulai.'); // Tes 3: Apakah klik tombol terdeteksi?
+
+                event.preventDefault();
+
+                const formData = new FormData(surveyForm);
+                const submitButton = surveyForm.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
+
+                fetch('{{ route("survey.store", $application) }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => {
+                    console.log('Menerima respons dari server.'); // Tes 4: Apakah server merespons?
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        console.log('Proses sukses. Menampilkan tombol unduh.');
+                        surveyModal.hide();
+                        alert('Terima kasih! Survei Anda telah berhasil dikirim.');
+                        document.getElementById('survey-button-container').style.display = 'none';
+                        document.getElementById('download-buttons').style.display = 'block';
+                    } else {
+                        console.error('Server merespons dengan kegagalan:', data);
+                        let errorMessages = 'Gagal mengirim survei. Pastikan semua pertanyaan wajib diisi.';
+                        if(data.errors){
+                            for(const key in data.errors){
+                                errorMessages += `\n- ${data.errors[key][0]}`;
+                            }
+                        }
+                        alert(errorMessages);
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi error saat fetch:', error);
+                    alert('Terjadi kesalahan pada sistem. Silakan coba lagi.');
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Kirim';
+                });
+            });
+        });
+    </script>
+    @endif
+@endpush

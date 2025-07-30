@@ -168,6 +168,53 @@ body {
     color: white;
 }
 
+/* Custom styling untuk modal survei */
+.survey-modal-content {
+    border-radius: 12px;
+    border: none;
+    overflow: hidden; /* Penting untuk progress bar */
+}
+
+.modal-progress-bar {
+    width: 100%;
+    height: 5px;
+    background-color: #8C1515; /* Warna merah marun */
+}
+
+.survey-modal-content .modal-header {
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+}
+
+/* Memposisikan tombol close di pojok kanan atas */
+.survey-modal-content .btn-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+}
+
+.survey-modal-content .modal-body {
+    padding-top: 0.5rem;
+    padding-bottom: 2rem;
+}
+
+/* Styling untuk tombol Kirim */
+.btn-survey-submit {
+    background-color: #b92525; /* Warna merah marun */
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-survey-submit:hover {
+    background-color: #701111; /* Warna sedikit lebih gelap saat hover */
+    color: #fff;
+}
+
 /* --- Responsive Styles --- */
 
 /* Untuk Tablet dan di bawahnya (lebar maks 767.98px) */
