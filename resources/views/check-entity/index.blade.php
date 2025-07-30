@@ -19,8 +19,9 @@
                                 <th>No.</th>
                                 <th>Kode NCAGE</th>
                                 <th>Nama Perusahaan</th>
-                                <th>Status</th> {{-- Jika Anda menyertakan kolom status --}}
-                                {{-- Tambahkan kolom lain jika diperlukan --}}
+                                <th>Status</th>
+                                <th>Provinsi</th>
+                                <th>Kota</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,7 +31,8 @@
                                 <td>{{ $record->ncage_code }}</td>
                                 <td>{{ $record->entity_name }}</td>
                                 <td>{{ $record->ncagesd }}</td> {{-- Tampilkan status --}}
-                                {{-- Tampilkan data lain --}}
+                                <td>{{ $record->stt }}</td>
+                                <td>{{ $record->city }}</td>
                             </tr>
                             @endforeach
                         </tbody>
