@@ -35,7 +35,7 @@
     }
 
     .line{
-        color: #6A040F;
+        color: #010000;
         height: 5px !important;
         border-radius: 10px;
     }
@@ -46,7 +46,7 @@
 <div class="container py-4">
     <div class="card shadow-sm p-4 rounded-4 border-0">
         <div class="card-body">
-            <h4 class="fw-bolder text-center">Cek Entitas</h4>
+            <h4 class="fw-bolder fs-1 text-center">Cek Entitas</h4>
             <hr class="border-5 opacity-100 mb-4 line" />
 
             <div class="table-responsive">
