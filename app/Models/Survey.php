@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Survey extends Model
 {
@@ -14,4 +15,8 @@ class Survey extends Model
         'q6_kompetensi_petugas', 'q7_perilaku_petugas', 'q8_kualitas_sarana',
         'q9_penanganan_pengaduan',
     ];
+    public function ncageApplication(): BelongsTo
+    {
+        return $this->belongsTo(NcageApplication::class);
+    }
 }

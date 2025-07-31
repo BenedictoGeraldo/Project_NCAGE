@@ -258,6 +258,31 @@ class CertificateController extends Controller
         ]);
     }
 
+    private function generateDocx(NcageRecord $record): void
+    {
+        $templatePath = storage_path('Indonesia Certificate Template.docx');
+        if (!file_exists($templatePath)) {
+            abort(500, "File template DOCX tidak ditemukan.");
+        }
+        $fileName = 'Sertifikat_NCAGE_' . $record->entity_name . '_' . $record->ncage_code . '.docx';
+        $permanentPath = 'uploads/' . $record->entity_name . '/sertifikat/' . $fileName;
+        $tempFilePath = storage_path('app/temp/' . $fileName);
+
+        try {
+            $templateProcessor = new TemplateProcessor($templatePath);
+            $this->fillTemplatePlaceholders($templateProcessor, $record);
+            $templateProcessor->saveAs($tempFilePath);
+            Storage::disk('public')->put($permanentPath, file_get_contents($tempFilePath));
+            $record->domestic_certificate_path = $permanentPath;
+            $record->save();
+        } finally {
+            // Pastikan file sementara selalu dihapus, bahkan jika terjadi error.
+            if (file_exists($tempFilePath)) {
+                unlink($tempFilePath);
+            }
+        }
+    }
+
     /**
      * Mengisi semua placeholder pada template DOCX dengan data dari record.
      */

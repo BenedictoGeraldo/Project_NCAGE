@@ -146,8 +146,7 @@
                                             <i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia
                                         </a>
                                     @endif
-                                    @php $docs = json_decode($application->documents, true); @endphp
-                                    @if(!empty($docs['sertifikat_nspa']))
+                                    @if($application->international_certificate_path)
                                         <a href="{{ route('certificate.download.international', $application) }}" class="btn btn-custom-dark mt-2 mt-md-0 ms-md-2">
                                             <i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional
                                         </a>
@@ -202,55 +201,55 @@
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">3. Bagaimana pendapat Saudara tentang kecepatan Pelayanan di Puskod: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="1" required><label class="form-check-label">Tidak Cepat</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="2"><label class="form-check-label">Kurang Cepat</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="3"><label class="form-check-label">Cepat</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q3_kecepatan_pelayanan" value="4"><label class="form-check-label">Sangat Cepat</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">4. Bagaimana pendapat Saudara tentang kewajaran biaya/tarif dalam pelayanan: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="1" required><label class="form-check-label">Sangat Mahal</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="2"><label class="form-check-label">Mahal</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="3"><label class="form-check-label">Murah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q4_kewajaran_biaya" value="4"><label class="form-check-label">Gratis</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">5. Bagaimana pendapat Saudara tentang kesesuaian produk pelayanan antara yang tercantum dalam standar pelayanan dengan hasil yang diberikan: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="1" required><label class="form-check-label">Tidak Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="2"><label class="form-check-label">Kurang Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="3"><label class="form-check-label">Sesuai</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q5_kesesuaian_produk" value="4"><label class="form-check-label">Sangat Sesuai</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">6. Bagaimana pendapat Saudara tentang kompetensi/kemampuan petugas dalam pelayanan: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="1" required><label class="form-check-label">Tidak Kompeten</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="2"><label class="form-check-label">Kurang Kompeten</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="3"><label class="form-check-label">Kompeten</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q6_kompetensi_petugas" value="4"><label class="form-check-label">Sangat Kompeten</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">7. Bagaimana pendapat Saudara tentang perilaku petugas dalam pelayanan terkait kesopanan dan keramahan: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="1" required><label class="form-check-label">Tidak Sopan & Ramah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="2"><label class="form-check-label">Kurang Sopan & Ramah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="3"><label class="form-check-label">Sopan & Ramah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q7_perilaku_petugas" value="4"><label class="form-check-label">Sangat Sopan & Ramah</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
                                         <label class="form-label fw-bold">8. Bagaimana pendapat Saudara tentang kualitas sarana dan prasarana: <span class="text-danger">*</span></label>
                                         <div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="1" required><label class="form-check-label">Tidak Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="2"><label class="form-check-label">Kurang Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="3"><label class="form-check-label">Mudah</label></div>
-                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="4"><label class="form-check-label">Sangat Mudah</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="1" required><label class="form-check-label">Buruk</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="2"><label class="form-check-label">Cukup</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="3"><label class="form-check-label">Baik</label></div>
+                                            <div class="form-check"><input class="form-check-input" type="radio" name="q8_kualitas_sarana" value="4"><label class="form-check-label">Sangat Baik</label></div>
                                         </div>
                                     </div>
                                     <div class="mb-4">
