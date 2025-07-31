@@ -4,7 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
+use App\Console\Commands\CheckCertificateExpiration;
 class Kernel extends ConsoleKernel
 {
     /**
@@ -12,7 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Pastikan ini ada jika Anda ingin scheduler menjalankannya setiap hari
+        $schedule->command(CheckCertificateExpiration::class)->dailyAt('02:00');
+        // Atau untuk testing: $schedule->command(CheckCertificateExpiration::class)->everyMinute();
     }
 
     /**
@@ -20,7 +22,8 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        // Pastikan ini memuat semua command dari direktori Commands
+        $this->load(__DIR__.'/Commands'); // <--- PASTIKAN BARIS INI TIDAK DIKOMENTARI
 
         require base_path('routes/console.php');
     }

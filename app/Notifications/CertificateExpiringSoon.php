@@ -1,56 +1,56 @@
 <?php
 
-namespace App\Notifications;
+namespace App\Notifications; // Ini harus App\Notifications;
 
+use App\Models\NcageRecord;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Carbon\Carbon;
 
-class CertificateExpiringSoon extends Notification
+class CertificateExpiringSoon extends Notification implements ShouldQueue // Ini harus CertificateExpiringSoon extends Notification
 {
     use Queueable;
 
-    public string $remainingTime;
-    public string $expiryDate;
+    public NcageRecord $record;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @param string $remainingTime Contoh: "3 bulan"
-     * @param Carbon $expiryDate Objek Carbon untuk tanggal kedaluwarsa
-     */
-    public function __construct(string $remainingTime, Carbon $expiryDate)
+    public function __construct(NcageRecord $record)
     {
-        $this->remainingTime = $remainingTime;
-        // Format tanggal ke dalam format yang mudah dibaca (contoh: 7 Mei 2029)
-        $this->expiryDate = $expiryDate->locale('id_ID')->isoFormat('D MMMM YYYY');
+        $this->record = $record;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @return array<int, string>
-     */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail', 'broadcast'];
     }
 
-    /**
-     * Get the array representation of the notification for database storage.
-     *
-     * @return array<string, mixed>
-     */
-    public function toDatabase(object $notifiable): array
+    public function toMail(object $notifiable): MailMessage
     {
-        $message = "Masa berlaku kode NCAGE Anda akan berakhir dalam {$this->remainingTime} (pada tanggal {$this->expiryDate}). Segera ajukan perpanjangan untuk menghindari kendala.";
+        $expirationDate = Carbon::parse($this->record->creation_date)->addYears(5)->format('d F Y');
+        $recordName = $this->record->name ?? 'Sertifikat Anda';
+
+        return (new MailMessage)
+                    ->subject('Peringatan: Masa Berlaku Sertifikat Anda Akan Habis!')
+                    ->greeting("Halo, {$notifiable->name},")
+                    ->line("Kami ingin memberitahukan bahwa {$recordName} akan segera kedaluwarsa pada tanggal **{$expirationDate}**.")
+                    ->line('Mohon segera perbarui sertifikat Anda untuk menghindari gangguan layanan.')
+                    ->action('Lihat Detail Sertifikat', url('/user/sertifikat/' . $this->record->id))
+                    ->line('Terima kasih!');
+    }
+
+    public function toArray(object $notifiable): array
+    {
+        $expirationDate = Carbon::parse($this->record->creation_date)->addYears(5)->format('d F Y');
+        $recordName = $this->record->name ?? 'Sertifikat Anda';
 
         return [
-            'title'   => 'Masa Berlaku NCAGE Akan Habis',
-            'message' => $message,
-            'icon'    => 'fa-solid fa-clock-rotate-left',
+            'type' => 'certificate_expiration',
+            'record_id' => $this->record->id,
+            'message' => "Masa berlaku {$recordName} akan habis pada {$expirationDate}.",
+            'expiration_date' => $expirationDate,
+            'url' => url('/user/sertifikat/' . $this->record->id),
+            'title' => 'Peringatan: Sertifikat Akan Kedaluwarsa!',
         ];
     }
 }

@@ -36,6 +36,7 @@ class NcageRecord extends Model
         'last_change_date_international',
         'change_date',
         'creation_date',
+        'notified_for_expiration_at',
         'load_date',
         'national',
         'nac',
