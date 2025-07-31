@@ -35,7 +35,6 @@ class CertificateExpiringSoon extends Notification implements ShouldQueue // Ini
                     ->greeting("Halo, {$notifiable->name},")
                     ->line("Kami ingin memberitahukan bahwa {$recordName} akan segera kedaluwarsa pada tanggal **{$expirationDate}**.")
                     ->line('Mohon segera perbarui sertifikat Anda untuk menghindari gangguan layanan.')
-                    ->action('Lihat Detail Sertifikat', url('/user/sertifikat/' . $this->record->id))
                     ->line('Terima kasih!');
     }
 
@@ -49,7 +48,6 @@ class CertificateExpiringSoon extends Notification implements ShouldQueue // Ini
             'record_id' => $this->record->id,
             'message' => "Masa berlaku {$recordName} akan habis pada {$expirationDate}.",
             'expiration_date' => $expirationDate,
-            'url' => url('/user/sertifikat/' . $this->record->id),
             'title' => 'Peringatan: Sertifikat Akan Kedaluwarsa!',
         ];
     }
