@@ -16,6 +16,7 @@ class NcageApplication extends Model
         'user_id',
         'status_id',
         'revision_notes',
+        'ncage_code',
         'documents',
         'international_certificate_path',
         'verified_by',

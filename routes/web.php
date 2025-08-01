@@ -11,7 +11,6 @@ use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\FormNCAGEController;
 use App\Http\Controllers\StatusCheckController;
 use App\Http\Controllers\CertificateController;
-use App\Models\NcageApplication;
 use Illuminate\Http\Request;
 use Filament\Http\Middleware\Authenticate as FilamentAuth;
 use App\Http\Controllers\NotificationController;
@@ -21,6 +20,8 @@ use App\Notifications\FinalValidation;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\EntityCheckController;
 use App\Http\Controllers\SurveyController;
+use App\Models\NcageApplication;
+use App\Models\NcageRecord;
 
 
 // =========================================================================
@@ -70,8 +71,89 @@ Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 
+function normalizeCompanyName($name)
+{
+    $name = preg_replace('/^(pt|cv|ud|pd|perum|perusahaan|persero)\.?[\s]+/i', '', $name);
+    $name = preg_replace('/[^a-z0-9]/i', '', $name);
+    return strtolower($name);
+}
+
 Route::post('/ncage-applications/{record}/approve', function (NcageApplication $record) {
+    $input = request();
+
+    $company = $input->input('company'); // array
+    $entityType = $input->input('entity_type');
+
+    // Normalisasi input
+    $normalizedInput = normalizeCompanyName($company['name']);
+    
+    // Ambil semua record dan bandingkan nama yang sudah dinormalisasi
+    $checkCompany = NcageRecord::get()->first(function ($r) use ($normalizedInput) {
+        return normalizeCompanyName($r->entity_name) === $normalizedInput;
+    });
+
+    // dd($company, $entityType, $normalizedInput, $checkCompany);
+    
+    if (!$checkCompany){
+        $lastRecord = NcageRecord::orderBy('id', 'desc')->first();
+        
+        if ($lastRecord && preg_match('/^(\d+)([A-Z])$/', $lastRecord->ncage_code, $matches)) {
+            // $matches[1] = angka (string), $matches[2] = huruf
+            $number = intval($matches[1]) + 1; // tambah 1
+            $letter = $matches[2];
+    
+            // Format ulang angka dengan padding 4 digit (sesuai contoh)
+            $newCode = str_pad($number, strlen($matches[1]), '0', STR_PAD_LEFT) . $letter;
+        } else {
+            // Kalau tidak ada record atau format beda, mulai dari default
+            $newCode = '0001Z';
+        }
+        
+        NcageRecord::create(
+        [
+            'ncage_code' => $newCode,
+            'ncagesd' => 'A',
+            'toec' => $entityType,
+            'entity_name' => $company['name'],
+            'street' => $company['street'],
+            'city' => $company['city'],
+            'psc' => $company['postal_code'],
+            'country' => 'INDONESIA',
+            'ctr' => 'IDN',
+            'stt' => $company['province'],
+            'is_sam_requested' => 0,
+            'tel' => $company['phone'],
+            'fax' => $company['fax'],
+            'ema' => $company['email'],
+            'www' => $company['website'],
+            'pob' => $company['po_box'], 
+            'ncage_application_id' => $record->id
+        ]);
+    } else {
+        $newCode = $checkCompany->ncage_code;
+
+        // Update NcageRecord
+        $checkCompany->update([
+            'toec' => $entityType,
+            'entity_name' => $company['name'],
+            'street' => $company['street'],
+            'city' => $company['city'],
+            'psc' => $company['postal_code'],
+            'country' => 'INDONESIA',
+            'ctr' => 'IDN',
+            'stt' => $company['province'],
+            'is_sam_requested' => 0,
+            'tel' => $company['phone'],
+            'fax' => $company['fax'],
+            'ema' => $company['email'],
+            'www' => $company['website'],
+            'pob' => $company['po_box'], 
+            'ncage_application_id' => $record->id
+        ]);
+    }
+
     $record->update([
+        'ncage_code' => $newCode,
         'status_id' => 4,
         'verified_by' => auth('admin')->user()->id
     ]);

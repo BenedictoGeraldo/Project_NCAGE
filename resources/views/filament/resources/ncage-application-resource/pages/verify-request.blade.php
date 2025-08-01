@@ -63,10 +63,10 @@
                             'Nama' => $applicationCompany->name ?? '-',
                             'Provinsi' => $applicationCompany->province ?? '-',
                             'Kota' => $applicationCompany->city ?? '-',
-                            'Alamat' => $applicationCompany->address ?? '-',
+                            'Jalan' => $applicationCompany->street ?? '-',
                             'Kode Pos' => $applicationCompany->postal_code ?? '-',
                             'Po. Box' => $applicationCompany->po_box ?? '-',
-                            'Telepon' => $applicationCompany->phone_number ?? '-',
+                            'Telepon' => $applicationCompany->phone ?? '-',
                             'Fax' => $applicationCompany->fax ?? '-',
                             'Email' => $applicationCompany->email ?? '-',
                             'Website' => $applicationCompany->website ?? '-',
@@ -169,6 +169,22 @@
 
                 <form method="POST" action="{{ route('ncage.approve', $recordId) }}">
                     @csrf
+                    {{-- Entity Type --}}
+                    <input type="hidden" name="entity_type" value="{{ $applicationIdentity->entity_type }}">
+
+                    {{-- Seluruh field dari $applicationCompany --}}
+                    <input type="hidden" name="company[name]" value="{{ $applicationCompany->name }}">
+                    <input type="hidden" name="company[province]" value="{{ $applicationCompany->province }}">
+                    <input type="hidden" name="company[city]" value="{{ $applicationCompany->city }}">
+                    <input type="hidden" name="company[street]" value="{{ $applicationCompany->street }}">
+                    <input type="hidden" name="company[postal_code]" value="{{ $applicationCompany->postal_code }}">
+                    <input type="hidden" name="company[po_box]" value="{{ $applicationCompany->po_box }}">
+                    <input type="hidden" name="company[phone]" value="{{ $applicationCompany->phone }}">
+                    <input type="hidden" name="company[fax]" value="{{ $applicationCompany->fax }}">
+                    <input type="hidden" name="company[email]" value="{{ $applicationCompany->email }}">
+                    <input type="hidden" name="company[website]" value="{{ $applicationCompany->website }}">
+                    <input type="hidden" name="company[affiliate]" value="{{ $applicationCompany->affiliate }}">
+
                     <button type="submit" class="btn btn-success rounded-pill px-4 fw-semibold">
                         Setujui Verifikasi <i class="bi bi-check2-circle ms-1"></i>
                     </button>

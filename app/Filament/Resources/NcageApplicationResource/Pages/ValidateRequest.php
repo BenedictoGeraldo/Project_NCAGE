@@ -102,41 +102,6 @@ class ValidateRequest extends Page
                     // Hapus file sementara
                     $tempFile->delete();
 
-                    // Ambil record terakhir dan kode terakhir
-                    $lastRecord = NcageRecord::orderBy('id', 'desc')->first();
-
-                    if ($lastRecord && preg_match('/^(\d+)([A-Z])$/', $lastRecord->ncage_code, $matches)) {
-                        // $matches[1] = angka (string), $matches[2] = huruf
-                        $number = intval($matches[1]) + 1; // tambah 1
-                        $letter = $matches[2];
-
-                        // Format ulang angka dengan padding 4 digit (sesuai contoh)
-                        $newCode = str_pad($number, strlen($matches[1]), '0', STR_PAD_LEFT) . $letter;
-                    } else {
-                        // Kalau tidak ada record atau format beda, mulai dari default
-                        $newCode = '0001Z';
-                    }
-
-                    NcageRecord::updateOrCreate(
-                    ['ncage_application_id' => $record->id],
-                    [
-                        'ncage_code' => $newCode,
-                        'ncagesd' => 'A',
-                        'toec' => $record->identity->entity_type,
-                        'entity_name' => $record->companyDetail->name,
-                        'street' => $record->companyDetail->street,
-                        'city' => $record->companyDetail->city,
-                        'psc' => $record->companyDetail->postal_code,
-                        'country' => 'INDONESIA',
-                        'ctr' => 'IDN',
-                        'stt' => $record->companyDetail->province,
-                        'is_sam_requested' => 0,
-                        'tel' => $record->companyDetail->phone . ' ' . $record->contacts->phone,
-                        'fax' => $record->companyDetail->fax,
-                        'ema' => $record->companyDetail->email,
-                        'www' => $record->companyDetail->website,
-                        'pob' => $record->companyDetail->po_box,
-                    ]);
 
                     //trigger notifikasi sertifikat telah muncul
                     if ($user = $record->user) {

@@ -59,6 +59,9 @@ class NcageRecord extends Model
         'domestic_certificate_xml_path',
         'international_certificate_path',
     ];
+    protected $casts = [
+        'change_date' => 'datetime',
+    ];
     /**
      * Mendefinisikan relasi "belongsTo" ke model NcageApplication.
      * Satu NCAGE dimiliki oleh satu permohonan.
