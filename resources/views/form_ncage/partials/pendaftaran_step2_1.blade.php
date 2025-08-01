@@ -39,7 +39,7 @@
     @error('jenis_permohonan') <small class="text-danger">{{ $message }}</small> @enderror
 </div>
 
-<div class="custom-margin-1">
+{{-- <div class="custom-margin-1">
     <div class="d-flex gap-4">
         <label>Jenis Permohonan Ncage <span class="text-danger">*</span></label>
         <div class="d-flex gap-4">
@@ -65,7 +65,7 @@
         </div>
     </div>
     @error('jenis_permohonan_ncage') <small class="text-danger">{{ $message }}</small> @enderror
-</div>
+</div> --}}
 
 
 @php

@@ -93,7 +93,7 @@
                             <button type="button" class="btn btn-outline-dark-red border-2 rounded-pill px-4 py-2 fw-semibold" data-bs-dismiss="modal">
                                 <i class="fa-solid fa-arrow-left me-2"></i> Kembali
                             </button>
-                            <a href="{{ route('tracking.index') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2">
+                            <a href="{{ route('pendaftaran-ncage.perpanjang') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2">
                                 Perbarui NCAGE <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>

@@ -9,9 +9,9 @@ use App\Models\ApplicationIdentity;
 use App\Models\ApplicationContact;
 use App\Models\CompanyDetail;
 use App\Models\OtherInformation;
+use App\Models\NcageRecord;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Event;
@@ -70,6 +70,139 @@ class FormNCAGEController extends Controller
         ]);
     }
 
+    public function showPerpanjangan()
+    {
+        $companyName = auth()->user()->company_name;
+        $normalizedCompanyName = normalizeCompanyName($companyName);
+        
+        // Cek apakah user punya NCAGE
+        $record = NcageRecord::get()->first(function ($r) use ($normalizedCompanyName) {
+            return normalizeCompanyName($r->entity_name) === $normalizedCompanyName;
+        });
+
+        // dd($companyName, $normalizedCompanyName, $record);
+
+        if (!$record) {
+            return redirect()->route('home')->with('error', 'Data NCAGE lama tidak ditemukan.');
+        }
+
+        // Cek apakah user sudah pernah mengisi NcageApplication
+        // Ambil semua NcageApplication dan filter berdasarkan companyDetail->name yang sudah dinormalisasi
+        $existingApp = NcageApplication::with(['identity', 'contacts', 'companyDetail', 'otherInformation'])
+            ->get()
+            ->first(function ($app) use ($normalizedCompanyName) {
+                return $app->companyDetail &&
+                    normalizeCompanyName($app->companyDetail->name) === $normalizedCompanyName;
+            });
+        
+        // dd($normalizedCompanyName, $existingApp);
+
+        if ($existingApp) {
+            $this->loadApplication($existingApp);
+        } else {
+            $this->loadUpdate($record); // seperti sebelumnya
+        }
+
+        Session::put('is_perpanjang', true);
+        Session::put('form_ncage_progress', ['step' => 1]);
+
+        return redirect()->route('pendaftaran-ncage.show', ['step' => 1]);
+    }
+    private function loadApplication($application)
+    {
+        $sessionData = [];
+
+        // === IDENTITY ===
+        $identity = $application->identity;
+        if ($identity) {
+            $sessionData['jenis_permohonan'] = $identity->application_type;
+            $sessionData['jenis_permohonan_ncage'] = 2; // <== Selalu diset ke 2 untuk perpanjangan
+            $sessionData['tujuan_penerbitan'] = $identity->purpose;
+            $sessionData['tipe_entitas'] = $identity->entity_type;
+            $sessionData['status_kepemilikan'] = $identity->building_ownership_status;
+            $sessionData['terdaftar_ahu'] = $identity->is_ahu_registered;
+            $sessionData['koordinat_kantor'] = $identity->office_coordinate;
+            $sessionData['nib'] = $identity->nib;
+            $sessionData['npwp'] = $identity->npwp;
+            $sessionData['bidang_usaha'] = $identity->business_field;
+        }
+
+        // === CONTACTS ===
+        $contact = $application->contacts;
+        if ($contact) {
+            $sessionData['nama_pemohon'] = $contact->name;
+            $sessionData['no_identitas'] = $contact->identity_number;
+            $sessionData['alamat'] = $contact->address;
+            $sessionData['no_tel'] = $contact->phone_number;
+            $sessionData['email'] = $contact->email;
+            $sessionData['jabatan'] = $contact->position;
+        }
+
+        // === COMPANY DETAIL ===
+        $company = $application->companyDetail;
+        if ($company) {
+            $sessionData['nama_badan_usaha'] = $company->name;
+            $sessionData['provinsi'] = $company->province;
+            $sessionData['kota'] = $company->city;
+
+            $streets = explode('/', $company->street);
+            $sessionData['jalan_1'] = trim($streets[0]);
+            $sessionData['jalan_2'] = $streets[1] ?? null;
+
+            $sessionData['kode_pos'] = $company->postal_code;
+            $sessionData['po_box'] = $company->po_box;
+            $sessionData['no_telp'] = $company->phone;
+            $sessionData['no_fax'] = $company->fax;
+            $sessionData['email_kantor'] = $company->email;
+            $sessionData['website_kantor'] = $company->website;
+            $sessionData['perusahaan_afiliasi'] = $company->affiliate;
+        }
+
+        // === OTHER INFORMATION ===
+        $other = $application->otherInformation;
+        if ($other) {
+            $sessionData['produk_dihasilkan'] = $other->products;
+            $sessionData['kemampuan_produksi'] = $other->production_capacity;
+            $sessionData['jumlah_karyawan'] = $other->number_of_employees;
+
+            $sessionData['kantor_cabang_1'] = $other->branch_office_name;
+            $sessionData['nama_jalan_1'] = $other->branch_office_street;
+            $sessionData['kota_1'] = $other->branch_office_city;
+            $sessionData['kode_pos_1'] = $other->branch_office_postal_code;
+
+            $sessionData['perusahaan_afiliasi_2'] = $other->affiliate_company;
+            $sessionData['nama_jalan_2'] = $other->affiliate_company_street;
+            $sessionData['kota_2'] = $other->affiliate_company_city;
+            $sessionData['kode_pos_2'] = $other->affiliate_company_postal_code;
+        }
+
+        // === DOCUMENTS ===
+        $documents = json_decode($application->documents, true) ?? [];
+        $sessionData['documents'] = $documents;
+
+        Session::put('form_ncage', $sessionData);
+    }
+
+    private function loadUpdate($application)
+    {
+        $sessionData = [];
+
+        $sessionData['tipe_entitas'] = $application->toec;
+        $streets = explode('/', $application->street);
+        $sessionData['jalan_1'] = trim($streets[0]);
+        $sessionData['jalan_2'] = $streets[1] ?? null;
+        $sessionData['kota'] = $application->city;
+        $sessionData['kode_pos'] = $application->psc;
+        $sessionData['provinsi'] = $application->stt;
+        $sessionData['no_telp'] = $application->tel;
+        $sessionData['no_fax'] = $application->fax;
+        $sessionData['email_kantor'] = $application->ema;
+        $sessionData['website_kantor'] = $application->www;
+        $sessionData['po_box'] = $application->pob;
+
+        Session::put('form_ncage', $sessionData);
+    }
+
     private function loadRevision($userId)
     {
         $revision = NcageApplication::with(['identity', 'contacts', 'companyDetail', 'otherInformation'])
@@ -86,7 +219,6 @@ class FormNCAGEController extends Controller
         // === IDENTITY ===
         $identity = $revision->identity;
         if ($identity) {
-            $sessionData['tanggal_pengajuan'] = $identity->submission_date;
             $sessionData['jenis_permohonan'] = $identity->application_type;
             $sessionData['jenis_permohonan_ncage'] = $identity->ncage_request_type;
             $sessionData['tujuan_penerbitan'] = $identity->purpose;
@@ -210,6 +342,14 @@ class FormNCAGEController extends Controller
                     if ($request->has($field)) {
                         $data[$field] = $request->$field;
                     }
+                }
+
+                $isPerpanjang = Session::get('is_perpanjang');
+
+                if (!$isPerpanjang) {
+                    $data['jenis_permohonan_ncage'] = 1;
+                } else {
+                    $data['jenis_permohonan_ncage'] = 2;
                 }
 
                 Session::put('form_ncage_progress', ['step' => 2, 'substep' => 2]);
@@ -456,7 +596,7 @@ class FormNCAGEController extends Controller
         $rules = [
             'tanggal_pengajuan' => 'nullable|date|after_or_equal:today',
             'jenis_permohonan' => 'required|string',
-            'jenis_permohonan_ncage' => 'required|string',
+            // 'jenis_permohonan_ncage' => 'required|string',
             'tujuan_penerbitan' => 'required|in:1,2,3',
             'tipe_entitas' => 'required|in:E,F,G,H',
             'status_kepemilikan' => 'required|in:1,2,3',
@@ -483,7 +623,7 @@ class FormNCAGEController extends Controller
         $attributes = [
             'tanggal_pengajuan' => 'Tanggal Pengajuan',
             'jenis_permohonan' => 'Jenis Permohonan',
-            'jenis_permohonan_ncage' => 'Jenis Permohonan NCAGE',
+            // 'jenis_permohonan_ncage' => 'Jenis Permohonan NCAGE',
             'tujuan_penerbitan' => 'Tujuan Penerbitan',
             'tujuan_penerbitan_lainnya' => 'Tujuan Penerbitan (Lainnya)',
             'tipe_entitas' => 'Tipe Entitas',
@@ -637,6 +777,12 @@ class FormNCAGEController extends Controller
         session(['form_ncage' => $data]);
 
         return response()->json(['success' => true]);
+    }
+    function normalizeCompanyName($name)
+    {
+        $name = preg_replace('/^(pt|cv|ud|pd|perum|perusahaan|persero)\.?[\s]+/i', '', $name);
+        $name = preg_replace('/[^a-z0-9]/i', '', $name);
+        return strtolower($name);
     }
 
     public function showSuratPermohonan()

@@ -222,6 +222,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/download-surat-permohonan', [FormNCAGEController::class, 'downloadSuratPermohonan'])->name('surat-permohonan.download');
     Route::get('/surat-pernyataan', [FormNCAGEController::class, 'showSuratPernyataan'])->name('surat-pernyataan.show');
     Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
+    Route::get('/pembaruan-ncage', [FormNCAGEController::class, 'showPerpanjangan'])->name('pendaftaran-ncage.perpanjang');
 
     // Rute lainnya yang butuh login & verifikasi
     Route::get('/check-status', [StatusCheckController::class, 'check'])->name('status.check.api');
