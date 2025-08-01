@@ -18,6 +18,12 @@
                 <li>
                     @if ($hasPendingNcage)
                         <a href="#" class="btn rounded-4 fw-bold fs-7" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
+                    @elseif($hasActiveNcage)
+                        <a href="#" class="btn rounded-4 fw-bold fs-7"
+                        data-bs-toggle="modal"
+                        data-bs-target="#activeNcageModal">
+                        Pendaftaran NCAGE
+                        </a>
                     @else
                         <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="btn rounded-4 fw-bold fs-7">Pendaftaran NCAGE</a>
                     @endif

@@ -37,6 +37,14 @@
             $hasPendingNcage = Auth::check() && Auth::user()->ncageApplication()
                 ->whereIn('status_id', [1, 2, 3, 4]) // contoh status 'dalam proses'
                 ->exists();
+                
+            $activeNcage = Auth::check()
+                ? \App\Models\NcageRecord::where('entity_name', Auth::user()->company_name)->first()
+                : null;
+
+            $hasActiveNcage = !is_null($activeNcage);
+
+            $validUntil = $activeNcage?->change_date?->addYears(5)?->format('d M Y');
         @endphp
         @include('partials.navbar')
         @include('partials.offcanvas-menu')
@@ -59,6 +67,34 @@
                             </button>
                             <a href="{{ route('tracking.index') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2">
                                 Pantau Status <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- pop up jika user sudah punya NCAGE aktif --}}
+            <div class="modal fade" id="activeNcageModal" tabindex="-1" aria-labelledby="activeNcageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content p-4 rounded-4 shadow-sm border-0 text-center">
+                        <h5 class="fw-bold fs-4 mb-2" id="activeNcageModalLabel">Anda Sudah Memiliki Kode NCAGE</h5>
+                        <div class="border-top border-3 w-100 mx-auto mb-3"></div>
+                        <div class="my-3">
+                            <img src="{{ asset('images/icons/icon-info.png') }}" alt="Icon Keluar" style="height: 80px;">
+                        </div>
+                        <p class="text-muted mb-4">
+                            Perusahaan Anda telah memiliki NCAGE aktif.
+                            @if ($validUntil)
+                                <br>
+                                Masa berlaku NCAGE Anda hingga: <strong>{{ $validUntil }}</strong>.
+                            @endif
+                        </p>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-dark-red border-2 rounded-pill px-4 py-2 fw-semibold" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-arrow-left me-2"></i> Kembali
+                            </button>
+                            <a href="{{ route('tracking.index') }}" class="btn btn-dark-red text-white rounded-pill px-4 py-2 fw-semibold d-flex align-items-center gap-2">
+                                Perbarui NCAGE <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>
