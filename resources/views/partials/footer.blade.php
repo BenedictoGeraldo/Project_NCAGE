@@ -1,75 +1,70 @@
 <footer class="footer">
-    <div class="">
+    <div class="container py-5">
         <div class="row">
-            <div class="col-lg-5 col-md-12 mb-4 mb-lg-0">
-                <div class="footer-left-column">
-                    <div class="footer-brand">
-                        <div class="img fs-4 position-relative z-1 d-flex me-2" style="width: 70px;">
+            <div class="col-lg-5 col-12 mb-4 mb-lg-0 text-center text-lg-start">
+                <div class="d-inline-flex flex-column"> 
+                    <div class="footer-brand d-flex flex-column flex-lg-row align-items-center mb-3">
+                        <div class="img mb-2 mb-lg-0 me-lg-3" style="width: 70px;">
                             <img class="w-100" src="{{ asset('images/logo.png') }}" alt="Logo Puskod">
                         </div>
-                        <div>
-                            <h5 class="footer-title">Pelayanan NCAGE</h5>
-                            <p class="footer-subtitle">Pusat Kodifikasi</p>
+                        <div class="text-center text-lg-start">
+                            <h5 class="footer-title mb-0">Pelayanan NCAGE</h5>
+                            <p class="footer-subtitle mb-0">Pusat Kodifikasi</p>
                         </div>
                     </div>
                     <p class="footer-address">
-                        Jl. Pd. Labu Raya, RT.6/RW.6 Pd. Labu, Cilandak
-                        Kota Jakarta Selatan Daerah Khusus Ibukota
-                        Jakarta
+                        Jl. Pd. Labu Raya, RT.6/RW.6 Pd. Labu, Cilandak<br>
+                        Kota Jakarta Selatan Daerah Khusus Ibukota Jakarta
                     </p>
                 </div>
             </div>
 
-            <div class="col-lg-7 col-md-12">
-                <div class="footer-right-group">
-                    <div class="footer-column">
+            <div class="col-lg-7 col-12">
+                <div class="row">
+                    <div class="col-6 col-md-4 mb-4 mb-md-0 text-center text-md-start">
                         <h5 class="footer-heading">Tautan</h5>
-                        <ul class="footer-links">
-                            <li><a href="{{ route('home')}}">Beranda</a></li>
-                            <li><a href="{{ route('pendaftaran-ncage.show', ['step' => 1])}}">Pendaftaran NCAGE</a></li>
+                        <ul class="footer-links list-unstyled p-0">
+                            <li><a href="{{ route('home') }}">Beranda</a></li>
+                            <li><a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
                             <li><a href="{{ route('tracking.index') }}">Pantau Status</a></li>
                         </ul>
                     </div>
 
-                    <div class="footer-column">
+                    <div class="col-6 col-md-5 mb-4 mb-md-0 text-center text-md-start">
                         <h5 class="footer-heading">Kontak</h5>
-                        <ul class="footer-contact">
-                            <li>
-                                <i class="fas fa-phone-alt"></i>
+                        <ul class="footer-contact list-unstyled p-0">
+                            <li class="d-flex align-items-start justify-content-center justify-content-md-start">
+                                <i class="fas fa-phone-alt mt-1 me-2"></i>
                                 <div>
                                     <span>Call Center Puskod</span>
-                                    <p>0812-8882-4545</p>
+                                    <p class="mb-2">0812-8882-4545</p>
                                 </div>
                             </li>
-                            <li>
-                                <i class="fas fa-clock"></i>
+                            <li class="d-flex align-items-start justify-content-center justify-content-md-start">
+                                <i class="fas fa-clock mt-1 me-2"></i>
                                 <div>
                                     <span>Jam Pelayanan</span>
-                                    <p>Senin - Jumat, 08:00 - 15:30 WIB</p>
+                                    <p class="mb-0">Senin - Jumat, 08:00 - 15:30 WIB</p>
                                 </div>
                             </li>
                         </ul>
                     </div>
 
-                    <div class="footer-column w-25">
+                    <div class="col-12 col-md-3 text-center mt-4 mt-md-0">
                         <h5 class="footer-heading">QR Code</h5>
-                        <img class="w-50 ms-2" src="{{ asset('images/qr_code_whatsapp.jpg') }}" alt="">
+                        <img class="w-50" src="{{ asset('images/qr_code_whatsapp.jpg') }}" alt="QR Code WhatsApp">
                     </div>
-
                 </div>
             </div>
-
         </div>
 
-    </div>
+        <hr class="footer-divider my-4">
 
-    <hr class="footer-divider">
-
-    <div class="row">
-        <div class="col text-center footer-copyright">
-            © {{ date('Y') }} Pusat Kodifikasi, Baranahan, Kementerian Pertahanan Republik Indonesia.
+        <div class="row">
+            <div class="col text-center footer-copyright">
+                © {{ date('Y') }} Pusat Kodifikasi, Baranahan, Kementerian Pertahanan Republik Indonesia.
+            </div>
         </div>
-    </div>
     </div>
 </footer>
 
