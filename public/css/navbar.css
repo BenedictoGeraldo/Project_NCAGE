@@ -307,3 +307,46 @@
     font-size: 0.65em;
     padding: 0.3em 0.5em;
 }
+
+/* ========================================================================= */
+/* ATURAN RESPONSIVE UNTUK NOTIFIKASI (HANYA UNTUK MOBILE KECIL)
+/* ========================================================================= */
+
+/* Hanya berlaku untuk layar dengan lebar di bawah 576px (ponsel potret) */
+@media (max-width: 575.98px) {
+    /* 1. Atur ulang ukuran dan posisi dropdown utama */
+    .notification-dropdown .dropdown-menu {
+        /* Menggunakan positioning 'fixed' relatif terhadap layar, bukan ikon */
+        position: fixed !important;
+
+        /* Beri jarak dari atas layar (sesuaikan jika tinggi navbar Anda berbeda) */
+        top: 75px !important;
+
+        /* Patok 10px dari tepi kiri dan kanan, biarkan width otomatis */
+        left: 10px !important;
+        right: 10px !important;
+        width: auto !important;
+
+        /* Hapus transform karena tidak diperlukan lagi */
+        transform: none !important;
+
+        /* Batasi tinggi dropdown agar tidak keluar layar dan aktifkan scroll */
+        max-height: 75vh; /* 75% dari tinggi layar */
+        overflow-y: auto; /* Tambahkan scroll jika konten lebih panjang */
+    }
+
+    /* 2. Perkecil ukuran font di dalam notifikasi */
+    .notification-title {
+        font-size: 0.85rem;
+    }
+
+    .notification-message,
+    .notification-time {
+        font-size: 0.75rem;
+    }
+
+    /* 3. Atur ulang padding agar tidak terlalu mepet */
+    .notification-item {
+        padding: 0.75rem 1rem;
+    }
+}
