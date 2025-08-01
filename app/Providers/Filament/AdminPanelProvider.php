@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Widgets\NcageStatusStats;
 use App\Filament\Widgets\NcageRecordsChart;
+use App\Filament\Resources\SurveyResource\Widgets\SurveyOverviewWidget;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -44,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 NcageStatusStats::class,
                 NcageRecordsChart::class,
+                SurveyOverviewWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
