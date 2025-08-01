@@ -36,9 +36,6 @@
       
       @auth
         <li class="nav-item">
-          <a class="nav-link" href="#">Notifikasi</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link {{ Request::is('profile*') ? 'active-mobile' : '' }}" href="{{ route('profile.show') }}">Akun</a>
         </li>
         <li class="nav-item">
