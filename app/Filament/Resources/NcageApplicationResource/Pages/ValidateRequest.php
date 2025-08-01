@@ -99,6 +99,16 @@ class ValidateRequest extends Page
                         'validated_by' => auth('admin')->user()->id
                     ]);
 
+                    $ncage = NcageRecord::where('ncage_code', $record->ncage_code)->first();
+
+                    $ncage->change_date = now();
+
+                    if (empty($ncage->creation_date)) {
+                        $ncage->creation_date = now();
+                    }
+
+                    $ncage->save();
+
                     // Hapus file sementara
                     $tempFile->delete();
 
