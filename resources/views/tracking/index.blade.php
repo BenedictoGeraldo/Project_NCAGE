@@ -85,7 +85,7 @@
                                 <p class="text-primary small mb-1">Sedang Berlangsung...</p>
                                 <p class="mb-0">Tim Puskod sedang melakukan verifikasi data Anda.</p>
                             @elseif($status == 3)
-                                <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan.</p>\
+                                <p class="text-danger small mb-1">Permohonan Anda membutuhkan perbaikan.</p>
                                 <p class="mb-0">{{ $application->revision_notes ?? 'Silakan hubungi admin.' }}</p>
                             @else
                                 <p class="mb-0">Proses verifikasi berkas dan data.</p>

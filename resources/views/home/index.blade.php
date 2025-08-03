@@ -240,6 +240,7 @@
                                 <li class="list-group-item d-flex justify-content-between"><strong>Nama Perusahaan:</strong> <span>${data.data.entity_name}</span></li>
                                 <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${data.data.ncage_code}</span></li>
                                 <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
+                                <li class="list-group-item d-flex justify-content-between"><strong>Berlaku Hingga:</strong> <span>${data.data.valid_until}</span></li>
                             </ul>
                             ${downloadButton}
                             ${internationalDownloadButton}
