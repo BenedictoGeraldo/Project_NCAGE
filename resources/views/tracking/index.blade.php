@@ -290,80 +290,81 @@
 </main>
 @endsection
 @push('scripts')
-    @if($status == 5 && !$application->survey)
-    <script>
-        console.log('Blok script survei dimuat.'); // Tes 1: Apakah skrip ini ada di halaman?
+@if($status == 5 && !$application->survey)
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const surveyForm = document.getElementById('surveyForm');
+    const surveyModalElement = document.getElementById('surveyModal');
+    const surveyModal = new bootstrap.Modal(surveyModalElement);
 
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('DOM Content Loaded. Mencari elemen form...'); // Tes 2: Apakah event listener utama berjalan?
+    surveyForm.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-            const surveyForm = document.getElementById('surveyForm');
-            const surveyModalElement = document.getElementById('surveyModal');
+        const formData = new FormData(surveyForm);
+        const submitButton = surveyForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
 
-            // Cek apakah elemen ditemukan
-            if (!surveyForm) {
-                console.error('Elemen dengan ID "surveyForm" tidak ditemukan!');
-                return; // Hentikan eksekusi jika form tidak ada
+        fetch('{{ route("survey.store", $application) }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'Accept': 'application/json',
             }
-            if (!surveyModalElement) {
-                console.error('Elemen dengan ID "surveyModal" tidak ditemukan!');
-                return; // Hentikan eksekusi jika modal tidak ada
-            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                surveyModal.hide();
 
-            console.log('Elemen form dan modal ditemukan. Menambahkan event listener ke form.');
-
-            const surveyModal = new bootstrap.Modal(surveyModalElement);
-
-            surveyForm.addEventListener('submit', function (event) {
-                console.log('Tombol Kirim diklik! Proses submit dimulai.'); // Tes 3: Apakah klik tombol terdeteksi?
-
-                event.preventDefault();
-
-                const formData = new FormData(surveyForm);
-                const submitButton = surveyForm.querySelector('button[type="submit"]');
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Mengirim...';
-
-                fetch('{{ route("survey.store", $application) }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                        'Accept': 'application/json',
-                    }
-                })
-                .then(response => {
-                    console.log('Menerima respons dari server.'); // Tes 4: Apakah server merespons?
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        console.log('Proses sukses. Menampilkan tombol unduh.');
-                        surveyModal.hide();
-                        alert('Terima kasih! Survei Anda telah berhasil dikirim.');
+                // === BAGIAN YANG DIUBAH: GANTI ALERT() DENGAN SWEETALERT2 ===
+                Swal.fire({
+                    title: 'Terima Kasih!',
+                    text: 'Survei Anda telah berhasil dikirim.',
+                    icon: 'success',
+                    customClass: {
+                        // Gunakan class CSS yang sama dengan tombol Kirim untuk konsistensi warna
+                        confirmButton: 'btn btn-survey-submit'
+                    },
+                    buttonsStyling: false // Penting agar customClass bisa diterapkan
+                }).then((result) => {
+                    // Setelah pengguna menekan "OK", tampilkan tombol unduh
+                    if (result.isConfirmed) {
                         document.getElementById('survey-button-container').style.display = 'none';
                         document.getElementById('download-buttons').style.display = 'block';
-                    } else {
-                        console.error('Server merespons dengan kegagalan:', data);
-                        let errorMessages = 'Gagal mengirim survei. Pastikan semua pertanyaan wajib diisi.';
-                        if(data.errors){
-                            for(const key in data.errors){
-                                errorMessages += `\n- ${data.errors[key][0]}`;
-                            }
-                        }
-                        alert(errorMessages);
                     }
-                })
-                .catch(error => {
-                    console.error('Terjadi error saat fetch:', error);
-                    alert('Terjadi kesalahan pada sistem. Silakan coba lagi.');
-                })
-                .finally(() => {
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = 'Kirim';
                 });
+
+            } else {
+                let errorMessages = 'Gagal mengirim survei. Pastikan semua pertanyaan wajib diisi.';
+                if(data.errors){
+                    for(const key in data.errors){
+                        errorMessages += `\n- ${data.errors[key][0]}`;
+                    }
+                }
+                // Tampilkan error dengan SweetAlert juga agar seragam
+                Swal.fire({
+                    title: 'Oops...',
+                    text: errorMessages,
+                    icon: 'error',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Terjadi kesalahan pada sistem. Silakan coba lagi.',
+                icon: 'error',
             });
+        })
+        .finally(() => {
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Kirim <i class="bi bi-send-fill ms-2"></i>';
         });
-    </script>
-    @endif
+    });
+});
+</script>
+@endif
 @endpush

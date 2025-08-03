@@ -37,7 +37,7 @@
             $hasPendingNcage = Auth::check() && Auth::user()->ncageApplication()
                 ->whereIn('status_id', [1, 2, 3, 4]) // contoh status 'dalam proses'
                 ->exists();
-                
+
             $activeNcage = Auth::check()
                 ? \App\Models\NcageRecord::where('entity_name', Auth::user()->company_name)->first()
                 : null;
@@ -110,7 +110,8 @@
     {{-- jQuery HARUS DIMUAT PERTAMA, sebelum script lain yang menggunakannya --}}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> {{-- <--- BARIS INI DITAMBAHKAN --}}
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     {{-- Ini tempat di mana script dari @push('scripts') akan dimuat --}}
     {{-- Pastikan @stack('scripts') ADA dan berada SETELAH jQuery dan Bootstrap JS --}}
     @stack('scripts')
