@@ -206,13 +206,38 @@ Route::post('/ncage-applications/{record}/revision', function (NcageApplication 
 // RUTE TERPROTEKSI (WAJIB SUDAH LOGIN DAN SUDAH VERIFIKASI)
 // =========================================================================
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Rute Beranda setelah login
-    Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
-    // Rute Pantau Status
-    Route::get('/pantau-status', [TrackingController::class, 'index'])->name('tracking.index');
-    Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
+    Route::middleware(['clearncage'])->group(function () {
+        // Rute Beranda setelah login
+        Route::get('/beranda', [HomeController::class, 'index'])->name('beranda');
 
+        // Rute Pantau Status
+        Route::get('/pantau-status', [TrackingController::class, 'index'])->name('tracking.index');
+        Route::get('/pantau-status/{application}', [TrackingController::class, 'show'])->name('tracking.show');
+
+        // Rute lainnya yang butuh login & verifikasi
+        Route::get('/check-status', [StatusCheckController::class, 'check'])->name('status.check.api');
+        Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])->name('certificate.download.record');
+        Route::get('/sertifikat/international/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])->name('certificate.download.international');
+        Route::post('/survey/{application}', [SurveyController::class, 'store'])->name('survey.store');
+
+        Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+        Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
+        //notifikasi route
+        // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
+        Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
+
+        //rute untuk cek entitas
+        Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
+        // --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
+        // Route baru untuk mengambil data Datatables secara AJAX
+        // Menggunakan prefix nama 'entity-check' agar konsisten
+        Route::get('/get-ncagerecords-data', [EntityCheckController::class, 'getNcageRecordsData'])->name('entity-check.get-data');
+    });
+    
     // Rute Pendaftaran NCAGE (DIPINDAHKAN KE SINI)
     Route::get('/pendaftaran-ncage/{step}/{substep?}', [FormNCAGEController::class, 'show'])->name('pendaftaran-ncage.show');
     Route::post('/pendaftaran-ncage', [FormNCAGEController::class, 'handleStep'])->name('pendaftaran-ncage.handle-step');
@@ -223,28 +248,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/surat-pernyataan', [FormNCAGEController::class, 'showSuratPernyataan'])->name('surat-pernyataan.show');
     Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
     Route::get('/pembaruan-ncage', [FormNCAGEController::class, 'showPerpanjangan'])->name('pendaftaran-ncage.perpanjang');
-
-    // Rute lainnya yang butuh login & verifikasi
-    Route::get('/check-status', [StatusCheckController::class, 'check'])->name('status.check.api');
-    Route::get('/sertifikat/record/{record}/unduh', [CertificateController::class, 'downloadDomesticCertificate'])->name('certificate.download.record');
-    Route::get('/sertifikat/international/{application}/unduh', [CertificateController::class, 'downloadInternationalCertificate'])->name('certificate.download.international');
-    Route::post('/survey/{application}', [SurveyController::class, 'store'])->name('survey.store');
-
-    Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
-    Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
-
-    //notifikasi route
-    // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
-    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
-
-    //rute untuk cek entitas
-    Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
-    // --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
-    // Route baru untuk mengambil data Datatables secara AJAX
-    // Menggunakan prefix nama 'entity-check' agar konsisten
-    Route::get('/get-ncagerecords-data', [EntityCheckController::class, 'getNcageRecordsData'])->name('entity-check.get-data');
 
 });
 
