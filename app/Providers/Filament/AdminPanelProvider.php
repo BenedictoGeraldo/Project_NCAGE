@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->brandName('Admin Pelayanan NCAGE')
             ->authGuard('admin')
+            ->favicon('images/logo.png')
             ->colors([
                 'primary' => Color::Amber,
             ])

@@ -92,7 +92,7 @@ class RegisteredUserController extends Controller
         $twilio = new Client($sid, $token);
 
         // Sesuaikan body pesan dengan template yang sudah disetujui di Twilio
-        $message = "Kode verifikasi Anda untuk pendaftaran NCAGE adalah {$otp}.";
+        $message = "Kode verifikasi untuk pendaftaran akun portal NCAGE Anda adalah {$otp}.";
 
         $twilio->messages->create(
             "whatsapp:{$recipientPhoneNumber}",
