@@ -27,7 +27,9 @@ use App\Models\NcageRecord;
 // =========================================================================
 // RUTE PUBLIK
 // =========================================================================
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware(['clearncage'])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+});
 
 // Rute untuk verifikasi OTP
 Route::get('/verify-otp', [OtpVerificationController::class, 'show'])->name('verification.notice');
@@ -78,130 +80,6 @@ function normalizeCompanyName($name)
     return strtolower($name);
 }
 
-Route::post('/ncage-applications/{record}/approve', function (NcageApplication $record) {
-    $input = request();
-
-    $company = $input->input('company'); // array
-    $entityType = $input->input('entity_type');
-
-    // Normalisasi input
-    $normalizedInput = normalizeCompanyName($company['name']);
-    
-    // Ambil semua record dan bandingkan nama yang sudah dinormalisasi
-    $checkCompany = NcageRecord::get()->first(function ($r) use ($normalizedInput) {
-        return normalizeCompanyName($r->entity_name) === $normalizedInput;
-    });
-
-    // dd($company, $entityType, $normalizedInput, $checkCompany);
-    
-    if (!$checkCompany){
-        $lastRecord = NcageRecord::orderBy('id', 'desc')->first();
-        
-        if ($lastRecord && preg_match('/^(\d+)([A-Z])$/', $lastRecord->ncage_code, $matches)) {
-            // $matches[1] = angka (string), $matches[2] = huruf
-            $number = intval($matches[1]) + 1; // tambah 1
-            $letter = $matches[2];
-    
-            // Format ulang angka dengan padding 4 digit (sesuai contoh)
-            $newCode = str_pad($number, strlen($matches[1]), '0', STR_PAD_LEFT) . $letter;
-        } else {
-            // Kalau tidak ada record atau format beda, mulai dari default
-            $newCode = '0001Z';
-        }
-        
-        NcageRecord::create(
-        [
-            'ncage_code' => $newCode,
-            'ncagesd' => 'A',
-            'toec' => $entityType,
-            'entity_name' => $company['name'],
-            'street' => $company['street'],
-            'city' => $company['city'],
-            'psc' => $company['postal_code'],
-            'country' => 'INDONESIA',
-            'ctr' => 'IDN',
-            'stt' => $company['province'],
-            'is_sam_requested' => 0,
-            'tel' => $company['phone'],
-            'fax' => $company['fax'],
-            'ema' => $company['email'],
-            'www' => $company['website'],
-            'pob' => $company['po_box'], 
-            'ncage_application_id' => $record->id
-        ]);
-    } else {
-        $newCode = $checkCompany->ncage_code;
-
-        // Update NcageRecord
-        $checkCompany->update([
-            'toec' => $entityType,
-            'entity_name' => $company['name'],
-            'street' => $company['street'],
-            'city' => $company['city'],
-            'psc' => $company['postal_code'],
-            'country' => 'INDONESIA',
-            'ctr' => 'IDN',
-            'stt' => $company['province'],
-            'is_sam_requested' => 0,
-            'tel' => $company['phone'],
-            'fax' => $company['fax'],
-            'ema' => $company['email'],
-            'www' => $company['website'],
-            'pob' => $company['po_box'], 
-            'ncage_application_id' => $record->id
-        ]);
-    }
-
-    $record->update([
-        'ncage_code' => $newCode,
-        'status_id' => 4,
-        'verified_by' => auth('admin')->user()->id
-    ]);
-
-    // Kirim notifikasi ke pengguna
-    if ($user = $record->user) {
-        $user->notify(new FinalValidation());
-    }
-
-    return redirect()->route('filament.admin.resources.ncage-applications.index')
-        ->with([
-            'success' => 'Permohonan disetujui.',
-            'warning' => 'Harap lanjutkan ke proses validasi.',
-        ]);
-})->name('ncage.approve');
-
-Route::post('/ncage-applications/{record}/reject', function (NcageApplication $record, Request $request) {
-    $record->update([
-        'status_id' => 6,
-        'revision_notes' => $request->input('reason'),
-        'rejected_by' => auth('admin')->user()->id
-    ]);
-
-    // Kirim notifikasi ke pengguna
-    if ($user = $record->user) {
-        $user->notify(new ApplicationRejected());
-    }
-
-    return redirect()->route('filament.admin.resources.ncage-applications.index')
-        ->with('success', 'Permohonan ditolak.');
-})->name('ncage.reject');
-
-Route::post('/ncage-applications/{record}/revision', function (NcageApplication $record, Request $request) {
-    $record->update([
-        'status_id' => 3,
-        'revision_notes' => $request->input('reason'),
-        'revision_by' => auth('admin')->user()->id
-    ]);
-
-    // Kirim notifikasi ke pengguna
-    if ($user = $record->user) {
-        $user->notify(new ApplicationNeedsRevision());
-    }
-
-    return redirect()->route('filament.admin.resources.ncage-applications.index')
-        ->with('success', 'Permohonan diminta revisi.');
-})->name('ncage.revision');
-
 // =========================================================================
 // RUTE TERPROTEKSI (WAJIB SUDAH LOGIN DAN SUDAH VERIFIKASI)
 // =========================================================================
@@ -224,12 +102,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
         Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
-        //notifikasi route
-        // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
-        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
-        Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-        Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
-
         //rute untuk cek entitas
         Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
         // --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
@@ -249,6 +121,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/download-surat-pernyataan', [FormNCAGEController::class, 'downloadSuratPernyataan'])->name('surat-pernyataan.download');
     Route::get('/pembaruan-ncage', [FormNCAGEController::class, 'showPerpanjangan'])->name('pendaftaran-ncage.perpanjang');
 
+    //notifikasi route
+    // PERBAIKAN: Mengubah 'fetch' menjadi 'index' agar cocok dengan controller
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.fetch');
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])->name('notifications.unread.count');
+
 });
 
 Route::middleware([
@@ -264,4 +142,128 @@ Route::middleware([
         ->name('admin.export.batch.xml');
     Route::get('/xml/application/{application}/download', [CertificateController::class, 'downloadIndividualXml'])
         ->name('admin.download.individual.xml');
+    
+    Route::post('/ncage-applications/{record}/approve', function (NcageApplication $record) {
+        $input = request();
+
+        $company = $input->input('company'); // array
+        $entityType = $input->input('entity_type');
+
+        // Normalisasi input
+        $normalizedInput = normalizeCompanyName($company['name']);
+        
+        // Ambil semua record dan bandingkan nama yang sudah dinormalisasi
+        $checkCompany = NcageRecord::get()->first(function ($r) use ($normalizedInput) {
+            return normalizeCompanyName($r->entity_name) === $normalizedInput;
+        });
+
+        // dd($company, $entityType, $normalizedInput, $checkCompany);
+        
+        if (!$checkCompany){
+            $lastRecord = NcageRecord::orderBy('id', 'desc')->first();
+            
+            if ($lastRecord && preg_match('/^(\d+)([A-Z])$/', $lastRecord->ncage_code, $matches)) {
+                // $matches[1] = angka (string), $matches[2] = huruf
+                $number = intval($matches[1]) + 1; // tambah 1
+                $letter = $matches[2];
+        
+                // Format ulang angka dengan padding 4 digit (sesuai contoh)
+                $newCode = str_pad($number, strlen($matches[1]), '0', STR_PAD_LEFT) . $letter;
+            } else {
+                // Kalau tidak ada record atau format beda, mulai dari default
+                $newCode = '0001Z';
+            }
+            
+            NcageRecord::create(
+            [
+                'ncage_code' => $newCode,
+                'ncagesd' => 'A',
+                'toec' => $entityType,
+                'entity_name' => $company['name'],
+                'street' => $company['street'],
+                'city' => $company['city'],
+                'psc' => $company['postal_code'],
+                'country' => 'INDONESIA',
+                'ctr' => 'IDN',
+                'stt' => $company['province'],
+                'is_sam_requested' => 0,
+                'tel' => $company['phone'],
+                'fax' => $company['fax'],
+                'ema' => $company['email'],
+                'www' => $company['website'],
+                'pob' => $company['po_box'], 
+                'ncage_application_id' => $record->id
+            ]);
+        } else {
+            $newCode = $checkCompany->ncage_code;
+
+            // Update NcageRecord
+            $checkCompany->update([
+                'toec' => $entityType,
+                'entity_name' => $company['name'],
+                'street' => $company['street'],
+                'city' => $company['city'],
+                'psc' => $company['postal_code'],
+                'country' => 'INDONESIA',
+                'ctr' => 'IDN',
+                'stt' => $company['province'],
+                'is_sam_requested' => 0,
+                'tel' => $company['phone'],
+                'fax' => $company['fax'],
+                'ema' => $company['email'],
+                'www' => $company['website'],
+                'pob' => $company['po_box'], 
+                'ncage_application_id' => $record->id
+            ]);
+        }
+
+        $record->update([
+            'ncage_code' => $newCode,
+            'status_id' => 4,
+            'verified_by' => auth('admin')->user()->id
+        ]);
+
+        // Kirim notifikasi ke pengguna
+        if ($user = $record->user) {
+            $user->notify(new FinalValidation());
+        }
+
+        return redirect()->route('filament.admin.resources.ncage-applications.index')
+            ->with([
+                'success' => 'Permohonan disetujui.',
+                'warning' => 'Harap lanjutkan ke proses validasi.',
+            ]);
+    })->name('ncage.approve');
+
+    Route::post('/ncage-applications/{record}/reject', function (NcageApplication $record, Request $request) {
+        $record->update([
+            'status_id' => 6,
+            'revision_notes' => $request->input('reason'),
+            'rejected_by' => auth('admin')->user()->id
+        ]);
+
+        // Kirim notifikasi ke pengguna
+        if ($user = $record->user) {
+            $user->notify(new ApplicationRejected());
+        }
+
+        return redirect()->route('filament.admin.resources.ncage-applications.index')
+            ->with('success', 'Permohonan ditolak.');
+    })->name('ncage.reject');
+
+    Route::post('/ncage-applications/{record}/revision', function (NcageApplication $record, Request $request) {
+        $record->update([
+            'status_id' => 3,
+            'revision_notes' => $request->input('reason'),
+            'revision_by' => auth('admin')->user()->id
+        ]);
+
+        // Kirim notifikasi ke pengguna
+        if ($user = $record->user) {
+            $user->notify(new ApplicationNeedsRevision());
+        }
+
+        return redirect()->route('filament.admin.resources.ncage-applications.index')
+            ->with('success', 'Permohonan diminta revisi.');
+    })->name('ncage.revision');
 });

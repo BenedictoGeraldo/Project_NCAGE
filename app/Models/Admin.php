@@ -43,10 +43,10 @@ class Admin extends Authenticatable implements FilamentUser
         ];
     }
 
-    // public function setPasswordAttribute($value)
-    // {
-    //     if ($value) {
-    //         $this->attributes['password'] = Hash::make($value);
-    //     }
-    // }
+    public function setPasswordAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['password'] = Hash::make($value);
+        }
+    }
 }
