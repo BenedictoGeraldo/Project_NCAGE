@@ -23,14 +23,14 @@ class CheckCertificateExpiration extends Command // Ini harus CheckCertificateEx
         $threeMonthsBeforeFiveYearsAgo = Carbon::now()->subYears(5)->addMonths($expirationThresholdMonths);
 
         $this->info("Current Date: " . Carbon::now()->format('Y-m-d H:i:s'));
-        $this->info("Expiration Threshold (creation_date <=): " . $threeMonthsBeforeFiveYearsAgo->format('Y-m-d'));
-        $this->info("Exclusion Threshold (creation_date >): " . $fiveYearsAgo->subDay()->format('Y-m-d'));
+        $this->info("Expiration Threshold (change_date <=): " . $threeMonthsBeforeFiveYearsAgo->format('Y-m-d'));
+        $this->info("Exclusion Threshold (change_date >): " . $fiveYearsAgo->subDay()->format('Y-m-d'));
 
         $recordsToNotify = NcageRecord::with('ncageApplication.user')
-            ->whereNotNull('creation_date')
+            ->whereNotNull('change_date')
             ->whereNull('notified_for_expiration_at')
-            ->whereDate('creation_date', '<=', $threeMonthsBeforeFiveYearsAgo)
-            ->whereDate('creation_date', '>', $fiveYearsAgo->subDay())
+            ->whereDate('change_date', '<=', $threeMonthsBeforeFiveYearsAgo)
+            ->whereDate('change_date', '>', $fiveYearsAgo->subDay())
             ->get();
 
         $this->info("Found " . $recordsToNotify->count() . " records matching criteria.");

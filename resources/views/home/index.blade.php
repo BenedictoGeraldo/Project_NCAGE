@@ -219,7 +219,7 @@
                         if (data.data.ncagesd === 'A') {
                             statusBadge = '<span class="badge bg-success">Aktif</span>';
                             let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
-                            downloadButton = `<div class="d-grid mt-3">
+                            downloadButton = `<div class="d-grid mt-3 text-center">
                                                 <a href="${downloadUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia</a>
                                             </div>`;
                         } else if (data.data.ncagesd === 'H') {
@@ -229,7 +229,7 @@
                         }
                         if (data.data.international_certificate_path) {
                             let internationalUrl = `/sertifikat/international/${data.data.application_id}/unduh`;
-                            internationalDownloadButton = `<div class="d-grid mt-3">
+                            internationalDownloadButton = `<div class="d-grid mt-3 text-center">
                                                 <a href="${internationalUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional</a>
                                             </div>`;
                         }
