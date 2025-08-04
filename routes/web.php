@@ -31,6 +31,13 @@ Route::middleware(['clearncage'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 });
 
+//rute untuk cek entitas
+Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
+// --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
+// Route baru untuk mengambil data Datatables secara AJAX
+// Menggunakan prefix nama 'entity-check' agar konsisten
+Route::get('/get-ncagerecords-data', [EntityCheckController::class, 'getNcageRecordsData'])->name('entity-check.get-data');
+
 // Rute untuk verifikasi OTP
 Route::get('/verify-otp', [OtpVerificationController::class, 'show'])->name('verification.notice');
 Route::post('/verify-otp', [OtpVerificationController::class, 'verify'])->name('otp.verify');
@@ -102,12 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/akun', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
         Route::patch('/akun', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
-        //rute untuk cek entitas
-        Route::get('/cek-entitas', [EntityCheckController::class, 'index'])->name('entity-check.index');
-        // --- BARIS INI DITAMBAHKAN/DISESUAIKAN ---
-        // Route baru untuk mengambil data Datatables secara AJAX
-        // Menggunakan prefix nama 'entity-check' agar konsisten
-        Route::get('/get-ncagerecords-data', [EntityCheckController::class, 'getNcageRecordsData'])->name('entity-check.get-data');
+
     });
     
     // Rute Pendaftaran NCAGE (DIPINDAHKAN KE SINI)
