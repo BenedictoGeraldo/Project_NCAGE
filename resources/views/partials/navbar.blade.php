@@ -19,7 +19,7 @@
                     @if ($hasPendingNcage)
                         <a href="#" class="btn rounded-4 fw-bold fs-7" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
                     @elseif($hasActiveNcage)
-                        <a href="#" class="btn rounded-4 fw-bold fs-7"
+                        <a href="#" class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}"
                         data-bs-toggle="modal"
                         data-bs-target="#activeNcageModal">
                         Pendaftaran NCAGE
