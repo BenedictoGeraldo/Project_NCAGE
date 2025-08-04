@@ -353,3 +353,8 @@
 .hidden-notification {
     display: none !important;
 }
+#show-more-notifications:hover {
+    background-color: #f8f9fa;
+    color: #212529;
+    text-decoration: underline;
+}
