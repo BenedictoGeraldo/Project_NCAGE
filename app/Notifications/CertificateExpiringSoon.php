@@ -27,7 +27,7 @@ class CertificateExpiringSoon extends Notification implements ShouldQueue // Ini
 
     public function toMail(object $notifiable): MailMessage
     {
-        $expirationDate = Carbon::parse($this->record->creation_date)->addYears(5)->format('d F Y');
+        $expirationDate = Carbon::parse($this->record->change_date)->addYears(5)->format('d F Y');
         $recordName = $this->record->name ?? 'Sertifikat Anda';
 
         return (new MailMessage)
@@ -40,7 +40,7 @@ class CertificateExpiringSoon extends Notification implements ShouldQueue // Ini
 
     public function toArray(object $notifiable): array
     {
-        $expirationDate = Carbon::parse($this->record->creation_date)->addYears(5)->format('d F Y');
+        $expirationDate = Carbon::parse($this->record->change_date)->addYears(5)->format('d F Y');
         $recordName = $this->record->name ?? 'Sertifikat Anda';
 
         return [
