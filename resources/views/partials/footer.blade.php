@@ -70,7 +70,9 @@
 
         <div class="row">
             <div class="col text-center footer-copyright">
-                © {{ date('Y') }} Pusat Kodifikasi, Baranahan, Kementerian Pertahanan Republik Indonesia.
+                <a href="{{ route('team.index') }}" class="text-decoration-none text-reset">
+                    © {{ date('Y') }} Pusat Kodifikasi, Baranahan, Kementerian Pertahanan Republik Indonesia.
+                </a>
             </div>
         </div>
     </div>

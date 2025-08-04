@@ -33,19 +33,6 @@
 
 <body class="antialiased">
     <div>
-        @php
-            $hasPendingNcage = Auth::check() && Auth::user()->ncageApplication()
-                ->whereIn('status_id', [1, 2, 3, 4]) // contoh status 'dalam proses'
-                ->exists();
-
-            $activeNcage = Auth::check()
-                ? \App\Models\NcageRecord::where('entity_name', Auth::user()->company_name)->first()
-                : null;
-
-            $hasActiveNcage = !is_null($activeNcage);
-
-            $validUntil = $activeNcage?->change_date?->addYears(5)?->format('d M Y');
-        @endphp
         @include('partials.navbar')
         @include('partials.offcanvas-menu')
         <main>

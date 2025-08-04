@@ -20,6 +20,7 @@ use App\Notifications\FinalValidation;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\EntityCheckController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\TeamController;
 use App\Models\NcageApplication;
 use App\Models\NcageRecord;
 
@@ -29,6 +30,8 @@ use App\Models\NcageRecord;
 // =========================================================================
 Route::middleware(['clearncage'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
+
+    Route::get('/tim-developer', [TeamController::class, 'index'])->name('team.index');
 });
 
 //rute untuk cek entitas

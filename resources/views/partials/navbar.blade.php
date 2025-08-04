@@ -17,15 +17,15 @@
                 </li>
                 <li>
                     @if ($hasPendingNcage)
-                        <a href="#" class="btn rounded-4 fw-bold fs-7" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
+                        <a href="#" class="btn rounded-4 fw-bold fs-7 {{ Request::is('/pendaftaran-ncage') ? 'text-white bg-active' : '' }}" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
                     @elseif($hasActiveNcage)
-                        <a href="#" class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}"
+                        <a href="#" class="btn rounded-4 fw-bold fs-7 {{ Request::is('/pendaftaran-ncage') ? 'text-white bg-active' : '' }}"
                         data-bs-toggle="modal"
                         data-bs-target="#activeNcageModal">
                         Pendaftaran NCAGE
                         </a>
                     @else
-                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="btn rounded-4 fw-bold fs-7">Pendaftaran NCAGE</a>
+                        <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="btn rounded-4 fw-bold fs-7 {{ Request::is('/pendaftaran-ncage') ? 'text-white bg-active' : '' }}">Pendaftaran NCAGE</a>
                     @endif
                 </li>
                 <li>

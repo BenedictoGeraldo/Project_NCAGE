@@ -16,9 +16,19 @@
         <p class="hero-subtitle">
             Daftarkan perusahaan Anda untuk mendapatkan Kode NATO Commercial and Government Entity (NCAGE) secara resmi, cepat, dan transparan.
         </p>
-        <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="hero-button">
-            Daftarkan Perusahaan Anda Sekarang
-        </a>
+        @if ($hasPendingNcage)
+            <a href="#" class="hero-button" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">
+                Daftarkan Perusahaan Anda Sekarang
+            </a>
+        @elseif($hasActiveNcage)
+            <a href="#" class="hero-button" data-bs-toggle="modal" data-bs-target="#activeNcageModal">
+                Daftarkan Perusahaan Anda Sekarang
+            </a>
+        @else
+            <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="hero-button">
+                Daftarkan Perusahaan Anda Sekarang
+            </a>
+        @endif
         @auth
         <button type="button" class="hero-button hero-button-outline" id="checkEntityBtn">
             Cek Status NCAGE Perusahaan
