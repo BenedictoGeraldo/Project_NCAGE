@@ -5,7 +5,7 @@
     <div class="container py-4">
         <!-- Header -->
         <div class="text-center mb-4 card p-2">
-            <h3 class="fw-bold">Verifikasi Berkas Permohonan # - PT</h3>
+            <h3 class="fw-bold">Verifikasi Berkas Permohonan {{ $applicationCompany->name }}</h3>
             <div class="border border-2 border-dark-red w-100 rounded-pill"></div>
         </div>
 
