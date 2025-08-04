@@ -168,10 +168,81 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then((data) => {
                     if (loader) loader.style.display = "none";
                     if (data.notifications && data.notifications.length > 0) {
-                        data.notifications.forEach((notification) => {
-                            notificationList.innerHTML +=
-                                createNotificationHtml(notification);
-                        });
+                        const allNotifications = data.notifications;
+                        const visibleCount = 2; // Jumlah notifikasi awal
+
+                        // Tampilkan hanya beberapa notifikasi awal
+                        allNotifications
+                            .slice(0, visibleCount)
+                            .forEach((notification) => {
+                                notificationList.innerHTML +=
+                                    createNotificationHtml(notification);
+                            });
+
+                        // Sembunyikan sisanya dulu (gunakan data-attributenya)
+                        allNotifications
+                            .slice(visibleCount)
+                            .forEach((notification) => {
+                                const hiddenHtml = createNotificationHtml(
+                                    notification
+                                ).replace(
+                                    "<li>",
+                                    '<li class="hidden-notification notification-hidden">'
+                                );
+                                notificationList.innerHTML += hiddenHtml;
+                            });
+
+                        // Tampilkan tombol jika notifikasi > visibleCount
+                        const showMoreBtn = document.getElementById(
+                            "show-more-notifications"
+                        );
+                        if (showMoreBtn) {
+                            if (allNotifications.length > visibleCount) {
+                                showMoreBtn.style.display = "block";
+                            } else {
+                                showMoreBtn.style.display = "none";
+                            }
+
+                            // Tambahkan listener
+                            showMoreBtn.onclick = function (e) {
+                                e.preventDefault();
+                                e.stopPropagation(); // agar dropdown tidak tertutup
+
+                                const hiddenEls = document.querySelectorAll(
+                                    ".notification-hidden"
+                                );
+                                const isExpanded =
+                                    showMoreBtn.getAttribute(
+                                        "data-expanded"
+                                    ) === "true";
+
+                                if (!isExpanded) {
+                                    // Expand notifikasi
+                                    hiddenEls.forEach((el) => {
+                                        el.classList.remove(
+                                            "hidden-notification"
+                                        );
+                                    });
+                                    showMoreBtn.textContent =
+                                        "Lihat Lebih Sedikit";
+                                    showMoreBtn.setAttribute(
+                                        "data-expanded",
+                                        "true"
+                                    );
+                                } else {
+                                    // Collapse kembali
+                                    hiddenEls.forEach((el) => {
+                                        el.classList.add("hidden-notification");
+                                    });
+                                    showMoreBtn.textContent =
+                                        "Lihat Lebih Banyak";
+                                    showMoreBtn.setAttribute(
+                                        "data-expanded",
+                                        "false"
+                                    );
+                                }
+                            };
+                        }
                     } else {
                         notificationList.innerHTML =
                             '<p id="no-notification-message" class="text-center text-muted p-3 mb-0">Tidak ada notifikasi.</p>';

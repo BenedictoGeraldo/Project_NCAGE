@@ -19,6 +19,12 @@
 
     {{-- Footer Dropdown --}}
     <li class="notification-footer">
-        <a href="#" class="dropdown-item text-center">Lihat Lebih Banyak</a>
+        <button
+            id="show-more-notifications"
+            class="dropdown-item text-muted text-sm w-100 py-2 border-0 bg-transparent"
+            style="box-shadow: none; outline: none;">
+            Lihat Lebih Banyak
+        </button>
+
     </li>
 </ul>
