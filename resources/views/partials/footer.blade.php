@@ -25,7 +25,15 @@
                         <h5 class="footer-heading">Tautan</h5>
                         <ul class="footer-links list-unstyled p-0">
                             <li><a href="{{ route('home') }}">Beranda</a></li>
-                            <li><a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a></li>
+                            <li>
+                                @if ($hasPendingNcage)
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
+                                @elseif($hasActiveNcage)
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#activeNcageModal">Pendaftaran NCAGE</a>
+                                @else
+                                    <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}">Pendaftaran NCAGE</a>
+                                @endif
+                            </li>
                             <li><a href="{{ route('tracking.index') }}">Pantau Status</a></li>
                         </ul>
                     </div>
