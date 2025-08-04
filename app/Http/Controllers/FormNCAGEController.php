@@ -118,6 +118,7 @@ class FormNCAGEController extends Controller
             $sessionData['jenis_permohonan'] = $identity->application_type;
             $sessionData['jenis_permohonan_ncage'] = 2; // <== Selalu diset ke 2 untuk perpanjangan
             $sessionData['tujuan_penerbitan'] = $identity->purpose;
+            $sessionData['tujuan_penerbitan_lainnya'] = $identity->other_purpose ?? '-';
             $sessionData['tipe_entitas'] = $identity->entity_type;
             $sessionData['status_kepemilikan'] = $identity->building_ownership_status;
             $sessionData['terdaftar_ahu'] = $identity->is_ahu_registered;
@@ -222,6 +223,7 @@ class FormNCAGEController extends Controller
             $sessionData['jenis_permohonan'] = $identity->application_type;
             $sessionData['jenis_permohonan_ncage'] = $identity->ncage_request_type;
             $sessionData['tujuan_penerbitan'] = $identity->purpose;
+            $sessionData['tujuan_penerbitan_lainnya'] = $identity->other_purpose ?? '-';
             $sessionData['tipe_entitas'] = $identity->entity_type;
             $sessionData['status_kepemilikan'] = $identity->building_ownership_status;
             $sessionData['terdaftar_ahu'] = $identity->is_ahu_registered;

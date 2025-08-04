@@ -342,8 +342,8 @@ class NcageApplicationResource extends Resource implements HasShieldPermissions
                     ->formatStateUsing(fn ($record) => $record->getStatusLabel())
                     ->color(fn ($record) => match ($record->status_id) {
                         1 => 'info',      // Permohonan Dikirim
-                        2, 3 => 'warning', // Verifikasi / Butuh Perbaikan
-                        4 => 'primary',   // Proses Validasi
+                        3 => 'warning', // Verifikasi / Butuh Perbaikan
+                        2, 4 => 'info',   // Proses Validasi
                         5 => 'success',   // Sertifikat Diterbitkan
                         6 => 'danger',    // Permohonan Ditolak
                         default => 'gray',
