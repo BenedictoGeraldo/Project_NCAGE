@@ -76,9 +76,19 @@
 
         <p class="empty-state-text fs-5">Anda belum mendaftarkan perusahaan Anda</p>
 
+        @if($hasPendingNcage)
+        <a href="#" class="empty-state-button" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">
+                Daftarkan Perusahaan Anda Sekarang
+            </a>
+        @elseif($hasActiveNcage)
+        <a href="#" class="empty-state-button" data-bs-toggle="modal" data-bs-target="#activeNcageModal">
+                Daftarkan Perusahaan Anda Sekarang
+            </a>
+        @else
         <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="empty-state-button">
             Daftarkan Perusahaan Anda Sekarang
         </a>
+        @endif
     </div>
 </main>
 @endsection
