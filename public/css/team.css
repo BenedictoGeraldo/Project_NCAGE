@@ -13,15 +13,15 @@
 
 .page-title {
     font-weight: 600;
-    color: #333;
+    color: #000;
 }
 
 .title-divider {
-    width: 80px;
-    height: 3px;
+    height: 4px !important;
     background-color: #6A040F;
     margin: 1rem auto 0;
     opacity: 1;
+    border: none; /* Menghapus border bawaan dari <hr> */
 }
 
 .team-section-title {

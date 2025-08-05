@@ -31,13 +31,15 @@
 
     /* Mengubah warna font untuk teks "Showing X to Y of Z entries" */
     .dataTables_info {
-        color: #343a40; /* Warna hitam gelap */
+        color: #343a40;
+        /* Warna hitam gelap */
     }
 
-    .line{
-        color: #010000;
+    .line {
+        color: #6A040F;
         height: 5px !important;
         border-radius: 10px;
+        opacity: 100%;
     }
 </style>
 @endsection

@@ -14,7 +14,7 @@
             <div class="row mb-5">
                 <div class="col-12 text-center">
                     <h1 class="page-title">Tim Pengembang & Kolaborator</h1>
-                    <hr class="title-divider">
+                    <hr class="title-divider line w-100 rounded-pill">
                 </div>
             </div>
 
@@ -103,7 +103,7 @@
                 </div>
                 <div class="col-md-6 col-lg-3 mb-4">
                     <div class="team-card">
-                        <img src="https://via.placeholder.com/150" class="team-card-img mb-3" alt="Foto Profil M. Reihan Ramadhani">
+                        <img src="https://via.placeholder.com/150" class="team-card-img mb-3" alt="Foto Profil M. Raihan Ramadhani">
                         <div class="team-card-body">
                             <p class="team-card-major">SI Sistem Informasi</p>
                             <p class="team-card-name">M. Raihan Ramadhani</p>
