@@ -70,21 +70,23 @@
 @section('content')
 <main class="container my-5">
     <div class="empty-state-card">
-        <h1 class="empty-state-title">Pantau Status</h1>
+        <h1 class="empty-state-title">Pantau Status Pendaftaran</h1>
 
         <img src="{{ asset('images/undraw_page-not-found_6wni 1.png') }}" alt="Ilustrasi Belum Mendaftar" class="empty-state-image">
-
-        <p class="empty-state-text fs-5">Anda belum mendaftarkan perusahaan Anda</p>
 
         @if($hasPendingNcage)
         <a href="#" class="empty-state-button" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">
                 Daftarkan Perusahaan Anda Sekarang
             </a>
         @elseif($hasActiveNcage)
+        <p class="empty-state-text fs-5">Anda Sudah Memiliki Kode NCAGE</p>
+
         <a href="#" class="empty-state-button" data-bs-toggle="modal" data-bs-target="#activeNcageModal">
-                Daftarkan Perusahaan Anda Sekarang
+                Perbarui Status Kode NCAGE Anda Sekarang
             </a>
         @else
+        <p class="empty-state-text fs-5">Anda belum mendaftarkan perusahaan Anda</p>
+
         <a href="{{ route('pendaftaran-ncage.show', ['step' => 1]) }}" class="empty-state-button">
             Daftarkan Perusahaan Anda Sekarang
         </a>

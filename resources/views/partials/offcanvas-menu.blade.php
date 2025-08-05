@@ -31,6 +31,9 @@
       <li class="nav-item">
         <a class="nav-link {{ Request::is('pantau-status*') ? 'active-mobile' : '' }}" href="{{ route('tracking.index') }}">Pantau Status</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link {{ Request::is('cek-entitas*') ? 'active-mobile' : '' }}" href="{{ route('entity-check.index') }}">Cek Entitas</a>
+      </li>
 
       <hr class="mx-3"> 
       
