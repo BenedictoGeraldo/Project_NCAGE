@@ -174,6 +174,19 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Pertanyaan 5 --}}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFive">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                Bagaimana bila saya ingin memperpanjang status NCAGE?
+                            </button>
+                        </h2>
+                        <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Anda dapat menggunakan menu 'Cek Entitas' di portal ini untuk melihat nama perusahaan Anda. Selanjutnya bila belum, anda perlu membuat akun baru di portal ini menggunakan nama perusahaan yang sama seperti yang ada pada menu "Cek Entitas".
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
