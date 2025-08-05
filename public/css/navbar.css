@@ -149,15 +149,6 @@
 
 /* Styling untuk komponen notifikasi */
 
-/* Badge hitungan di pojok kanan atas ikon */
-.notification-badge {
-    position: absolute;
-    top: 5px;
-    right: 0px;
-    font-size: 0.6rem;
-    padding: 0.25em 0.5em;
-}
-
 /* Kustomisasi menu dropdown */
 .notification-dropdown-menu {
     width: 360px; /* Lebar dropdown */
@@ -302,8 +293,8 @@
 
 .notification-badge {
     position: absolute;
-    top: -5px;
-    right: -8px;
+    top: -1px;
+    right: -1px;
     font-size: 0.65em;
     padding: 0.3em 0.5em;
 }
