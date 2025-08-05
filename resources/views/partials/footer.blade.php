@@ -35,6 +35,9 @@
                                 @endif
                             </li>
                             <li><a href="{{ route('tracking.index') }}">Pantau Status</a></li>
+                            <li>
+                                <a href="{{ route('entity-check.index') }}">Cek Entitas</a>
+                            </li>
                         </ul>
                     </div>
 
