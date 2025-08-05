@@ -22,11 +22,33 @@ class StatusCheckController extends Controller
             ->first();
         
         $recordApplication = NcageRecord::with('ncageApplication')
+            ->where('ncage_application_id', '!=', null)
             ->where(DB::raw('TRIM(UPPER(entity_name))'), 'LIKE', '%' . trim(strtoupper($companyName)) . '%')
             ->first();
 
+        if ($recordApplication) {
+            $validUntil = 'Tidak Tersedia'; // Nilai default jika tanggal kosong
+            // Cek jika kolom 'change_date' tidak null (ada isinya)
+            if ($recordApplication->change_date) {
+                $changeDate = Carbon::parse($recordApplication->change_date);
+                $validUntil = $changeDate->addYears(5)->translatedFormat('j F Y');
+            }
 
-        if ($record) {
+            // Bangun respons JSON dengan data dari NcageApplication
+            return response()->json([
+                'status' => 'found',
+                'data' => [
+                    'id' => $recordApplication->id,
+                    'entity_name' => $recordApplication->entity_name,
+                    'ncage_code' => $recordApplication->ncage_code,
+                    'ncagesd' => trim($recordApplication->ncagesd),
+                    'application_id' => $recordApplication->ncageApplication->id,
+                    'domestic_certificate_path' => $recordApplication->domestic_certificate_path,
+                    'international_certificate_path' => $recordApplication->ncageApplication->international_certificate_path,
+                    'valid_until' => $validUntil,
+                ]
+            ]);
+        } elseif ($record) {
             $validUntil = 'Tidak Tersedia'; // Nilai default jika tanggal kosong
             // Cek jika kolom 'change_date' tidak null (ada isinya)
             if ($record->change_date) {
@@ -45,27 +67,6 @@ class StatusCheckController extends Controller
                     // 'application_id' => $record->ncageApplication->id,
                     'domestic_certificate_path' => $record->domestic_certificate_path,
                     // 'international_certificate_path' => $record->ncageApplication->international_certificate_path,
-                    'valid_until' => $validUntil,
-                ]
-            ]);
-        } elseif ($recordApplication) {
-            $validUntil = 'Tidak Tersedia'; // Nilai default jika tanggal kosong
-            // Cek jika kolom 'change_date' tidak null (ada isinya)
-            if ($recordApplication->change_date) {
-                $changeDate = Carbon::parse($recordApplication->change_date);
-                $validUntil = $changeDate->addYears(5)->translatedFormat('j F Y');
-            }
-
-            // Bangun respons JSON dengan data dari NcageApplication
-            return response()->json([
-                'status' => 'found',
-                'data' => [
-                    'id' => $recordApplication->id,
-                    'entity_name' => $recordApplication->entity_name,
-                    'ncage_code' => $recordApplication->ncage_code,
-                    'ncagesd' => trim($recordApplication->ncagesd),
-                    'domestic_certificate_path' => $recordApplication->domestic_certificate_path,
-                    'international_certificate_path' => $recordApplication->international_certificate_path,
                     'valid_until' => $validUntil,
                 ]
             ]);
