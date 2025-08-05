@@ -184,7 +184,7 @@
                         </h2>
                         <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
                             <div class="accordion-body">
-                                Anda dapat menggunakan menu 'Cek Entitas' di portal ini untuk melihat nama perusahaan Anda. Selanjutnya bila belum, anda perlu membuat akun baru di portal ini menggunakan nama perusahaan yang sama seperti yang ada pada menu "Cek Entitas".
+                                Anda dapat menggunakan menu 'Cek Entitas' di portal ini untuk melihat nama perusahaan Anda. Selanjutnya bila belum, anda perlu membuat akun baru di portal ini menggunakan nama perusahaan yang sama seperti yang ada pada menu 'Cek Entitas'.
                             </div>
                         </div>
                 </div>
