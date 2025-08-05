@@ -5,7 +5,7 @@ namespace App\Http\ViewComposers;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\NcageRecord;
-use App\Models\User;
+use App\Models\Admin;
 
 class CheckNcage
 {
@@ -16,9 +16,8 @@ class CheckNcage
         $hasPendingNcage = false;
         $activeNcage = null;
 
-        // Cek apakah yang login adalah user biasa (bukan admin)
-        if (!($user instanceof User)) {
-            // Tidak perlu share variabel NCAGE untuk non-user
+        // Jika user adalah admin, hentikan
+        if ($user instanceof Admin) {
             return;
         }
 
