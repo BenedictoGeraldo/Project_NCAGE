@@ -222,62 +222,93 @@
         const modal = new bootstrap.Modal(modalElement);
         const modalBody = document.getElementById('entityCheckModalBody');
 
-        if(checkButton) {
+        if (checkButton) {
             checkButton.addEventListener('click', function () {
-                modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Mengecek data...</p></div>';
+                modalBody.innerHTML = `
+                    <div class="text-center">
+                        <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+                        <p class="mt-2">Mengecek data...</p>
+                    </div>`;
                 modal.show();
 
                 fetch('/check-status', {
                     method: 'GET',
-                    headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') },
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
                 })
-                .then(response => response.json())
-                .then(data => {
-                    let html = '';
-                    if (data.status === 'found') {
-                        let statusBadge = '';
-                        let downloadButton = '';
-                        let internationalDownloadButton = '';
+                    .then(response => response.json())
+                    .then(data => {
+                        let html = '';
 
-                        if (data.data.ncagesd === 'A') {
-                            statusBadge = '<span class="badge bg-success">Aktif</span>';
-                            let downloadUrl = `/sertifikat/record/${data.data.id}/unduh`;
-                            downloadButton = `<div class="d-grid mt-3 text-center">
-                                                <a href="${downloadUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia</a>
-                                            </div>`;
-                        } else if (data.data.ncagesd === 'H') {
-                            statusBadge = '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
+                        if (data.status === 'found') {
+                            const entity = data.data;
+                            const companyName = entity.entity_name;
+
+                            const getStatusBadge = (status) => {
+                                switch (status) {
+                                    case 'A': return '<span class="badge bg-success">Aktif</span>';
+                                    case 'H': return '<span class="badge bg-danger">Tidak Aktif/Invalid</span>';
+                                    default: return '<span class="badge bg-secondary">Status Tidak Diketahui</span>';
+                                }
+                            };
+
+                            const getDownloadButtons = () => {
+                                if (entity.application_id && !entity.is_survey_filled) {
+                                    const pantauUrl = `/pantau-status/${entity.application_id}`;
+                                    return `
+                                        <div class="d-grid mt-3 text-center">
+                                            <p class="text-danger mb-0">Anda Belum Mengisi Survey. Silahkan ke halaman pantau status permohonan agar anda dapat mengunduh sertifikat.</p>
+                                        </div>
+                                        <div class="d-grid mt-3 text-center">
+                                            <a href="${pantauUrl}" class="hero-button" target="_blank"><i class="bi bi-check-circle-fill me-2"></i>Pantau Status</a>
+                                        </div>`;
+                                }
+
+                                let buttons = '';
+                                if (entity.ncagesd === 'A') {
+                                    const indoUrl = `/sertifikat/record/${entity.id}/unduh`;
+                                    buttons += `
+                                        <div class="d-grid mt-3 text-center">
+                                            <a href="${indoUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Indonesia</a>
+                                        </div>`;
+                                }
+                                if (entity.international_certificate_path) {
+                                    const intlUrl = `/sertifikat/international/${entity.application_id}/unduh`;
+                                    buttons += `
+                                        <div class="d-grid mt-3 text-center">
+                                            <a href="${intlUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional</a>
+                                        </div>`;
+                                }
+                                return buttons;
+                            };
+
+                            html = `
+                                <div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i>Perusahaan Ditemukan!</div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between"><strong>Nama Perusahaan:</strong> <span>${entity.entity_name}</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${entity.ncage_code}</span></li>
+                                    <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${getStatusBadge(entity.ncagesd)}</li>
+                                    <li class="list-group-item d-flex justify-content-between"><strong>Berlaku Hingga:</strong> <span>${entity.valid_until}</span></li>
+                                </ul>
+                                ${getDownloadButtons()}
+                            `;
                         } else {
-                            statusBadge = '<span class="badge bg-secondary">Status Tidak Diketahui</span>';
-                        }
-                        if (data.data.international_certificate_path) {
-                            let internationalUrl = `/sertifikat/international/${data.data.application_id}/unduh`;
-                            internationalDownloadButton = `<div class="d-grid mt-3 text-center">
-                                                <a href="${internationalUrl}" class="hero-button" target="_blank"><i class="bi bi-download me-2"></i>Unduh Sertifikat Internasional</a>
-                                            </div>`;
+                            const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
+                            html = `
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Perusahaan Anda dengan nama "${companyName}" belum terdaftar dalam sistem NCAGE.
+                                </div>`;
                         }
 
-                        html = `
-                            <div class="alert alert-success"><i class="bi bi-check-circle-fill me-2"></i>Perusahaan Ditemukan!</div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between"><strong>Nama Perusahaan:</strong> <span>${data.data.entity_name}</span></li>
-                                <li class="list-group-item d-flex justify-content-between"><strong>Kode NCAGE:</strong> <span>${data.data.ncage_code}</span></li>
-                                <li class="list-group-item d-flex justify-content-between"><strong>Status:</strong> ${statusBadge}</li>
-                                <li class="list-group-item d-flex justify-content-between"><strong>Berlaku Hingga:</strong> <span>${data.data.valid_until}</span></li>
-                            </ul>
-                            ${downloadButton}
-                            ${internationalDownloadButton}
-                        `;
-                    } else {
-                        const companyName = "{{ strtoupper(Auth::user()->company_name) }}";
-                        html = `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>Perusahaan Anda dengan nama "${companyName}" belum terdaftar dalam sistem NCAGE.</div>`;
-                    }
-                    modalBody.innerHTML = html;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    modalBody.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat melakukan pengecekan. Silakan coba lagi nanti.</div>';
-                });
+                        modalBody.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        modalBody.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat melakukan pengecekan. Silakan coba lagi nanti.</div>';
+                    });
             });
         }
     });
