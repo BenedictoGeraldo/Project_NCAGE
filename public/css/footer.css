@@ -130,3 +130,14 @@
     align-items: flex-start;
     gap: 36px;
 }
+
+/* Styling untuk link kontak di footer agar tidak ada garis bawah */
+.footer-contact-link {
+    text-decoration: none; /* Menghilangkan garis bawah */
+    color: inherit;        /* Menghilangkan warna biru, mengikuti warna teks normal */
+    transition: color 0.2s ease-in-out;
+}
+
+.footer-contact-link:hover {
+    color: #ffffff; /* Warna teks menjadi putih saat disentuh mouse */
+}

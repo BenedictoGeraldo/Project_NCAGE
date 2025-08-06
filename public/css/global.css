@@ -41,3 +41,54 @@ body {
     background-color: #660000;
     color: white;
 }
+
+/* ============================================== */
+/* STYLING TOMBOL WHATSAPP MENGAMBANG             */
+/* ============================================== */
+.floating-whatsapp-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #6A040F; /* Warna khas WhatsApp */
+    color: #FFF;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.floating-whatsapp-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
+}
+
+/* Teks yang muncul saat hover */
+.floating-whatsapp-btn .hover-text {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1;
+    right: 75px; /* Posisi di sebelah kiri tombol */
+    font-size: 14px;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.floating-whatsapp-btn:hover .hover-text {
+    visibility: visible;
+    opacity: 1;
+}

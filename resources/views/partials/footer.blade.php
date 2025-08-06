@@ -46,10 +46,13 @@
                         <ul class="footer-contact list-unstyled p-0">
                             <li class="d-flex align-items-start justify-content-center justify-content-md-start">
                                 <i class="fas fa-phone-alt mt-1 me-2"></i>
-                                <div>
-                                    <span>Call Center Puskod</span>
-                                    <p class="mb-2">0812-8882-4545</p>
-                                </div>
+                                <a href="https://wa.me/6281288824545?text=Halo%20Admin%20Puskod%2C%0A%0Asaya%20ingin%20bertanya%20mengenai%20layanan%20pendaftaran%20NCAGE.%0A%0ANama%3A%20%0APerusahaan%3A%20"
+                                    target="_blank" class="footer-contact-link">
+                                    <div>
+                                        <span>Call Center Puskod</span>
+                                        <p class="mb-2">0812-8882-4545</p>
+                                    </div>
+                                </a>
                             </li>
                             <li class="d-flex align-items-start justify-content-center justify-content-md-start">
                                 <i class="fas fa-clock mt-1 me-2"></i>
