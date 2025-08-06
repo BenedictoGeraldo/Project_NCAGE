@@ -26,7 +26,7 @@
 
 .team-section-title {
     font-weight: 500;
-    color: #444;
+    color: #000;
 }
 
 .team-card {
@@ -62,7 +62,7 @@
 
 .team-card-major {
     font-size: 0.85rem;
-    color: #6c757d;
+    color: #9bacbb;
     margin-bottom: 0.25rem;
 }
 
@@ -89,4 +89,40 @@
 
 .team-card-social .social-icon:hover {
     color: #6A040F;
+}
+
+.puskod-names-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Membuat 2 kolom */
+    gap: 1rem; /* Jarak antar nama */
+    background-color: #f8f9fa; /* Latar belakang abu-abu muda */
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid #e9ecef;
+}
+
+.puskod-name-item {
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #343a40;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    transition: all 0.3s ease-in-out;
+}
+
+.puskod-name-item:hover {
+    transform: translateY(-5px); /* Sedikit terangkat */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08); /* Bayangan lebih jelas */
+    color: #6A040F; /* Warna teks berubah menjadi marun */
+    cursor: default; /* Kursor tetap standar karena bukan link */
+}
+
+/* Aturan agar menjadi 1 kolom di layar kecil (HP) */
+@media (max-width: 576px) {
+    .puskod-names-container {
+        grid-template-columns: 1fr; /* 1 kolom */
+    }
 }
