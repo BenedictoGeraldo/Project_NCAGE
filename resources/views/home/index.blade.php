@@ -263,7 +263,7 @@
                                             <p class="text-danger mb-0">Anda Belum Mengisi Survey. Silahkan ke halaman pantau status permohonan agar anda dapat mengunduh sertifikat.</p>
                                         </div>
                                         <div class="d-grid mt-3 text-center">
-                                            <a href="${pantauUrl}" class="hero-button" target="_blank"><i class="bi bi-check-circle-fill me-2"></i>Pantau Status</a>
+                                            <a href="${pantauUrl}" class="hero-button"><i class="bi bi-check-circle-fill me-2"></i>Pantau Status</a>
                                         </div>`;
                                 }
 

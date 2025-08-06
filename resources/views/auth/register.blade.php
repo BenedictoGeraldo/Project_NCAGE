@@ -38,17 +38,19 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" id="registrationForm">
             @csrf
             <div class="row">
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="name" class="form-label">Nama Lengkap (Point of Contact)</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Masukkan Nama Narahubung" value="{{ old('name') }}" required>
+                        <div class="invalid-feedback">Gunakan hanya huruf dan spasi</div>
                     </div>
                     <div class="mb-3">
                         <label for="company_name" class="form-label">Nama Perusahaan</label>
                         <input type="text" class="form-control" id="company_name" name="company_name" placeholder="Masukkan Nama Perusahaan" value="{{ old('company_name') }}" required>
+                        <div class="invalid-feedback">Gunakan huruf, angka, titik, kurung, atau tanda hubung</div>
                     </div>
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Nomor Telepon (Whatsapp)</label>
@@ -121,52 +123,67 @@
         </p>
     </div>
 
-    <!--ini script untuk ubah format no.telp-->
+    <!-- Script untuk validasi input dan format nomor telepon -->
     <script>
-        const phoneInput = document.getElementById('phone_number');
+        // Validasi input nama lengkap
+        const nameInput = document.getElementById('name');
+        if (nameInput) {
+            nameInput.addEventListener('input', function() {
+                const validPattern = /^[A-Za-z\s]*$/; // Hanya huruf dan spasi
+                if (!validPattern.test(this.value)) {
+                    this.classList.add('is-invalid');
+                    this.value = this.value.replace(/[^A-Za-z\s]/g, ''); // Hapus karakter tidak valid
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
 
+        // Validasi input nama perusahaan
+        const companyNameInput = document.getElementById('company_name');
+        if (companyNameInput) {
+            companyNameInput.addEventListener('input', function() {
+                const validPattern = /^[A-Za-z0-9\s.\-()&]*$/; // Hanya huruf, angka, spasi, titik, tanda hubung, kurung, dan &
+                if (!validPattern.test(this.value)) {
+                    this.classList.add('is-invalid');
+                    this.value = this.value.replace(/[^A-Za-z0-9\s.\-()&]/g, ''); // Hapus karakter tidak valid
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+
+        // Format nomor telepon
+        const phoneInput = document.getElementById('phone_number');
         if (phoneInput) {
             phoneInput.addEventListener('input', function() {
-                // Cek jika nilai input dimulai dengan "08"
                 if (this.value.startsWith('08')) {
-                    // Ganti "08" dengan "+628" dan tambahkan sisa nomornya
                     this.value = '+628' + this.value.substring(2);
                 }
             });
         }
-    </script>
 
-    <!--ini script untuk toggle password visibility-->
-    <script>
+        // Toggle password visibility
         function setupPasswordToggle(inputId, toggleButtonId, showIconId, hideIconId) {
             const togglePassword = document.getElementById(toggleButtonId);
             const password = document.getElementById(inputId);
             const eyeShow = document.getElementById(showIconId);
             const eyeHide = document.getElementById(hideIconId);
 
-            if (togglePassword && password && eyeShow && eyeHide) { // Ditambahkan pengecekan ikon
+            if (togglePassword && password && eyeShow && eyeHide) {
                 togglePassword.addEventListener('click', function (e) {
-                    // ganti tipe input
                     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                     password.setAttribute('type', type);
-                    
-                    // ganti ikon mata
                     eyeShow.classList.toggle('d-none');
                     eyeHide.classList.toggle('d-none');
                 });
             }
         }
 
-        // Panggil fungsi untuk input password utama
         setupPasswordToggle('password', 'togglePassword', 'eye-show', 'eye-hide');
-
-        // Panggil fungsi untuk input konfirmasi password dengan ID unik
         setupPasswordToggle('password_confirmation', 'togglePasswordConfirmation', 'eye-show-confirm', 'eye-hide-confirm');
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-    
 </body>
 </html>
