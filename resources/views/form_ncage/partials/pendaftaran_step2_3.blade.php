@@ -45,7 +45,7 @@
         @else
             <input type="{{ $field === 'email_kantor' ? 'email' : 'text' }}" name="{{ $field }}" class="form-control" placeholder="Masukkan {{ $label }}"
                     value="{{ old($field, $data[$field] ?? '') }}"
-                    @if($field === 'no_telp' || $field === 'no_fax' || $field === 'kode_pos')
+                    @if($field === 'kode_pos')
                         inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     @endif>
             @error($field) <small class="text-danger">{{ $message }}</small> @enderror

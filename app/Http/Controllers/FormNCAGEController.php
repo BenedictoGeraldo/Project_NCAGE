@@ -604,8 +604,8 @@ class FormNCAGEController extends Controller
             'status_kepemilikan' => 'required|in:1,2,3',
             'terdaftar_ahu' => 'required|string',
             'koordinat_kantor' => 'required|string',
-            'nib' => 'required|string',
-            'npwp' => 'required|string',
+            'nib' => 'required|string|regex:/^[0-9]{13}$/',
+            'npwp' => 'required|string|regex:/^[0-9]{16}$/',
             'bidang_usaha' => 'required|string',
         ];
 
@@ -620,6 +620,8 @@ class FormNCAGEController extends Controller
             'max' => ':attribute tidak boleh lebih dari :max karakter.',
             'date' => ':attribute harus berupa tanggal yang valid.',
             'after_or_equal' => ':attribute harus berisi hari ini atau setelah hari ini.',
+            'nib.regex' => 'Nomor Induk Berusaha (NIB) harus terdiri dari 13 angka.',
+            'npwp.regex' => 'Nomor Pokok Wajib Pajak (NPWP) harus terdiri dari 16 angka.',
         ];
 
         $attributes = [
@@ -644,7 +646,7 @@ class FormNCAGEController extends Controller
     {
         $rules = [
             'nama_pemohon' => 'required|string|max:255',
-            'no_identitas' => 'required|string|max:16',
+            'no_identitas' => 'required|string|regex:/^[0-9]{16}$/',
             'alamat' => 'required|string|max:255',
             'no_tel' => 'required|string|max:20',
             'email' => 'required|email|max:255',
@@ -655,11 +657,12 @@ class FormNCAGEController extends Controller
             'required' => ':attribute wajib diisi.',
             'email' => ':attribute harus berupa alamat email yang valid.',
             'max' => ':attribute tidak boleh lebih dari :max karakter.',
+            'regex' => ':attribute harus berupa 16 digit angka.',
         ];
 
         $attributes = [
             'nama_pemohon' => 'Nama Pemohon',
-            'no_identitas' => 'Nomor Identitas',
+            'no_identitas' => 'Nomor Identitas (NIK)',
             'alamat' => 'Alamat',
             'no_tel' => 'Nomor Telepon / HP',
             'email' => 'Email Pemohon',
@@ -679,10 +682,31 @@ class FormNCAGEController extends Controller
             'jalan_2'              => 'nullable|string|max:78',
             'kode_pos'             => 'required|string|max:10',
             'po_box'               => 'nullable|string|max:50',
-            'no_telp'              => 'required|string|max:20',
-            'no_fax'               => 'required|string|max:20',
+            'no_telp'              => 'required|string|max:255',
+            'no_fax'               => 'required|string|max:255',
             'email_kantor'         => 'required|email|max:255',
-            'website_kantor'       => 'nullable|url|max:255',
+            'website_kantor'       => [
+                'nullable',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        // Periksa apakah input diawali dengan http://, https://, atau www.
+                        if (!preg_match('/^(https?:\/\/|www\.)/', $value)) {
+                            $fail('Kolom :attribute harus diawali dengan "http://", "https://", atau "www.".');
+                            return;
+                        }
+                        // Tambahkan protokol default jika diawali dengan www.
+                        $url = $value;
+                        if (preg_match('/^www\./', $value)) {
+                            $url = 'http://' . $value;
+                        }
+                        // Validasi URL
+                        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                            $fail('Kolom :attribute harus berupa alamat URL yang valid (contoh: www.example.com atau https://www.example.com).');
+                        }
+                    }
+                },
+            ],
             'perusahaan_afiliasi'  => 'nullable|string|max:255',
         ];
 
@@ -690,7 +714,6 @@ class FormNCAGEController extends Controller
             'required' => ':attribute wajib diisi.',
             'email' => ':attribute harus berupa alamat email yang valid.',
             'max' => ':attribute tidak boleh lebih dari :max karakter.',
-            'url' => ':attribute harus berupa alamat URL yang valid.',
         ];
 
         $attributes = [
