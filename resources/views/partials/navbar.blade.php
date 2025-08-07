@@ -16,6 +16,9 @@
                     <a class="btn fw-bold fs-7 {{ Request::is('/', 'beranda') ? 'text-white bg-active' : '' }}" href="{{ route('home') }}">Beranda</a>
                 </li>
                 <li>
+                    <a class="btn fw-bold fs-7 {{ Request::is('cek-entitas*') ? 'text-white bg-active' : '' }}" href="{{ route('entity-check.index') }}">Cek Entitas</a>
+                </li>
+                <li>
                     @if ($hasPendingNcage)
                         <a href="#" class="btn rounded-4 fw-bold fs-7 {{ Request::is('pendaftaran-ncage*') ? 'text-white bg-active' : '' }}" data-bs-toggle="modal" data-bs-target="#sudahDaftarModal">Pendaftaran NCAGE</a>
                     @elseif($hasActiveNcage)
@@ -30,9 +33,6 @@
                 </li>
                 <li>
                     <a class="btn fw-bold fs-7 {{ Request::is('pantau-status*') ? 'text-white bg-active' : '' }}" href="{{ route('tracking.index') }}">Pantau Status</a>
-                </li>
-                <li>
-                    <a class="btn fw-bold fs-7 {{ Request::is('cek-entitas*') ? 'text-white bg-active' : '' }}" href="{{ route('entity-check.index') }}">Cek Entitas</a>
                 </li>
             </ul>
         </div>
