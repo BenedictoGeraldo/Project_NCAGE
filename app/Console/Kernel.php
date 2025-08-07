@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         // Pastikan ini ada jika Anda ingin scheduler menjalankannya setiap hari
         $schedule->command(CheckCertificateExpiration::class)->dailyAt('02:00');
         // Atau untuk testing: $schedule->command(CheckCertificateExpiration::class)->everyMinute();
+        $schedule->command('ncage:check-ncage-status-expired')->dailyAt('00:00');
     }
 
     /**
