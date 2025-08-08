@@ -54,7 +54,11 @@
                     </div>
                     <div class="mb-3">
                         <label for="phone_number" class="form-label">Nomor Telepon (Whatsapp)</label>
-                        <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="Masukkan Nomor Telepon" value="{{ old('phone_number') }}" required>
+                        <input type="tel" class="form-control" id="phone_number" name="phone_number" 
+                               placeholder="Masukkan Nomor Telepon" 
+                               pattern="^\+?[0-9]*$"
+                               value="{{ old('phone_number') }}" required>
+                        <div class="invalid-feedback">Hanya boleh angka dan tanda +</div>
                     </div>
                 </div>
 
@@ -98,7 +102,6 @@
                 </div>
             </div>
 
-            <!--Opsi kirim Kode verifikasi-->
             <div class="mb-3">
                 <label for="otp_delivery_method" class="form-label">Metode Pengiriman Kode Verifikasi</label>
                 <select class="form-select" id="otp_delivery_method" name="otp_delivery_method" required>
@@ -106,8 +109,7 @@
                     <option value="whatsapp" {{ old('otp_delivery_method') == 'whatsapp' ? 'selected' : '' }}>WhatsApp</option>
                 </select>
             </div>
-            <!--Akhir opsi kirim Kode verifikasi-->
-            
+
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" value="1" id="terms" name="terms" required>
                 <label class="form-check-label" for="terms">
@@ -123,16 +125,15 @@
         </p>
     </div>
 
-    <!-- Script untuk validasi input dan format nomor telepon -->
     <script>
         // Validasi input nama lengkap
         const nameInput = document.getElementById('name');
         if (nameInput) {
             nameInput.addEventListener('input', function() {
-                const validPattern = /^[A-Za-z\s]*$/; // Hanya huruf dan spasi
+                const validPattern = /^[A-Za-z\s]*$/;
                 if (!validPattern.test(this.value)) {
                     this.classList.add('is-invalid');
-                    this.value = this.value.replace(/[^A-Za-z\s]/g, ''); // Hapus karakter tidak valid
+                    this.value = this.value.replace(/[^A-Za-z\s]/g, '');
                 } else {
                     this.classList.remove('is-invalid');
                 }
@@ -143,22 +144,26 @@
         const companyNameInput = document.getElementById('company_name');
         if (companyNameInput) {
             companyNameInput.addEventListener('input', function() {
-                const validPattern = /^[A-Za-z0-9\s.\-()&]*$/; // Hanya huruf, angka, spasi, titik, tanda hubung, kurung, dan &
+                const validPattern = /^[A-Za-z0-9\s.\-()&]*$/;
                 if (!validPattern.test(this.value)) {
                     this.classList.add('is-invalid');
-                    this.value = this.value.replace(/[^A-Za-z0-9\s.\-()&]/g, ''); // Hapus karakter tidak valid
+                    this.value = this.value.replace(/[^A-Za-z0-9\s.\-()&]/g, '');
                 } else {
                     this.classList.remove('is-invalid');
                 }
             });
         }
 
-        // Format nomor telepon
+        // Validasi dan format nomor telepon
         const phoneInput = document.getElementById('phone_number');
         if (phoneInput) {
-            phoneInput.addEventListener('input', function() {
+            phoneInput.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9+]/g, '');
                 if (this.value.startsWith('08')) {
                     this.value = '+628' + this.value.substring(2);
+                }
+                if (!this.value.startsWith('+') && !this.value.startsWith('0')) {
+                    this.value = this.value.replace(/^[^+0-9]+/, '');
                 }
             });
         }
@@ -171,7 +176,7 @@
             const eyeHide = document.getElementById(hideIconId);
 
             if (togglePassword && password && eyeShow && eyeHide) {
-                togglePassword.addEventListener('click', function (e) {
+                togglePassword.addEventListener('click', function () {
                     const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
                     password.setAttribute('type', type);
                     eyeShow.classList.toggle('d-none');
