@@ -103,8 +103,10 @@
     {{-- Pastikan @stack('scripts') ADA dan berada SETELAH jQuery dan Bootstrap JS --}}
     @stack('scripts')
 
-    <a href="https://wa.me/6281288824545?text=Halo%20Admin%20Puskod%2C%0A%0Asaya%20ingin%20bertanya%20mengenai%20layanan%20pendaftaran%20NCAGE.%0A%0ANama%3A%20%0APerusahaan%3A%20"
-        class="floating-whatsapp-btn" target="_blank">
+    <a href="https://wa.me/6281288824545?text=Halo%20Admin%20Puskod,%0A%0ASaya%20ingin%20bertanya%20mengenai%20layanan%20pendaftaran%20NCAGE.%0A%0ANama:%20%0APerusahaan:%20" 
+    target="_blank" 
+    rel="noopener noreferrer"
+    class="floating-whatsapp-btn">
         <span class="hover-text">Hubungi Kami via WhatsApp</span>
         <i class="fab fa-whatsapp"></i>
     </a>
